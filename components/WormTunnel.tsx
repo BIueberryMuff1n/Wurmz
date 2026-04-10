@@ -55,12 +55,15 @@ export default function WormTunnel() {
 
   const totalLength = 5800;
 
-  // Tunnel only starts after parachute landing (~15% scroll)
-  // Remap scroll so 0.15→1.0 maps to 0→1 for tunnel progress
+  // Tunnel only starts after parachute landing (~12% scroll)
   const tunnelStart = 0.12;
   const adjustedProgress = Math.max(0, (scrollProgress - tunnelStart) / (1 - tunnelStart));
   const wormProgress = adjustedProgress;
-  const tunnelReveal = adjustedProgress * totalLength + 200;
+
+  // Tunnel reveals BEHIND the worm — it's the trail the worm dug.
+  // Tunnel ends exactly at the worm's back edge (center minus half body length).
+  // Worm body is 180px, so tunnel stops ~90px before the worm's center position.
+  const tunnelReveal = Math.max(0, adjustedProgress * totalLength - 90);
 
   return (
     <div

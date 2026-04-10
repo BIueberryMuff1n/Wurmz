@@ -28,7 +28,7 @@ export default function RotatingTagline() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="text-iridescent font-mono text-lg md:text-xl tracking-widest uppercase absolute"
+          className="text-iridescent font-mono text-lg md:text-xl tracking-widest uppercase absolute text-center whitespace-nowrap"
         >
           {taglines[index]}
         </motion.p>
