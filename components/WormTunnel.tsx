@@ -149,6 +149,186 @@ export default function WormTunnel() {
           strokeDashoffset={totalLength - tunnelReveal}
         />
 
+        {/* === HIDDEN EASTER EGG GRAFFITI scratched into tunnel walls === */}
+
+        {/* ~15%: "dig deeper" */}
+        {tunnelReveal >= totalLength * 0.15 && (
+          <text
+            style={{
+              offsetPath: `path("${tunnelPath}")`,
+              offsetDistance: "15%",
+              offsetRotate: "auto",
+            }}
+            fontSize="5"
+            fontFamily="'Courier New', monospace"
+            fontWeight="bold"
+            fill="#3D2B1F"
+            opacity="0.07"
+            dy={-28}
+            letterSpacing="1.5"
+            paintOrder="stroke"
+            stroke="#3D2B1F"
+            strokeWidth="0.3"
+          >
+            dig deeper
+          </text>
+        )}
+
+        {/* ~25%: tiny scratched leaf doodle */}
+        {tunnelReveal >= totalLength * 0.25 && (
+          <g
+            style={{
+              offsetPath: `path("${tunnelPath}")`,
+              offsetDistance: "25%",
+              offsetRotate: "auto",
+            }}
+          >
+            <path
+              d="M0,-30 C2,-34 6,-35 8,-32 C6,-30 2,-29 0,-30 M1,-31 L5,-36 M3,-31.5 L4,-35"
+              fill="none"
+              stroke="#3D2B1F"
+              strokeWidth="0.5"
+              strokeLinecap="round"
+              opacity="0.06"
+            />
+          </g>
+        )}
+
+        {/* ~35%: "wuz here" with worm emoji */}
+        {tunnelReveal >= totalLength * 0.35 && (
+          <text
+            style={{
+              offsetPath: `path("${tunnelPath}")`,
+              offsetDistance: "35%",
+              offsetRotate: "auto",
+            }}
+            fontSize="4.5"
+            fontFamily="'Courier New', monospace"
+            fontWeight="bold"
+            fill="#F5F0E8"
+            opacity="0.06"
+            dy={30}
+            letterSpacing="1"
+            paintOrder="stroke"
+            stroke="#F5F0E8"
+            strokeWidth="0.2"
+          >
+            🪱 wuz here
+          </text>
+        )}
+
+        {/* ~45%: "feed the soil" */}
+        {tunnelReveal >= totalLength * 0.45 && (
+          <text
+            style={{
+              offsetPath: `path("${tunnelPath}")`,
+              offsetDistance: "45%",
+              offsetRotate: "auto",
+            }}
+            fontSize="4"
+            fontFamily="'Courier New', monospace"
+            fontWeight="bold"
+            fill="#3D2B1F"
+            opacity="0.08"
+            dy={-26}
+            letterSpacing="2"
+            paintOrder="stroke"
+            stroke="#3D2B1F"
+            strokeWidth="0.3"
+          >
+            feed the soil
+          </text>
+        )}
+
+        {/* ~55%: small scratched mushroom doodle */}
+        {tunnelReveal >= totalLength * 0.55 && (
+          <g
+            style={{
+              offsetPath: `path("${tunnelPath}")`,
+              offsetDistance: "55%",
+              offsetRotate: "auto",
+            }}
+          >
+            <path
+              d="M0,-26 C-4,-30 -3,-35 0,-36 C3,-35 4,-30 0,-26 M0,-26 L0,-22 M-2,-23 L2,-23"
+              fill="none"
+              stroke="#F5F0E8"
+              strokeWidth="0.5"
+              strokeLinecap="round"
+              opacity="0.06"
+            />
+          </g>
+        )}
+
+        {/* ~65%: "no shortcuts" */}
+        {tunnelReveal >= totalLength * 0.65 && (
+          <text
+            style={{
+              offsetPath: `path("${tunnelPath}")`,
+              offsetDistance: "65%",
+              offsetRotate: "auto",
+            }}
+            fontSize="4.5"
+            fontFamily="'Courier New', monospace"
+            fontWeight="bold"
+            fill="#F5F0E8"
+            opacity="0.07"
+            dy={28}
+            letterSpacing="1.5"
+            paintOrder="stroke"
+            stroke="#F5F0E8"
+            strokeWidth="0.2"
+          >
+            no shortcuts
+          </text>
+        )}
+
+        {/* ~72%: "420" */}
+        {tunnelReveal >= totalLength * 0.72 && (
+          <text
+            style={{
+              offsetPath: `path("${tunnelPath}")`,
+              offsetDistance: "72%",
+              offsetRotate: "auto",
+            }}
+            fontSize="6"
+            fontFamily="'Courier New', monospace"
+            fontWeight="bold"
+            fill="#3D2B1F"
+            opacity="0.09"
+            dy={-27}
+            letterSpacing="3"
+            paintOrder="stroke"
+            stroke="#3D2B1F"
+            strokeWidth="0.4"
+          >
+            420
+          </text>
+        )}
+
+        {/* ~78%: "if you can read this, you're underground" */}
+        {tunnelReveal >= totalLength * 0.78 && (
+          <text
+            style={{
+              offsetPath: `path("${tunnelPath}")`,
+              offsetDistance: "78%",
+              offsetRotate: "auto",
+            }}
+            fontSize="3.5"
+            fontFamily="'Courier New', monospace"
+            fontWeight="bold"
+            fill="#F5F0E8"
+            opacity="0.05"
+            dy={30}
+            letterSpacing="0.8"
+            paintOrder="stroke"
+            stroke="#F5F0E8"
+            strokeWidth="0.15"
+          >
+            {"if you can read this, you're underground"}
+          </text>
+        )}
+
         </g>}
 
         {/* === THE WORM (at the digging front) — hidden until after parachute lands === */}

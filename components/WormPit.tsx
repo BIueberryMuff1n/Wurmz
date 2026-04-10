@@ -7,6 +7,7 @@ interface Worm {
   // Array of segment positions [x, y]
   segments: [number, number][];
   speed: number;
+  baseSpeed: number;       // original speed for hover reset
   angle: number;       // current heading
   turnRate: number;     // how much it turns
   turnTimer: number;    // time until next direction change
@@ -14,12 +15,18 @@ interface Worm {
   color: { r: number; g: number; b: number };
   waveOffset: number;   // phase offset for body wave
   waveSpeed: number;
+  depth: number;        // 0 = far back, 1 = foreground
+  isQueen: boolean;     // queen worm with crown
+  isGolden: boolean;    // rare golden worm
+  seed: number;         // stored seed for identification
 }
 
 export default function WormPit() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wormsRef = useRef<Worm[]>([]);
   const animRef = useRef<number>(0);
+  const mouseRef = useRef<{ x: number; y: number } | null>(null);
+  const hoveredWormRef = useRef<Worm | null>(null);
   const [visible, setVisible] = useState(false);
 
   const { progress } = useScroll();
@@ -43,12 +50,29 @@ export default function WormPit() {
     resize();
     window.addEventListener("resize", resize);
 
+    // Mouse tracking for hover interaction
+    function onMouseMove(e: MouseEvent) {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    }
+    function onMouseLeave() {
+      mouseRef.current = null;
+      // Reset hovered worm speed
+      if (hoveredWormRef.current) {
+        hoveredWormRef.current.speed = hoveredWormRef.current.baseSpeed;
+        hoveredWormRef.current = null;
+      }
+    }
+    canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("mouseleave", onMouseLeave);
+
     // Initialize worms if empty
     if (wormsRef.current.length === 0) {
       const count = Math.floor(window.innerWidth / 2.5); // ~550 on desktop
       for (let i = 0; i < count; i++) {
         wormsRef.current.push(createWorm(canvas.width, canvas.height, i));
       }
+      // Sort by depth so deeper worms draw first (painter's algorithm)
+      wormsRef.current.sort((a, b) => a.depth - b.depth);
     }
 
     let time = 0;
@@ -60,6 +84,38 @@ export default function WormPit() {
 
       const worms = wormsRef.current;
 
+      // Hover: find nearest worm to mouse and boost its speed
+      const mouse = mouseRef.current;
+      if (mouse) {
+        let nearestDist = Infinity;
+        let nearestWorm: Worm | null = null;
+        for (const worm of worms) {
+          const head = worm.segments[0];
+          const dx = head[0] - mouse.x;
+          const dy = head[1] - mouse.y;
+          const dist = dx * dx + dy * dy;
+          if (dist < nearestDist) {
+            nearestDist = dist;
+            nearestWorm = worm;
+          }
+        }
+        // Only affect worms within 120px radius
+        if (nearestWorm && nearestDist < 120 * 120) {
+          // Reset previous hovered worm
+          if (hoveredWormRef.current && hoveredWormRef.current !== nearestWorm) {
+            hoveredWormRef.current.speed = hoveredWormRef.current.baseSpeed;
+          }
+          nearestWorm.speed = nearestWorm.baseSpeed * 4;
+          hoveredWormRef.current = nearestWorm;
+        } else {
+          if (hoveredWormRef.current) {
+            hoveredWormRef.current.speed = hoveredWormRef.current.baseSpeed;
+            hoveredWormRef.current = null;
+          }
+        }
+      }
+
+      // Draw in depth order (already sorted)
       for (const worm of worms) {
         updateWorm(worm, canvas.width, canvas.height, time);
         drawWorm(ctx, worm, time);
@@ -73,6 +129,8 @@ export default function WormPit() {
     return () => {
       cancelAnimationFrame(animRef.current);
       window.removeEventListener("resize", resize);
+      canvas.removeEventListener("mousemove", onMouseMove);
+      canvas.removeEventListener("mouseleave", onMouseLeave);
     };
   }, [visible]);
 
@@ -81,13 +139,16 @@ export default function WormPit() {
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed inset-0 z-[4]"
+      className="pointer-events-auto fixed inset-0 z-[4]"
       style={{ opacity: 0.85 }}
     />
   );
 }
 
 function createWorm(w: number, h: number, seed: number): Worm {
+  const isQueen = seed === 42;
+  const isGolden = seed === 137;
+
   const segCount = 14 + Math.floor(pseudoRandom(seed * 7) * 10);
   const x = pseudoRandom(seed * 13) * w;
   // Bias Y toward the bottom — square the random to cluster low
@@ -104,25 +165,46 @@ function createWorm(w: number, h: number, seed: number): Worm {
     ]);
   }
 
-  // Color variation: brownish-reds, some pinker, some darker
-  const rBase = 120 + Math.floor(pseudoRandom(seed * 29) * 80);
-  const gBase = 35 + Math.floor(pseudoRandom(seed * 31) * 30);
-  const bBase = 30 + Math.floor(pseudoRandom(seed * 37) * 25);
+  // Color: golden worm gets gold, queen and others get brownish-reds
+  let color: { r: number; g: number; b: number };
+  if (isGolden) {
+    color = { r: 218, g: 165, b: 32 };
+  } else {
+    const rBase = 120 + Math.floor(pseudoRandom(seed * 29) * 80);
+    const gBase = 35 + Math.floor(pseudoRandom(seed * 31) * 30);
+    const bBase = 30 + Math.floor(pseudoRandom(seed * 37) * 25);
+    color = { r: rBase, g: gBase, b: bBase };
+  }
 
   // Worms near the bottom are bigger (macro view feel)
   const depthFactor = y / h; // 0 at top, 1 at bottom
-  const sizeMultiplier = 0.5 + depthFactor * 1.5; // 0.5x at top, 2x at bottom
+  let sizeMultiplier = 0.5 + depthFactor * 1.5; // 0.5x at top, 2x at bottom
+
+  // Queen is slightly larger
+  if (isQueen) {
+    sizeMultiplier *= 1.3;
+  }
+
+  // Depth layering: random depth value 0-1
+  const depth = pseudoRandom(seed * 67);
+
+  const baseSpeed = (0.08 + pseudoRandom(seed * 41) * 0.12) * sizeMultiplier;
 
   return {
     segments,
-    speed: (0.08 + pseudoRandom(seed * 41) * 0.12) * sizeMultiplier, // worms are SLOW
+    speed: baseSpeed,
+    baseSpeed,
     angle,
     turnRate: 0.005 + pseudoRandom(seed * 43) * 0.01, // gentle turns
     turnTimer: Math.floor(80 + pseudoRandom(seed * 47) * 200), // long between turns
     thickness: (3 + pseudoRandom(seed * 53) * 4) * sizeMultiplier,
-    color: { r: rBase, g: gBase, b: bBase },
+    color,
     waveOffset: pseudoRandom(seed * 59) * Math.PI * 2,
     waveSpeed: 0.012 + pseudoRandom(seed * 61) * 0.015, // slow undulation
+    depth,
+    isQueen,
+    isGolden,
+    seed,
   };
 }
 
@@ -184,6 +266,10 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
 
   const { r, g, b } = worm.color;
 
+  // Depth-based alpha: deeper worms (lower depth) are dimmer
+  // depth 0 -> alphaMultiplier 0.5, depth 1 -> alphaMultiplier 1.0
+  const alphaMultiplier = 0.5 + worm.depth * 0.5;
+
   // Draw body as a thick smooth path
   // Outer dark outline
   ctx.beginPath();
@@ -195,7 +281,7 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
     const my = (prev[1] + curr[1]) / 2;
     ctx.quadraticCurveTo(prev[0], prev[1], mx, my);
   }
-  ctx.strokeStyle = `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 20)}, ${Math.max(0, b - 15)}, 0.6)`;
+  ctx.strokeStyle = `rgba(${Math.max(0, r - 50)}, ${Math.max(0, g - 20)}, ${Math.max(0, b - 15)}, ${0.6 * alphaMultiplier})`;
   ctx.lineWidth = worm.thickness + 2;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
@@ -211,7 +297,7 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
     const my = (prev[1] + curr[1]) / 2;
     ctx.quadraticCurveTo(prev[0], prev[1], mx, my);
   }
-  ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.8)`;
+  ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${0.8 * alphaMultiplier})`;
   ctx.lineWidth = worm.thickness;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
@@ -227,7 +313,7 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
     const my = (prev[1] + curr[1]) / 2;
     ctx.quadraticCurveTo(prev[0], prev[1], mx, my);
   }
-  ctx.strokeStyle = `rgba(${Math.min(255, r + 40)}, ${Math.min(255, g + 25)}, ${Math.min(255, b + 20)}, 0.2)`;
+  ctx.strokeStyle = `rgba(${Math.min(255, r + 40)}, ${Math.min(255, g + 25)}, ${Math.min(255, b + 20)}, ${0.2 * alphaMultiplier})`;
   ctx.lineWidth = worm.thickness * 0.4;
   ctx.lineCap = "round";
   ctx.stroke();
@@ -244,10 +330,65 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
     ctx.beginPath();
     ctx.moveTo(seg[0] + perpX * halfW, seg[1] + perpY * halfW);
     ctx.lineTo(seg[0] - perpX * halfW, seg[1] - perpY * halfW);
-    ctx.strokeStyle = `rgba(${Math.max(0, r - 30)}, ${Math.max(0, g - 10)}, ${Math.max(0, b - 8)}, 0.25)`;
+    ctx.strokeStyle = `rgba(${Math.max(0, r - 30)}, ${Math.max(0, g - 10)}, ${Math.max(0, b - 8)}, ${0.25 * alphaMultiplier})`;
     ctx.lineWidth = 1;
     ctx.stroke();
   }
+
+  // Queen crown: 3 small golden triangles above the head
+  if (worm.isQueen) {
+    drawCrown(ctx, worm);
+  }
+}
+
+function drawCrown(ctx: CanvasRenderingContext2D, worm: Worm) {
+  const segs = worm.segments;
+  const head = segs[0];
+  const next = segs[1];
+
+  // Direction the worm is facing
+  const headAngle = Math.atan2(head[1] - next[1], head[0] - next[0]);
+  // Crown sits perpendicular to the body, on top of the head
+  const crownUp = headAngle - Math.PI / 2;
+
+  const crownBase = worm.thickness * 0.8;
+  const crownHeight = worm.thickness * 1.2;
+
+  // Base center of crown: offset from head center in the "up" direction
+  const baseX = head[0] + Math.cos(crownUp) * worm.thickness * 0.5;
+  const baseY = head[1] + Math.sin(crownUp) * worm.thickness * 0.5;
+
+  // Perpendicular to crownUp for spreading the triangles
+  const perpAngle = crownUp + Math.PI / 2;
+
+  ctx.save();
+  ctx.fillStyle = "rgba(255, 215, 0, 0.6)"; // #FFD700 at 0.6 opacity
+
+  // Draw 3 small triangles (left, center, right)
+  const offsets = [-1, 0, 1];
+  for (const offset of offsets) {
+    const spread = offset * crownBase * 0.5;
+    const triBaseX = baseX + Math.cos(perpAngle) * spread;
+    const triBaseY = baseY + Math.sin(perpAngle) * spread;
+
+    const tipX = triBaseX + Math.cos(crownUp) * crownHeight;
+    const tipY = triBaseY + Math.sin(crownUp) * crownHeight;
+
+    const halfBase = crownBase * 0.25;
+    const leftX = triBaseX + Math.cos(perpAngle) * halfBase;
+    const leftY = triBaseY + Math.sin(perpAngle) * halfBase;
+    const rightX = triBaseX - Math.cos(perpAngle) * halfBase;
+    const rightY = triBaseY - Math.sin(perpAngle) * halfBase;
+
+    ctx.beginPath();
+    ctx.moveTo(tipX, tipY);
+    ctx.lineTo(leftX, leftY);
+    ctx.lineTo(rightX, rightY);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  ctx.restore();
 }
 
 function pseudoRandom(seed: number): number {

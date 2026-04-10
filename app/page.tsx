@@ -13,10 +13,12 @@ import ParachuteWorm from "@/components/ParachuteWorm";
 import WormPit from "@/components/WormPit";
 import BuriedArtifacts from "@/components/BuriedArtifacts";
 import PlaneIntroWrapper from "@/components/PlaneIntroWrapper";
+import EasterEggs from "@/components/EasterEggs";
 
 export default function Home() {
   return (
     <>
+      <EasterEggs />
       <UndergroundJourney />
       <SurfaceScene />
       <PlaneIntroWrapper />

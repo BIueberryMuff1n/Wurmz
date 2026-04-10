@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useScroll } from "./ScrollContext";
 
 interface PlaneIntroProps {
   onJump: () => void;
@@ -56,10 +57,16 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
     return () => cancelAnimationFrame(frame);
   }, [flyOff]);
 
+  const { scrollY } = useScroll();
+
+  // Plane fades out as you scroll down (stays in sky longer than surface scene)
+  const planeFadeOut = Math.max(0, 1 - scrollY / 1200);
+
+  if (planeFadeOut <= 0) return null;
   if (hasJumped && planeX > 110) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[15]">
+    <div className="pointer-events-none fixed inset-0 z-[15]" style={{ opacity: planeFadeOut }}>
       {/* Plane */}
       <div
         className="absolute"

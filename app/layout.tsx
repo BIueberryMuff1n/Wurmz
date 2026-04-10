@@ -41,6 +41,7 @@ export default function RootLayout({
       className={`${rubikDirt.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
+        {/* You found the source. But the real source is the soil. */}
         <ScrollProvider>
           <JumpProvider>{children}</JumpProvider>
         </ScrollProvider>

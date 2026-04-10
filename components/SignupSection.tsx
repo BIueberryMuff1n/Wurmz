@@ -1,12 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+
+const SUCCESS_MESSAGES = [
+  "Welcome underground",
+  "You've been wormed",
+  "See you on 4/20",
+  "You're in \u{1FAB1}",
+];
 
 export default function SignupSection() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const successMessage = useMemo(
+    () => SUCCESS_MESSAGES[Math.floor(Math.random() * SUCCESS_MESSAGES.length)],
+    []
+  );
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -54,7 +65,7 @@ export default function SignupSection() {
             animate={{ opacity: 1, scale: 1 }}
             className="font-display text-2xl text-crimson-neon"
           >
-            You&apos;re in. 🪱
+            {successMessage}
           </motion.p>
         ) : (
           <form onSubmit={handleSubmit} className="flex w-full max-w-md gap-3">
