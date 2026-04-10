@@ -40,20 +40,55 @@ This also means: the logo uses `clip-path: circle(50%)` instead of fighting imag
 
 **The background isn't a background — it's the world.**
 
-Rebuild `UndergroundJourney` as a proper compositor with mathematically smooth cross-fading between soil layers. Not 5 layers with `smoothStep` — a continuous function that blends through:
+Rebuild `UndergroundJourney` as a **continuous color field** — not discrete layers with crossfades, but a mathematically smooth function with 30-50+ color stops that produce an imperceptible gradient from sky to deep earth. Think film color grading, not Photoshop layers.
 
-- **Sky** (deep blue-black, stars)
-- **Surface** (warm amber, straw fibers)  
-- **Top soil** (tan-brown, perlite speckles — white dots like in the actual soil mix photo)
-- **Living soil** (rich dark brown, faint root networks)
-- **Deep earth** (near black, the first distant worms appear)
-- **The colony** (black, dense wriggling mass)
+**The color spine:** A cubic spline interpolation through ~40 hand-tuned RGB control points:
 
-Each layer has its own texture overlay that fades in/out with scroll. The transitions take 15-20% of scroll each, overlapping. You should NEVER be able to point at a pixel and say "that's where the transition is."
+```
+0.00  → #0a0f1a  (deep night sky)
+0.02  → #0e1525  (sky, hint of warmth)
+0.05  → #141c2e  (sky fading)
+0.08  → #1a1f30  (purple-brown transition)
+0.10  → #1e1c28  (dusk meets earth)
+0.12  → #221a20  (first soil hint)
+0.14  → #2a1e1a  (amber warmth entering)
+0.16  → #352618  (straw/mulch zone begins)
+0.18  → #3e2e1a  (golden brown peak)
+0.20  → #3a2a18  (straw fading)
+0.22  → #362616  (transition to topsoil)
+0.25  → #332414  (topsoil begins)
+0.28  → #302214  (topsoil with perlite)
+0.30  → #2e2012  (mid topsoil)
+0.33  → #2a1e10  (topsoil deepening)
+0.36  → #261a0e  (transition zone)
+0.40  → #22180c  (living soil begins)
+0.45  → #1e150a  (rich living soil)
+0.50  → #1a1208  (deep living soil)
+0.55  → #180f07  (darkening)
+0.60  → #150d06  (deep zone begins)
+0.65  → #120b05  (approaching colony)
+0.70  → #100a04  (near dark)
+0.75  → #0e0804  (very deep)
+0.80  → #0c0703  (colony zone)
+0.85  → #0a0603  (dense dark)
+0.90  → #080502  (almost black)
+0.95  → #060402  (deepest)
+1.00  → #050301  (the bottom — pure underground)
+```
 
-The tunnel interior dynamically matches whatever layer surrounds it. At the top, light. At the bottom, dark. Always blending.
+Between these stops, use cubic Hermite interpolation (not linear lerp) so there are zero visible steps. The human eye can detect ~1% brightness jumps in smooth gradients — this spacing ensures sub-1% changes between frames.
 
-**Done when:** A designer watches you scroll slowly from top to bottom and says "how is that so smooth?"
+**Texture layers** also use continuous opacity curves, not stepped crossfades:
+- **Straw fibers**: opacity peaks at 0.17, gaussian falloff ±0.06
+- **Perlite speckles**: opacity peaks at 0.28, gaussian falloff ±0.08
+- **Root networks**: opacity peaks at 0.45, gaussian falloff ±0.10
+- **Worm silhouettes**: opacity ramps from 0 at 0.60 to max at 1.00 (one-directional)
+
+Each texture opacity is computed as a smooth gaussian: `exp(-((progress - peak)² / (2 * sigma²)))`. No `if` statements. No `smoothStep`. Pure continuous math.
+
+The tunnel interior samples this SAME color function at whatever Y-position it's passing through, so it always matches its surroundings exactly.
+
+**Done when:** You scroll at 1px/frame speed and cannot identify any transition point. The earth just... changes.
 
 ### Phase 3: The Worm
 
