@@ -116,79 +116,41 @@ export default function SurfaceScene() {
         ))}
       </div>
 
-      {/* Shooting star — arcs across the entire sky */}
+      {/* Shooting star — single stroke that races along the arc path */}
       {shootingStar && (
         <svg
           key={shootingStar.key}
           className="absolute inset-0 w-full h-full"
           style={{ overflow: "visible" }}
         >
-          {/* Arc path — bright head, fizzling trail */}
-          {/* Bright head that streaks across */}
-          <circle r="3" fill="white" opacity="0">
-            <animateMotion
-              path="M-50,40 Q400,80 750,250 Q1100,420 1500,480"
-              dur="1.8s"
-              fill="freeze"
-            />
-            <animate
-              attributeName="opacity"
-              values="0;1;0.9;0.5;0"
-              keyTimes="0;0.05;0.3;0.7;1"
-              dur="1.8s"
-              fill="freeze"
-            />
-            <animate
-              attributeName="r"
-              values="3;3;2.5;1.5;0.5"
-              keyTimes="0;0.1;0.4;0.7;1"
-              dur="1.8s"
-              fill="freeze"
-            />
-          </circle>
-          {/* Glow around head */}
-          <circle r="8" fill="rgba(255,255,255,0.15)" opacity="0">
-            <animateMotion
-              path="M-50,40 Q400,80 750,250 Q1100,420 1500,480"
-              dur="1.8s"
-              fill="freeze"
-            />
-            <animate
-              attributeName="opacity"
-              values="0;0.4;0.2;0.05;0"
-              keyTimes="0;0.05;0.3;0.7;1"
-              dur="1.8s"
-              fill="freeze"
-            />
-          </circle>
-          {/* Trail — fading streak behind the head */}
+          {/* The streak: a single path with a moving dash that shrinks */}
           <path
-            d="M-50,40 Q400,80 750,250 Q1100,420 1500,480"
+            d="M-50,30 Q350,60 700,220 Q1050,380 1500,450"
             fill="none"
             stroke="white"
-            strokeWidth="1.5"
+            strokeWidth="2"
             strokeLinecap="round"
-            opacity="0"
+            strokeDasharray="120 3000"
+            strokeDashoffset="120"
           >
             <animate
-              attributeName="stroke-dasharray"
-              values="0 3000;150 3000;80 3000;20 3000;0 3000"
-              keyTimes="0;0.1;0.4;0.7;1"
-              dur="1.8s"
+              attributeName="stroke-dashoffset"
+              values="120;-3000"
+              dur="1.6s"
               fill="freeze"
             />
             <animate
-              attributeName="stroke-dashoffset"
-              values="0;-400;-1500;-2500;-3000"
-              keyTimes="0;0.1;0.4;0.7;1"
-              dur="1.8s"
+              attributeName="stroke-dasharray"
+              values="0 3000;120 3000;100 3000;40 3000;0 3000"
+              keyTimes="0;0.08;0.3;0.7;1"
+              dur="1.6s"
               fill="freeze"
             />
             <animate
               attributeName="opacity"
-              values="0;0.7;0.4;0.1;0"
+              values="0;0.9;0.7;0.2;0"
               keyTimes="0;0.05;0.3;0.7;1"
-              dur="1.8s"
+              dur="1.6s"
               fill="freeze"
             />
           </path>
