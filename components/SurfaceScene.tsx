@@ -275,10 +275,15 @@ function MoonWithPhase({ phase }: { phase: number }) {
       {/* Lit portion */}
       <path d={litPath} fill="#E0D4B8" />
 
-      {/* Crater details */}
-      <circle cx={cx - 4} cy={cy - 5} r={2.5} fill="rgba(170,160,140,0.2)" />
-      <circle cx={cx + 5} cy={cy + 4} r={2} fill="rgba(170,160,140,0.15)" />
-      <circle cx={cx - 1} cy={cy + 7} r={1.8} fill="rgba(170,160,140,0.12)" />
+      {/* Crater details — clipped to lit area only */}
+      <clipPath id="moon-lit-clip">
+        <path d={litPath} />
+      </clipPath>
+      <g clipPath="url(#moon-lit-clip)">
+        <circle cx={cx - 4} cy={cy - 5} r={2.5} fill="rgba(170,160,140,0.2)" />
+        <circle cx={cx + 5} cy={cy + 4} r={2} fill="rgba(170,160,140,0.15)" />
+        <circle cx={cx - 1} cy={cy + 7} r={1.8} fill="rgba(170,160,140,0.12)" />
+      </g>
     </svg>
   );
 }
