@@ -176,6 +176,12 @@ body::before {
   }
 }
 
+/* Star twinkle */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;

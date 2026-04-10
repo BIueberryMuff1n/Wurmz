@@ -6,17 +6,19 @@ import SignupSection from "@/components/SignupSection";
 import Footer from "@/components/Footer";
 import FloatingParticles from "@/components/FloatingParticles";
 import RootTendrils from "@/components/RootTendrils";
-import AuraEffect from "@/components/AuraEffect";
 import MyceliumNetwork from "@/components/MyceliumNetwork";
 import WormCursor from "@/components/WormCursor";
-import DepthGradient from "@/components/DepthGradient";
+import UndergroundJourney from "@/components/UndergroundJourney";
+import WormTunnel from "@/components/WormTunnel";
+import SurfaceScene from "@/components/SurfaceScene";
 import OrganicDivider from "@/components/OrganicDivider";
 
 export default function Home() {
   return (
     <>
-      <DepthGradient />
-      <AuraEffect />
+      <UndergroundJourney />
+      <SurfaceScene />
+      <WormTunnel />
       <MyceliumNetwork />
       <RootTendrils />
       <FloatingParticles />
