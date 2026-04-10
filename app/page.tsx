@@ -12,12 +12,14 @@ import SurfaceScene from "@/components/SurfaceScene";
 import ParachuteWorm from "@/components/ParachuteWorm";
 import WormPit from "@/components/WormPit";
 import BuriedArtifacts from "@/components/BuriedArtifacts";
+import PlaneIntroWrapper from "@/components/PlaneIntroWrapper";
 
 export default function Home() {
   return (
     <>
       <UndergroundJourney />
       <SurfaceScene />
+      <PlaneIntroWrapper />
       <ParachuteWorm />
       <WormTunnel />
       <BuriedArtifacts />
