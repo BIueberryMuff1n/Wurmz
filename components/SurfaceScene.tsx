@@ -21,7 +21,11 @@ export default function SurfaceScene() {
   const skyOffset = scrollY * 0.2;
   const fadeOut = Math.max(0, 1 - scrollY / 800);
 
-  const moonPhase = getMoonPhase();
+  const [moonPhase, setMoonPhase] = useState<number | null>(null);
+
+  useEffect(() => {
+    setMoonPhase(getMoonPhase());
+  }, []);
 
   // Periodic shooting stars
   useEffect(() => {
@@ -177,7 +181,7 @@ export default function SurfaceScene() {
           transform: `translateY(${skyOffset * 0.3}px)`,
         }}
       >
-        <MoonWithPhase phase={moonPhase} />
+        {moonPhase !== null && <MoonWithPhase phase={moonPhase} />}
       </div>
 
       {/* Ground fade */}
@@ -200,60 +204,74 @@ export default function SurfaceScene() {
 
 function MoonWithPhase({ phase }: { phase: number }) {
   // phase: 0 = new moon, 0.25 = first quarter, 0.5 = full, 0.75 = last quarter
-  const size = 50;
-  const r = size / 2;
+  // Moon phases are the same globally — not city-specific
+  const size = 60;
+  const r = 26; // moon radius
+  const cx = size / 2;
+  const cy = size / 2;
 
-  // Calculate the shadow overlay to simulate moon phase
-  // The shadow is an ellipse that covers part of the moon
-  // Its width varies with phase, and it flips sides at 0.5
-  const isWaxing = phase < 0.5;
-  const phaseAngle = isWaxing ? phase * 2 : (phase - 0.5) * 2; // 0-1 within half
+  // The lit portion is rendered by drawing two arcs:
+  // - The outer arc is always a semicircle (the moon's edge)
+  // - The inner arc is an ellipse that varies with phase (the terminator)
+  //
+  // For waxing (0-0.5): lit side is on the RIGHT
+  // For waning (0.5-1): lit side is on the LEFT
 
-  // Shadow ellipse rx: full coverage at 0, no coverage at 1
-  const shadowRx = r * Math.abs(1 - phaseAngle * 2);
-  const shadowSide = isWaxing ? "right" : "left";
+  // Convert phase to illumination angle
+  // At phase 0 (new): nothing lit. At 0.5 (full): fully lit.
+  // The terminator ellipse rx goes from r (matching circle = no lit area)
+  // through 0 (half) to -r (matching circle on other side = full)
+  let illumination: number;
+  if (phase <= 0.5) {
+    illumination = phase * 2; // 0 to 1 during waxing
+  } else {
+    illumination = (1 - phase) * 2; // 1 to 0 during waning
+  }
+
+  // The terminator rx: at illumination 0, rx = r (no light).
+  // At illumination 0.5, rx = 0 (half moon). At illumination 1, rx = -r (full).
+  const terminatorRx = r * (1 - illumination * 2);
+
+  // Which side is lit?
+  const litOnRight = phase <= 0.5;
+
+  // Build the lit area path using two arcs
+  // Semicircle on the lit side + terminator curve
+  const topY = cy - r;
+  const bottomY = cy + r;
+
+  let litPath: string;
+  if (litOnRight) {
+    // Right side lit: semicircle arc on right, terminator on left
+    litPath = `M${cx},${topY} A${r},${r} 0 0,1 ${cx},${bottomY} A${Math.abs(terminatorRx)},${r} 0 0,${terminatorRx < 0 ? 1 : 0} ${cx},${topY}`;
+  } else {
+    // Left side lit: semicircle arc on left, terminator on right
+    litPath = `M${cx},${topY} A${r},${r} 0 0,0 ${cx},${bottomY} A${Math.abs(terminatorRx)},${r} 0 0,${terminatorRx < 0 ? 0 : 1} ${cx},${topY}`;
+  }
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      {/* Moon glow */}
-      <circle
-        cx={r} cy={r} r={r + 8}
-        fill="rgba(245,240,232,0.04)"
-      />
-      {/* Moon base — full lit surface */}
-      <circle
-        cx={r} cy={r} r={r - 2}
-        fill="radial-gradient(circle at 40% 35%, #f5f0e8 0%, #d4c5a9 60%, #b8a88a 100%)"
-      />
-      <circle
-        cx={r} cy={r} r={r - 2}
-        fill="#E8DCC0"
-      />
-      {/* Subtle crater details */}
-      <circle cx={r - 5} cy={r - 3} r={3} fill="rgba(180,170,150,0.3)" />
-      <circle cx={r + 6} cy={r + 5} r={2} fill="rgba(180,170,150,0.25)" />
-      <circle cx={r - 2} cy={r + 8} r={2.5} fill="rgba(180,170,150,0.2)" />
+      {/* Glow */}
+      <circle cx={cx} cy={cy} r={r + 10} fill="rgba(245,240,232,0.03)" />
 
-      {/* Phase shadow — dark side of the moon */}
-      {phase > 0.02 && phase < 0.98 && (
-        <ellipse
-          cx={shadowSide === "right" ? r + (phaseAngle < 0.5 ? 0 : 0) : r}
-          cy={r}
-          rx={shadowRx}
-          ry={r - 2}
-          fill="#0a0f1a"
-          opacity={0.92}
-          clipPath={`inset(0 ${shadowSide === "left" ? "50%" : "0"} 0 ${shadowSide === "right" ? "50%" : "0"})`}
-        />
-      )}
+      {/* Dark moon base (the unlit part) */}
+      <circle cx={cx} cy={cy} r={r} fill="#1a1f2a" />
 
-      {/* Moon outer glow */}
+      {/* Lit portion */}
+      <path d={litPath} fill="#E0D4B8" />
+
+      {/* Crater details on lit portion */}
+      <circle cx={cx - 4} cy={cy - 5} r={2.5} fill="rgba(170,160,140,0.25)" />
+      <circle cx={cx + 5} cy={cy + 4} r={2} fill="rgba(170,160,140,0.2)" />
+      <circle cx={cx - 1} cy={cy + 7} r={1.8} fill="rgba(170,160,140,0.18)" />
+      <circle cx={cx + 8} cy={cy - 2} r={1.5} fill="rgba(170,160,140,0.15)" />
+
+      {/* Soft edge glow */}
       <circle
-        cx={r} cy={r} r={r}
+        cx={cx} cy={cy} r={r + 1}
         fill="none"
-        style={{
-          filter: "drop-shadow(0 0 15px rgba(245,240,232,0.15))",
-        }}
+        stroke="rgba(230,220,200,0.06)"
+        strokeWidth="3"
       />
     </svg>
   );
