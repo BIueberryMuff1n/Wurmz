@@ -1,20 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useScroll } from "./ScrollContext";
 
 export default function UndergroundJourney() {
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    function handleScroll() {
-      const maxScroll =
-        document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(maxScroll > 0 ? window.scrollY / maxScroll : 0);
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const { progress: scrollProgress } = useScroll();
 
   // Soil layer phases:
   // 0.0 - 0.12: Sky / surface

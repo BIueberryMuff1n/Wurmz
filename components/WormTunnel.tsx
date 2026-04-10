@@ -1,28 +1,12 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { useScroll } from "./ScrollContext";
 
 export default function WormTunnel() {
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [pageHeight, setPageHeight] = useState(3400);
+  const { progress: scrollProgress, documentHeight: pageHeight } = useScroll();
   const [wriggle, setWriggle] = useState(0);
   const svgRef = useRef<SVGSVGElement>(null);
-
-  useEffect(() => {
-    function update() {
-      const maxScroll =
-        document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(maxScroll > 0 ? window.scrollY / maxScroll : 0);
-      setPageHeight(document.documentElement.scrollHeight);
-    }
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    update();
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
 
   useEffect(() => {
     let frame: number;
@@ -107,7 +91,7 @@ export default function WormTunnel() {
         </defs>
 
         {/* === TUNNEL (revealed behind the worm — hidden until parachute lands) === */}
-        {adjustedProgress <= 0.01 ? null : <>
+        {adjustedProgress > 0.01 && <g>
 
         {/* Outer edge — rough dirt border */}
         <path
@@ -165,7 +149,7 @@ export default function WormTunnel() {
           strokeDashoffset={totalLength - tunnelReveal}
         />
 
-        </>}
+        </g>}
 
         {/* === THE WORM (at the digging front) — hidden until after parachute lands === */}
         {adjustedProgress > 0.01 && (

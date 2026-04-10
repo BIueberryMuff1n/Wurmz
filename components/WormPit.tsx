@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useScroll } from "./ScrollContext";
 
 interface Worm {
   // Array of segment positions [x, y]
@@ -21,18 +22,11 @@ export default function WormPit() {
   const animRef = useRef<number>(0);
   const [visible, setVisible] = useState(false);
 
+  const { progress } = useScroll();
+
   useEffect(() => {
-    // Only show when scrolled to bottom 30% of page
-    function checkVisibility() {
-      const scrollY = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
-      setVisible(progress > 0.6);
-    }
-    window.addEventListener("scroll", checkVisibility, { passive: true });
-    checkVisibility();
-    return () => window.removeEventListener("scroll", checkVisibility);
-  }, []);
+    setVisible(progress > 0.6);
+  }, [progress]);
 
   useEffect(() => {
     if (!visible) return;

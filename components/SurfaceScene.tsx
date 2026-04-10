@@ -1,17 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useScroll } from "./ScrollContext";
 
 export default function SurfaceScene() {
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    function handleScroll() {
-      setScrollY(window.scrollY);
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const { scrollY } = useScroll();
 
   const skyOffset = scrollY * 0.2;
   const fadeOut = Math.max(0, 1 - scrollY / 800);
@@ -97,7 +89,7 @@ export default function SurfaceScene() {
         />
       </div>
 
-      {/* Ground fade — just atmosphere, no illustrated plant */}
+      {/* Ground fade */}
       <div
         className="absolute bottom-0 left-0 right-0"
         style={{

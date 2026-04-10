@@ -16,11 +16,11 @@ export default function Hero() {
         className="relative"
       >
         <div
-          className="rounded-full overflow-hidden"
           style={{
             animation: "glow-pulse 4s ease-in-out infinite",
             width: 280,
             height: 280,
+            borderRadius: "50%",
           }}
         >
           <Image
@@ -29,8 +29,11 @@ export default function Hero() {
             width={280}
             height={280}
             priority
-            className="rounded-full scale-110"
-            style={{ objectFit: "cover" }}
+            style={{
+              clipPath: "circle(42% at center)",
+              objectFit: "cover",
+              transform: "scale(1.3)",
+            }}
           />
         </div>
       </motion.div>

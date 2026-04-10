@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Rubik_Dirt, IBM_Plex_Mono } from "next/font/google";
+import { ScrollProvider } from "@/components/ScrollContext";
 import "./globals.css";
 
 const rubikDirt = Rubik_Dirt({
@@ -38,7 +39,9 @@ export default function RootLayout({
       lang="en"
       className={`${rubikDirt.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        <ScrollProvider>{children}</ScrollProvider>
+      </body>
     </html>
   );
 }
