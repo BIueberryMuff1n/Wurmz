@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useJump } from "./JumpController";
 
 /**
  * Section waypoints for the choreographed scroll.
@@ -113,8 +114,13 @@ export default function CinematicMode() {
     rafRef.current = requestAnimationFrame(tick);
   }, []);
 
+  const { hasJumped, jump } = useJump();
+
   /** Start playback */
   const play = useCallback(() => {
+    // Trigger the worm jump if not already done
+    if (!hasJumped) jump();
+
     // Scroll to top first, then begin
     window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -132,7 +138,7 @@ export default function CinematicMode() {
       rafRef.current = requestAnimationFrame(tick);
     };
     requestAnimationFrame(waitForTop);
-  }, [resolveWaypoints, tick]);
+  }, [resolveWaypoints, tick, hasJumped, jump]);
 
   /** Stop playback */
   const stop = useCallback(() => {

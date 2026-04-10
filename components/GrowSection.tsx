@@ -151,7 +151,7 @@ export default function GrowSection() {
             }}
           >
             {cards.map((card) => (
-              <div key={card.title} className="w-[85vw] md:w-[400px] flex-shrink-0">
+              <div key={card.title} className="w-[85vw] md:w-[50vw] lg:w-[40vw] flex-shrink-0">
                 <GrowCard {...card} delay={0} />
               </div>
             ))}

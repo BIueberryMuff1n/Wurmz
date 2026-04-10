@@ -202,74 +202,76 @@ export default function SurfaceScene() {
         {moonPhase !== null && <MoonWithPhase phase={moonPhase} />}
       </div>
 
-      {/* Faint chemtrails in the sky */}
+      {/* Faint chemtrails — top left area, two parallel lines */}
       <svg
         className="absolute inset-0 w-full h-full"
         style={{
           transform: `translateY(${skyOffset * 0.4}px)`,
-          opacity: 0.06,
+          opacity: 0.07,
         }}
       >
-        {/* Long faint chemtrail line */}
+        {/* Upper chemtrail — steep diagonal, left side lower */}
         <path
-          d="M-100,120 Q400,90 900,140 Q1300,170 1600,130"
+          d="M-20,140 C150,110 350,70 550,30"
+          fill="none"
+          stroke="white"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+        {/* Lower chemtrail — close parallel */}
+        <path
+          d="M-20,148 C150,118 350,78 550,38"
           fill="none"
           stroke="white"
           strokeWidth="1"
           strokeLinecap="round"
-        />
-        {/* Slight spreading/dissipation */}
-        <path
-          d="M-100,122 Q400,95 900,145 Q1300,175 1600,135"
-          fill="none"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          opacity="0.4"
+          opacity="0.6"
         />
       </svg>
 
-      {/* Very faint NYC skyline silhouette at the horizon */}
+      {/* Very faint NYC skyline — sitting at the horizon/ground line */}
       <svg
-        className="absolute bottom-[32%] left-0 w-full"
+        className="absolute bottom-[8%] left-0 w-full"
         style={{
-          transform: `translateY(${skyOffset * 0.5}px)`,
-          opacity: 0.04,
+          transform: `translateY(${skyOffset * 0.6}px)`,
+          opacity: 0.035,
         }}
-        viewBox="0 0 1440 120"
+        viewBox="0 0 1440 80"
         preserveAspectRatio="none"
-        height="80"
+        height="50"
       >
         <path
           d={[
-            "M0,120",
-            // Brooklyn low buildings
-            "L50,120 L50,105 L55,105 L55,100 L65,100 L65,105 L75,105 L75,95 L80,95 L80,105 L100,105 L100,120",
-            // Williamsburg bridge hint
-            "L140,110 L180,105 L220,110",
-            // Lower Manhattan
-            "L250,120 L250,90 L255,90 L255,70 L260,70 L260,90 L270,90 L270,60 L275,60 L275,55 L280,55 L280,60 L285,60 L285,90 L295,90 L295,75 L300,75 L300,90 L310,90 L310,50 L315,50 L315,45 L318,40 L321,45 L325,50 L325,90",
-            // One WTC
-            "L335,90 L335,25 L337,20 L339,25 L340,90",
-            // More downtown
-            "L350,90 L350,65 L355,65 L355,70 L365,70 L365,90 L375,90 L375,80 L380,80 L380,90",
-            // Midtown gap
-            "L420,120 L460,115 L500,120",
-            // Empire State area
-            "L550,120 L550,85 L555,85 L555,75 L558,75 L558,65 L560,55 L562,40 L564,55 L566,65 L568,75 L572,75 L572,85 L580,85 L580,90 L590,90 L590,120",
-            // More midtown
-            "L620,120 L620,80 L625,80 L625,70 L630,70 L630,75 L640,75 L640,80 L650,80 L650,120",
-            // Chrysler area
-            "L680,120 L680,75 L683,75 L685,60 L686,50 L687,45 L688,50 L689,60 L692,75 L695,75 L695,120",
-            // Upper east side
-            "L750,120 L750,95 L760,95 L760,100 L780,100 L780,90 L785,90 L785,100 L800,100 L800,120",
-            // UES/Harlem fade
-            "L900,120 L900,105 L910,105 L910,110 L940,110 L940,100 L950,100 L950,110 L980,110 L980,120",
-            // Bronx hint
-            "L1050,120 L1050,108 L1060,108 L1060,112 L1080,112 L1080,105 L1090,105 L1090,112 L1100,112 L1100,120",
-            "L1440,120"
+            "M0,80",
+            // Far left — low Jersey buildings
+            "L80,80 L80,72 L90,72 L90,68 L95,68 L95,72 L110,72 L110,80",
+            // Gap
+            "L180,80",
+            // One WTC — tallest, thin spire
+            "L420,80 L420,55 L422,55 L422,20 L423,12 L424,20 L426,55 L428,55 L428,80",
+            // WTC cluster — shorter surrounding towers
+            "L435,80 L435,50 L438,50 L438,55 L445,55 L445,45 L448,45 L448,55 L455,55 L455,60 L458,60 L458,80",
+            // Brooklyn Bridge cables hint
+            "L490,80 L500,70 L510,65 L520,62 L530,60 L540,62 L550,65 L560,70 L570,80",
+            // Lower Manhattan cluster
+            "L590,80 L590,52 L593,52 L593,48 L596,48 L596,52 L600,52 L600,42 L603,42 L603,38 L605,38 L605,42 L608,42 L608,52 L615,52 L615,58 L620,58 L620,80",
+            // Gap — East River
+            "L680,80",
+            // Midtown — Empire State Building (iconic stepped profile)
+            "L780,80 L780,58 L783,58 L783,50 L785,50 L785,42 L787,42 L787,35 L788,28 L789,22 L790,28 L791,35 L793,42 L795,50 L797,50 L797,58 L800,58 L800,62 L810,62 L810,80",
+            // Chrysler Building — art deco crown
+            "L830,80 L830,55 L832,55 L833,48 L834,42 L835,38 L835.5,35 L836,32 L836.5,38 L837,42 L838,48 L840,55 L842,55 L842,80",
+            // More midtown towers
+            "L860,80 L860,55 L865,55 L865,50 L870,50 L870,55 L878,55 L878,60 L885,60 L885,80",
+            // 432 Park (thin tall rectangle)
+            "L920,80 L920,35 L923,35 L923,80",
+            // Upper East Side — shorter, uniform
+            "L960,80 L960,68 L970,68 L970,65 L980,65 L980,68 L1000,68 L1000,72 L1010,72 L1010,80",
+            // Fade to nothing
+            "L1100,80 L1100,74 L1110,74 L1110,78 L1130,78 L1130,80",
+            "L1440,80"
           ].join(" ")}
-          fill="rgba(200,200,220,0.8)"
+          fill="rgba(180,185,200,0.9)"
         />
       </svg>
 

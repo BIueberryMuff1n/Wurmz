@@ -59,8 +59,8 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
 
   const { scrollY } = useScroll();
 
-  // Plane fades out with the sky — same rate as surface scene
-  const planeFadeOut = Math.max(0, 1 - scrollY / 800);
+  // Plane fades out quickly once scrolling starts — gone by 500px
+  const planeFadeOut = Math.max(0, 1 - scrollY / 500);
 
   if (planeFadeOut <= 0) return null;
   if (hasJumped && planeX > 110) return null;
