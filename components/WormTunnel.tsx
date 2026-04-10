@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export default function WormTunnel() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -24,7 +24,6 @@ export default function WormTunnel() {
     };
   }, []);
 
-  // Worm wriggle animation
   useEffect(() => {
     let frame: number;
     let t = 0;
@@ -37,34 +36,40 @@ export default function WormTunnel() {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  // The tunnel path — winding through the page
-  // Goes OFF SCREEN at key content sections (Brand ~20%, Grow ~45%)
-  // so the viewer focuses on the content, then the worm comes back
+  // Tunnel path — starts at the soil line (not in the sky!)
+  // The parachute worm handles the sky descent, tunnel begins underground
   const tunnelPath = [
-    "M720,0",           // Start center top
-    "C700,100 750,200 720,300",    // Gentle curve down through hero
-    "C680,400 -100,450 -200,500",  // EXIT LEFT — during Brand section
-    "C-300,550 -100,600 200,650",  // Curve back from left
-    "C500,700 750,750 720,850",    // Re-center
-    "C690,950 1600,1000 1700,1100", // EXIT RIGHT — during Grow section
-    "C1800,1200 1500,1300 1100,1350", // Curve back from right
-    "C700,1400 750,1500 720,1600", // Re-center for countdown
-    "C690,1700 -150,1750 -200,1850", // EXIT LEFT — during signup
-    "C-250,1950 300,2000 720,2100", // Curve back
-    "C750,2200 680,2400 720,2600", // Deep descent
-    "C760,2800 700,3000 720,3200", // Final depth
-    "C740,3300 720,3350 720,3400", // Bottom
+    "M720,700",                          // Start at soil line
+    "C700,800 750,900 720,1000",         // Initial dig down
+    "C680,1100 -100,1150 -200,1200",     // EXIT LEFT — Brand section
+    "C-300,1250 -100,1300 200,1350",     // Curve back from left
+    "C500,1400 750,1450 720,1550",       // Re-center
+    "C690,1650 1600,1700 1700,1800",     // EXIT RIGHT — Grow section
+    "C1800,1900 1500,2000 1100,2050",    // Curve back from right
+    "C700,2100 750,2200 720,2350",       // Re-center for countdown
+    "C690,2500 -150,2550 -200,2650",     // EXIT LEFT — signup
+    "C-250,2750 300,2800 720,2900",      // Curve back
+    "C750,3000 680,3100 720,3200",       // Final descent
+    "C740,3300 720,3350 720,3400",       // Bottom
   ].join(" ");
 
-  const totalLength = 5800; // approximate
-  const revealLength = scrollProgress * totalLength;
-  const wormProgress = Math.max(0, scrollProgress - 0.015);
+  const totalLength = 5800;
+
+  // Tunnel only starts after parachute landing (~15% scroll)
+  // Remap scroll so 0.15→1.0 maps to 0→1 for tunnel progress
+  const tunnelStart = 0.12;
+  const adjustedProgress = Math.max(0, (scrollProgress - tunnelStart) / (1 - tunnelStart));
+  const wormProgress = adjustedProgress;
+  const tunnelReveal = adjustedProgress * totalLength + 200;
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-[6]" style={{ height: pageHeight }}>
+    <div
+      className="pointer-events-none absolute inset-0 z-[6]"
+      style={{ height: pageHeight }}
+    >
       <svg
         ref={svgRef}
-        viewBox={`0 0 1440 3400`}
+        viewBox="0 0 1440 3400"
         preserveAspectRatio="xMidYMin slice"
         className="absolute top-0 left-0 w-full"
         style={{ height: pageHeight }}
@@ -73,82 +78,104 @@ export default function WormTunnel() {
           <filter id="tunnel-glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
           </filter>
+
+          {/* Bold dirt texture pattern for inside the tunnel */}
+          <pattern
+            id="dirt-fill"
+            width="20"
+            height="20"
+            patternUnits="userSpaceOnUse"
+          >
+            <rect width="20" height="20" fill="#1a1008" />
+            {/* Dirt chunks */}
+            <circle cx="3" cy="5" r="2" fill="#2a1c10" opacity="0.8" />
+            <circle cx="14" cy="3" r="1.5" fill="#3d2b1f" opacity="0.6" />
+            <circle cx="8" cy="12" r="2.5" fill="#2a1c10" opacity="0.7" />
+            <circle cx="17" cy="15" r="1.8" fill="#3d2b1f" opacity="0.5" />
+            <circle cx="5" cy="18" r="1.2" fill="#2a1c10" opacity="0.6" />
+            <circle cx="12" cy="8" r="1" fill="#4a3520" opacity="0.4" />
+            {/* Small rocks */}
+            <rect x="1" y="14" width="2" height="1.5" rx="0.5" fill="#3d2b1f" opacity="0.5" />
+            <rect x="15" y="9" width="3" height="2" rx="0.8" fill="#2a1c10" opacity="0.4" />
+          </pattern>
+
+          {/* Worm gradient — brownish to bright red */}
           <linearGradient id="worm-body" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#8B2020" />
-            <stop offset="30%" stopColor="#C43A3A" />
-            <stop offset="60%" stopColor="#E63462" />
-            <stop offset="100%" stopColor="#9E2828" />
+            <stop offset="0%" stopColor="#7A2818" />
+            <stop offset="25%" stopColor="#A03020" />
+            <stop offset="50%" stopColor="#C43A3A" />
+            <stop offset="75%" stopColor="#B83228" />
+            <stop offset="100%" stopColor="#8B2020" />
+          </linearGradient>
+
+          {/* Worm body vertical gradient for roundness */}
+          <linearGradient id="worm-body-v" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="rgba(255,150,100,0.15)" />
+            <stop offset="40%" stopColor="rgba(255,150,100,0)" />
+            <stop offset="100%" stopColor="rgba(0,0,0,0.2)" />
           </linearGradient>
         </defs>
 
-        {/* Outer glow — crimson bioluminescent trail */}
+        {/* === TUNNEL (revealed behind the worm) === */}
+
+        {/* Outer edge — rough dirt border */}
         <path
           d={tunnelPath}
           fill="none"
-          stroke="rgba(230,52,98,0.05)"
-          strokeWidth="90"
+          stroke="rgba(61,43,31,0.4)"
+          strokeWidth="56"
+          strokeLinecap="round"
+          strokeDasharray={totalLength}
+          strokeDashoffset={totalLength - tunnelReveal}
+        />
+
+        {/* Tunnel wall — dark carved earth */}
+        <path
+          d={tunnelPath}
+          fill="none"
+          stroke="rgba(30,20,10,0.7)"
+          strokeWidth="50"
+          strokeLinecap="round"
+          strokeDasharray={totalLength}
+          strokeDashoffset={totalLength - tunnelReveal}
+        />
+
+        {/* Inner dirt texture — bold, visible */}
+        <path
+          d={tunnelPath}
+          fill="none"
+          stroke="url(#dirt-fill)"
+          strokeWidth="46"
+          strokeLinecap="round"
+          strokeDasharray={totalLength}
+          strokeDashoffset={totalLength - tunnelReveal}
+        />
+
+        {/* Tunnel depth shadow — darker center line */}
+        <path
+          d={tunnelPath}
+          fill="none"
+          stroke="rgba(10,6,3,0.4)"
+          strokeWidth="20"
+          strokeLinecap="round"
+          strokeDasharray={totalLength}
+          strokeDashoffset={totalLength - tunnelReveal}
+        />
+
+        {/* Subtle crimson glow along tunnel */}
+        <path
+          d={tunnelPath}
+          fill="none"
+          stroke="rgba(230,52,98,0.04)"
+          strokeWidth="70"
           strokeLinecap="round"
           filter="url(#tunnel-glow)"
           strokeDasharray={totalLength}
-          strokeDashoffset={totalLength - revealLength}
+          strokeDashoffset={totalLength - tunnelReveal}
         />
 
-        {/* Tunnel carved path */}
-        <path
-          d={tunnelPath}
-          fill="none"
-          stroke="rgba(25,18,10,0.6)"
-          strokeWidth="44"
-          strokeLinecap="round"
-          strokeDasharray={totalLength}
-          strokeDashoffset={totalLength - revealLength}
-        />
-
-        {/* Tunnel edge highlight */}
-        <path
-          d={tunnelPath}
-          fill="none"
-          stroke="rgba(61,43,31,0.25)"
-          strokeWidth="48"
-          strokeLinecap="round"
-          strokeDasharray={totalLength}
-          strokeDashoffset={totalLength - revealLength}
-        />
-        <path
-          d={tunnelPath}
-          fill="none"
-          stroke="rgba(17,13,8,0.5)"
-          strokeWidth="40"
-          strokeLinecap="round"
-          strokeDasharray={totalLength}
-          strokeDashoffset={totalLength - revealLength}
-        />
-
-        {/* THE WORM */}
-        <WormBody
-          tunnelPath={tunnelPath}
-          progress={wormProgress}
-          wriggle={wriggle}
-        />
-
-        {/* Dirt particles at dig front */}
-        {[...Array(8)].map((_, i) => {
-          const angle = (i / 8) * Math.PI * 2 + wriggle * 0.15;
-          const dist = 28 + Math.sin(wriggle * 0.8 + i * 1.2) * 12;
-          return (
-            <circle
-              key={i}
-              r={1.5 + (i % 3)}
-              fill={`rgba(101,67,33,${0.15 + (i % 3) * 0.08})`}
-              style={{
-                offsetPath: `path("${tunnelPath}")`,
-                offsetDistance: `${Math.min(100, (wormProgress + 0.008) * 100)}%`,
-                offsetRotate: "0deg",
-                transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`,
-              }}
-            />
-          );
-        })}
+        {/* === THE WORM (at the digging front) === */}
+        <WormBody tunnelPath={tunnelPath} progress={wormProgress} />
       </svg>
     </div>
   );
@@ -157,16 +184,12 @@ export default function WormTunnel() {
 function WormBody({
   tunnelPath,
   progress,
-  wriggle,
 }: {
   tunnelPath: string;
   progress: number;
-  wriggle: number;
 }) {
-  // Understated graffiti-style worm — fills the tunnel, rough strokes
-  // The worm IS the tunnel. Simple, bold, like a spray-painted shape.
-  const bodyLen = 120;
-  const bodyR = 18; // matches tunnel width
+  const bodyLen = 180; // longer worm
+  const bodyR = 22; // fills the tunnel width
 
   return (
     <g
@@ -176,8 +199,7 @@ function WormBody({
         offsetRotate: "auto",
       }}
     >
-      {/* Worm body — one continuous rounded shape, graffiti style */}
-      {/* Outer stroke — thick dark outline like ink */}
+      {/* Outer stroke — thick dark outline, graffiti ink style */}
       <rect
         x={-bodyLen / 2}
         y={-bodyR - 1}
@@ -186,11 +208,11 @@ function WormBody({
         rx={bodyR}
         ry={bodyR}
         fill="none"
-        stroke="rgba(40,12,8,0.6)"
+        stroke="rgba(40,12,8,0.7)"
         strokeWidth="4"
       />
 
-      {/* Main body fill — brownish red gradient */}
+      {/* Main body fill */}
       <rect
         x={-bodyLen / 2}
         y={-bodyR}
@@ -199,23 +221,33 @@ function WormBody({
         rx={bodyR}
         ry={bodyR}
         fill="url(#worm-body)"
-        opacity="0.85"
+        opacity="0.9"
       />
 
-      {/* Subtle segment lines — understated, not cartoonish */}
-      {[-40, -20, 0, 20, 40].map((x, i) => (
+      {/* 3D roundness overlay */}
+      <rect
+        x={-bodyLen / 2}
+        y={-bodyR}
+        width={bodyLen}
+        height={bodyR * 2}
+        rx={bodyR}
+        ry={bodyR}
+        fill="url(#worm-body-v)"
+      />
+
+      {/* Segment lines — subtle rings */}
+      {[-70, -50, -30, -10, 10, 30, 50, 70].map((x, i) => (
         <line
           key={i}
           x1={x}
-          y1={-bodyR + 3}
+          y1={-bodyR + 4}
           x2={x}
-          y2={bodyR - 3}
+          y2={bodyR - 4}
           stroke="rgba(60,15,10,0.2)"
           strokeWidth="1.5"
           strokeLinecap="round"
         />
       ))}
-
     </g>
   );
 }

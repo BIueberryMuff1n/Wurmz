@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import UndergroundJourney from "@/components/UndergroundJourney";
 import WormTunnel from "@/components/WormTunnel";
 import SurfaceScene from "@/components/SurfaceScene";
+import ParachuteWorm from "@/components/ParachuteWorm";
 import OrganicDivider from "@/components/OrganicDivider";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
     <>
       <UndergroundJourney />
       <SurfaceScene />
+      <ParachuteWorm />
       <WormTunnel />
       <main className="relative z-20">
         <Hero />
