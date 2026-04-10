@@ -150,40 +150,49 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
           {/* Cockpit rim */}
           <path d="M118,36 L138,34" stroke="rgba(30,18,10,0.6)" strokeWidth="2" strokeLinecap="round" />
 
-          {/* === WORM SITTING ON THE EDGE — legs dangling === */}
-          {/* Body — sitting upright on cockpit rim */}
-          <ellipse cx="128" cy="30" rx="5" ry="8" fill="#B83228" stroke="rgba(40,12,8,0.6)" strokeWidth="1.5" />
+          {/* === WORM ON THE EDGE — same capsule style as tunnel worm === */}
+          {/* Body — horizontal capsule sitting on the cockpit rim */}
+          <rect
+            x="118" y="26" width="28" height="11" rx="5.5" ry="5.5"
+            fill="none" stroke="rgba(40,12,8,0.7)" strokeWidth="1.5"
+          />
+          <rect
+            x="118" y="26" width="28" height="11" rx="5.5" ry="5.5"
+            fill="#B83228" opacity="0.9"
+          />
           {/* Segment lines */}
-          <line x1="124" y1="28" x2="132" y2="28" stroke="rgba(60,15,10,0.2)" strokeWidth="0.8" />
-          <line x1="124" y1="32" x2="132" y2="32" stroke="rgba(60,15,10,0.2)" strokeWidth="0.8" />
-          {/* Head */}
-          <circle cx="128" cy="21" r="4.5" fill="#C43A3A" stroke="rgba(40,12,8,0.5)" strokeWidth="1" />
-          {/* Droopy eye — stoned */}
-          <ellipse cx="130" cy="20" rx="2" ry="1.5" fill="#1a0a05" />
-          <circle cx="131" cy="19.5" r="0.6" fill="rgba(255,255,255,0.5)" />
-          {/* Eyelid */}
-          <path d="M128,18.5 Q130,20 132,18.5" fill="rgba(140,35,25,0.5)" />
-          {/* Smirk */}
-          <path d="M131,23 Q133,24.5 131.5,25" fill="none" stroke="#1a0a05" strokeWidth="0.8" strokeLinecap="round" />
+          {[126, 132, 138].map((x, i) => (
+            <line key={`seg-${i}`} x1={x} y1={28} x2={x} y2={35}
+              stroke="rgba(60,15,10,0.2)" strokeWidth="0.8" strokeLinecap="round" />
+          ))}
 
-          {/* Joint in mouth — RAW cone, tilted up */}
-          <g transform="translate(132, 23) rotate(-35)">
-            <polygon points="0,-0.8 12,-1.5 12,1.5 0,0.8" fill="#C8B088" stroke="rgba(140,110,70,0.4)" strokeWidth="0.3" />
-            <rect x="-1" y="-0.8" width="2.5" height="1.6" rx="0.8" fill="#A08050" />
-            <circle cx="13" cy="0" r="1.5" fill="#D4641A" />
-            <circle cx="13" cy="0" r="1" fill="#F0A030" opacity="0.8" />
-            {/* Tiny smoke wisps */}
-            <circle cx="15" cy="-2" r="1" fill="rgba(200,200,200,0.15)">
-              <animate attributeName="cy" values="-2;-5;-2" dur="3s" repeatCount="indefinite" />
+          {/* Face — side profile, same as tunnel worm */}
+          {/* Eye */}
+          <ellipse cx="143" cy="29" rx="2" ry="1.5" fill="#1a0a05" />
+          <circle cx="144" cy="28.5" r="0.6" fill="rgba(255,255,255,0.5)" />
+          {/* Eyelid — droopy */}
+          <path d="M141,27.5 Q143,29 145,27.5" fill="rgba(140,35,25,0.5)" />
+          {/* Smirk */}
+          <path d="M144,33 Q146,34.5 144.5,35" fill="none" stroke="#1a0a05" strokeWidth="0.8" strokeLinecap="round" />
+
+          {/* RAW joint — tilted up from mouth */}
+          <g transform="translate(145, 33) rotate(-30)">
+            <polygon points="0,-0.7 10,-1.2 10,1.2 0,0.7" fill="#C8B088" stroke="rgba(140,110,70,0.4)" strokeWidth="0.3" />
+            <rect x="-1" y="-0.7" width="2" height="1.4" rx="0.7" fill="#A08050" />
+            <circle cx="11" cy="0" r="1.2" fill="#D4641A" />
+            <circle cx="11" cy="0" r="0.8" fill="#F0A030" opacity="0.8" />
+            {/* Smoke */}
+            <circle cx="13" cy="-2" r="0.8" fill="rgba(200,200,200,0.12)">
+              <animate attributeName="cy" values="-2;-4;-2" dur="3s" repeatCount="indefinite" />
             </circle>
-            <circle cx="16" cy="-5" r="1.5" fill="rgba(200,200,200,0.1)">
-              <animate attributeName="cy" values="-5;-9;-5" dur="4s" repeatCount="indefinite" />
+            <circle cx="14" cy="-4" r="1.2" fill="rgba(200,200,200,0.08)">
+              <animate attributeName="cy" values="-4;-7;-4" dur="4s" repeatCount="indefinite" />
             </circle>
           </g>
 
-          {/* Dangling legs/tail below cockpit rim */}
-          <path d="M125,36 Q124,42 126,46" stroke="#B83228" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-          <path d="M131,36 Q132,43 130,47" stroke="#B83228" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+          {/* Tail end dangling off the edge */}
+          <path d="M118,32 Q114,35 115,40" stroke="#B83228" strokeWidth="3" strokeLinecap="round" fill="none" />
+          <path d="M118,32 Q114,35 115,40" stroke="rgba(40,12,8,0.5)" strokeWidth="4" strokeLinecap="round" fill="none" />
 
           {/* Skateboard leaning against cockpit wall */}
           <g transform="translate(138, 28) rotate(15)">
