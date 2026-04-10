@@ -125,7 +125,7 @@ export default function SurfaceScene() {
         >
           {/* The streak: a single path with a moving dash that shrinks */}
           <path
-            d="M-50,70 Q350,15 750,120 Q1100,250 1550,420"
+            d="M-50,70 C300,10 900,150 1550,420"
             fill="none"
             stroke="white"
             strokeWidth="2"
