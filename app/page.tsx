@@ -11,6 +11,7 @@ import WormTunnel from "@/components/WormTunnel";
 import SurfaceScene from "@/components/SurfaceScene";
 import ParachuteWorm from "@/components/ParachuteWorm";
 import WormPit from "@/components/WormPit";
+import BuriedArtifacts from "@/components/BuriedArtifacts";
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
       <SurfaceScene />
       <ParachuteWorm />
       <WormTunnel />
+      <BuriedArtifacts />
       <WormPit />
       <main className="relative z-20">
         <Hero />

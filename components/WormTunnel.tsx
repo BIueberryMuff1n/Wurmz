@@ -250,28 +250,42 @@ function WormBody({
         strokeLinecap="round"
       />
 
-      {/* === JOINT (cone-shaped, tilted upward) === */}
+      {/* === RAW JOINT (cone-shaped, tilted upward) === */}
       <g transform={`translate(${bodyLen / 2}, 3) rotate(-30)`}>
-      {/* Joint positioned relative to mouth, rotated -30deg (tilted up) */}
-      {/* Joint body — cone shape, wider at lit end */}
+      {/* Cone body — RAW unbleached tan paper */}
       <polygon
-        points="-4,-2 22,-3.5 22,3.5 -4,2"
-        fill="#E2D5B8"
-        stroke="rgba(180,160,130,0.4)"
-        strokeWidth="0.5"
+        points="-4,-1.8 24,-3.5 24,3.5 -4,1.8"
+        fill="#C8B088"
+        stroke="rgba(140,110,70,0.5)"
+        strokeWidth="0.6"
       />
-      {/* Paper crinkle lines */}
-      <line x1={4} y1={-1.8} x2={4} y2={1.8} stroke="rgba(160,140,110,0.2)" strokeWidth="0.5" />
-      <line x1={10} y1={-2.5} x2={10} y2={2.5} stroke="rgba(160,140,110,0.2)" strokeWidth="0.5" />
-      <line x1={16} y1={-3} x2={16} y2={3} stroke="rgba(160,140,110,0.2)" strokeWidth="0.5" />
-      {/* Filter/crutch */}
-      <rect x={-5} y={-2} width={6} height={4} rx={1} ry={1} fill="#B89E6A" />
-      {/* Twisted tip */}
-      <path d="M22,-3 Q26,-1 24,0 Q26,1 22,3" fill="#D4C8A8" opacity="0.7" />
-      {/* Cherry/ember */}
-      <ellipse cx={24} cy={0} rx={3} ry={2.5} fill="#D4641A" />
-      <ellipse cx={24} cy={0} rx={2} ry={1.5} fill="#F09030" opacity="0.8" />
-      <ellipse cx={24} cy={0} rx={5} ry={4} fill="rgba(240,144,48,0.15)" />
+      {/* RAW paper texture — slightly translucent, uneven */}
+      <polygon
+        points="-3,-1.5 23,-3 23,3 -3,1.5"
+        fill="#D4BE95"
+        opacity="0.4"
+      />
+      {/* Paper crinkle/fold lines */}
+      <line x1={3} y1={-1.6} x2={3} y2={1.6} stroke="rgba(120,95,55,0.15)" strokeWidth="0.4" />
+      <line x1={8} y1={-2.2} x2={8} y2={2.2} stroke="rgba(120,95,55,0.15)" strokeWidth="0.4" />
+      <line x1={13} y1={-2.6} x2={13} y2={2.6} stroke="rgba(120,95,55,0.12)" strokeWidth="0.4" />
+      <line x1={18} y1={-3} x2={18} y2={3} stroke="rgba(120,95,55,0.12)" strokeWidth="0.4" />
+      {/* RAW watermark — tiny, barely visible */}
+      <text x="6" y="0.8" fontSize="2.5" fill="rgba(100,80,45,0.12)" fontFamily="sans-serif" fontWeight="bold">RAW</text>
+      {/* Crutch/filter — cardboard brown, rolled */}
+      <rect x={-5} y={-1.8} width={5} height={3.6} rx={1.5} ry={1.5} fill="#A08050" />
+      <rect x={-4.5} y={-1.2} width={4} height={2.4} rx={1} ry={1} fill="#B89060" opacity="0.6" />
+      {/* Spiral lines on crutch */}
+      <line x1={-4} y1={-0.8} x2={-4} y2={0.8} stroke="rgba(80,60,30,0.2)" strokeWidth="0.3" />
+      <line x1={-2.5} y1={-1} x2={-2.5} y2={1} stroke="rgba(80,60,30,0.2)" strokeWidth="0.3" />
+      {/* Twisted tip at lit end */}
+      <path d="M24,-3 Q28,-1 26,0 Q28,1 24,3" fill="#C4AA80" opacity="0.6" />
+      {/* Cherry/ember — glowing orange */}
+      <ellipse cx={26} cy={0} rx={3} ry={2.5} fill="#D4641A" />
+      <ellipse cx={26} cy={0} rx={2} ry={1.5} fill="#F0A030" opacity="0.8" />
+      <ellipse cx={26} cy={0} rx={1} ry={0.8} fill="#FFD080" opacity="0.5" />
+      {/* Ember glow */}
+      <ellipse cx={26} cy={0} rx={6} ry={4.5} fill="rgba(240,144,48,0.1)" />
       </g>
 
       {/* === SMOKE TRAIL (from tilted joint tip) === */}
