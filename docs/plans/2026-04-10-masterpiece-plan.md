@@ -1,128 +1,121 @@
-# Wurmz — The Masterpiece Plan
+# Wurmz — The Masterpiece
 
-## The Vision
+## The Standard
 
-You're not scrolling a website. You're descending into the earth.
+This site should win Awwwards Site of the Day. Not because it has the most effects, but because every single pixel, transition, and interaction feels like it couldn't exist any other way. The worm journey, the underground world, the brand identity, and the 4/20 hype aren't separate things — they're one inseparable experience.
 
-The entire experience is one continuous, cinematic journey from sky to soil to the living underground. A worm — your guide — parachutes in from the night sky, hits the ground, and starts digging. You follow it down through layers of earth that get richer, darker, and more alive the deeper you go. The worm disappears and reappears. It moves sideways. It smokes a joint. At the very bottom, you reach the colony — hundreds of worms writhing in rich living soil, the heartbeat of everything Wurmz stands for.
-
-Every scroll position tells part of this story. Nothing is static. Nothing is decorative. Everything serves the narrative.
+The test: if you remove any element and the site feels lesser, it stays. If you remove it and nobody notices, it was noise.
 
 ---
 
-## The Architecture: 7 Acts
+## Principles
 
-### Act 1: The Arrival (0-10% scroll)
-**Night sky. Stars. Moon. Stillness.**
+1. **One continuous world.** There are no "sections." There is only earth, getting deeper. Content exists within the earth, not on top of it.
 
-A tiny worm with a parachute descends from above. It starts as a speck and grows as it approaches the ground. The Wurmz logo sits centered — glowing, pulsing. The tagline rotates beneath it. This is the hook.
+2. **The worm is your companion, not a gimmick.** It enters, guides you, disappears when you need to focus, returns when you need direction. It has personality. It smokes a joint. You feel something when you see it.
 
-**Key detail:** The sky isn't just a gradient — it has depth. Parallax stars, a warm moon, and the faintest suggestion of soil at the bottom edge. The parachute worm sways gently. As it approaches the ground, the parachute collapses.
+3. **Every transition is imperceptible.** Sky becomes mulch becomes soil becomes darkness. You never notice a change — you just realize you're somewhere different. Like actually digging.
 
-### Act 2: Breaking Ground (10-20% scroll)
-**The worm hits soil. The dig begins.**
+4. **The bottom is the payoff.** The entire journey builds toward the colony. When you reach it, you've earned it. The dense, slow, living mass of worms should make you feel like you're looking through glass into a worm bin. This is the screenshot moment.
 
-The surface scene fades. The background shifts from sky tones to the first soil layer — a warm, mulchy brown with straw-fiber texture. The worm (now the tunnel worm) begins carving downward. The tunnel appears directly behind it — the interior matches the soil layer it's passing through.
-
-**Key detail:** The transition from sky to soil is seamless. No hard lines. The soil "rises" from the bottom of the viewport as you scroll, like the camera is pushing into the earth.
-
-### Act 3: The Brand Story (20-35% scroll)
-**Light soil zone. Perlite speckles. Roots beginning to appear.**
-
-The worm curves off-screen to the left — your eye falls on the Brand section. The copy tells you who Wurmz is. The soil gets slightly warmer, with visible white perlite chunks scattered in the background. Faint root lines begin to emerge.
-
-**Key detail:** When the worm exits the viewport, it leaves behind its tunnel trail. The tunnel interior shows the same perlite-speckled soil as the surrounding background. The Brand card has a graffiti-style treatment — thick border, offset shadow, rough edges.
-
-### Act 4: The Grow — Horizontal Journey (35-55% scroll)
-**This is the showpiece section.**
-
-Vertical scrolling maps to horizontal movement. The worm travels left-to-right in the background, burrowing sideways through the soil. Three cards scroll by as the worm passes: Living Soil, Single Source, Small Batch. The worm is visible behind the cards, moving with you.
-
-**Key detail:** The soil layer here is rich and dark — the "living soil" zone. Subtle root networks are visible in the background. The horizontal scroll feels effortless — controlled by vertical scrolling, not a separate gesture. A small "scroll" hint appears initially and fades.
-
-### Act 5: The Process (55-70% scroll)
-**Deep soil. Darker. Denser.**
-
-The worm returns from the right side, curves back to center, and continues downward. The Process section reveals: Grow → Harvest → Wash → Press. Each step staggers in from alternating sides. The soil is now distinctly darker. Faint worm shapes begin to appear in the background — you're approaching the colony.
-
-**Key detail:** The first background worms appear here — just 2-3, small and distant. They're a preview of what's coming. The tunnel worm's joint smoke drifts up lazily.
-
-### Act 6: The Drop (70-85% scroll)
-**Deep underground. The countdown.**
-
-4/20 countdown timer sits in near-darkness, numbers glowing with iridescent shimmer. The worm curves off-screen one more time. Background worms are now more frequent — maybe 15-20 visible, slowly wriggling. The soil is almost black.
-
-**Key detail:** The countdown numbers have a crimson text-shadow glow that pulses subtly. "Stay Underground" email signup sits below, its input field glowing crimson on focus. This is the conversion point.
-
-### Act 7: The Colony (85-100% scroll)
-**Macro view. The worm pit.**
-
-The entire background becomes a living, breathing mass of worms. Hundreds of them, rendered on canvas, with realistic propagating body-wave locomotion. They're denser at the bottom, bigger as you approach (macro zoom feel). The worm tunnel ends here — your guide worm joins the colony.
-
-**Key detail:** The worms at the very bottom are LARGE — you're seeing them up close. Their bodies have segment detail, color variation, and smooth sinusoidal movement. The footer sits over this living background. It should feel like looking through a glass terrarium wall at a thriving worm bin.
+5. **The brand doesn't explain itself.** The graffiti textures, the Rubik Dirt font, the crimson accents, the attitude in the copy — these don't say "we're edgy." They just ARE. The aesthetic is the message.
 
 ---
 
-## Technical Execution Plan
+## The Rebuild: 5 Phases
 
-### Phase 1: Foundation Reset
-**Goal: Clean, unified scroll system with no desync issues.**
+### Phase 1: The Scroll Spine
 
-1. **Unified scroll controller** — One component that calculates scroll progress and distributes it to all other components via React context. No more each component doing its own `window.addEventListener("scroll")`. This fixes the tunnel/worm desync permanently.
+**Everything is broken because nothing shares a brain.**
 
-2. **Fix logo** — Use CSS `clip-path: circle()` on the Image element instead of trying to crop the PNG. This guarantees a perfect circle regardless of source image.
+Right now every component does its own scroll listening, its own math, its own timing. This is why the tunnel desyncs from the worm, why soil layers have hard edges, why transitions feel janky.
 
-3. **Remove unused components** — Delete AuraEffect, FloatingParticles, RootTendrils, MyceliumNetwork, WormCursor, OrganicDivider (files still exist but aren't imported).
+**The fix:** One `ScrollContext` provider that computes a single `progress` value (0→1) and distributes it to every component. Every visual decision in the entire site derives from this one number. The tunnel position, the soil color, the worm location, the layer opacities — all computed from the same source of truth.
 
-### Phase 2: The Journey Engine
-**Goal: Seamless soil layer transitions driven by one scroll value.**
+This also means: the logo uses `clip-path: circle(50%)` instead of fighting image crops. Unused component files get deleted. The codebase becomes lean.
 
-4. **Soil layer system** — Rewrite UndergroundJourney as a proper layer compositor. Each layer (sky, straw, perlite, living soil, deep earth) has opacity curves that cross-fade smoothly. No hard edges anywhere. The background color interpolates through 10+ stops.
+**Done when:** You can scroll from top to bottom and every element moves in perfect lockstep. Zero desync. Zero flicker. Zero hard edges.
 
-5. **Tunnel soil matching** — The tunnel interior dynamically matches the surrounding soil. At the top it's lighter with perlite texture. In the middle it's rich dark brown. At the bottom it's near-black. This is a single `linearGradient` keyed to the SVG's vertical axis.
+### Phase 2: The Earth
 
-6. **Worm visibility gating** — Parachute worm: visible 0-12%. Tunnel worm: visible 12-85%. Neither visible at the same time. WormPit: fades in starting at 60%.
+**The background isn't a background — it's the world.**
 
-### Phase 3: The Horizontal Grow Section
-**Goal: Scroll-jacking that feels native, with worm companion.**
+Rebuild `UndergroundJourney` as a proper compositor with mathematically smooth cross-fading between soil layers. Not 5 layers with `smoothStep` — a continuous function that blends through:
 
-7. **Sticky horizontal scroll** — The Grow section is 200vh tall with a sticky inner container. Vertical scroll maps 1:1 to horizontal scroll. Cards slide left as you scroll down. The section "releases" you back to vertical after all cards pass.
+- **Sky** (deep blue-black, stars)
+- **Surface** (warm amber, straw fibers)  
+- **Top soil** (tan-brown, perlite speckles — white dots like in the actual soil mix photo)
+- **Living soil** (rich dark brown, faint root networks)
+- **Deep earth** (near black, the first distant worms appear)
+- **The colony** (black, dense wriggling mass)
 
-8. **Background worm** — A dedicated worm (matching the tunnel worm's style) moves left-to-right behind the cards, keeping pace with the horizontal scroll progress.
+Each layer has its own texture overlay that fades in/out with scroll. The transitions take 15-20% of scroll each, overlapping. You should NEVER be able to point at a pixel and say "that's where the transition is."
 
-### Phase 4: The Worm Pit Climax
-**Goal: Dense, realistic, mesmerizing worm colony.**
+The tunnel interior dynamically matches whatever layer surrounds it. At the top, light. At the bottom, dark. Always blending.
 
-9. **Canvas worm simulation** — Realistic body-wave locomotion (sine wave propagating along segments with phase delay). Bottom-heavy distribution. Size increases with depth (macro zoom). Color variation in brownish-reds.
+**Done when:** A designer watches you scroll slowly from top to bottom and says "how is that so smooth?"
 
-10. **Density gradient** — Top of viewport: 0-5 worms. Middle: 20-30. Bottom 40%: 200+. It should feel like descending into a worm bin.
+### Phase 3: The Worm
 
-### Phase 5: Graffiti Polish
-**Goal: Every element feels hand-drawn and raw.**
+**One character. One thread. The entire journey.**
 
-11. **Grunge texture overlays** — Heavy grain, concrete roughness, splatter speckle. Applied globally.
+The worm exists in three states, seamlessly transitioning between them:
 
-12. **Card styling** — All cards/sections have: thick dark outlines (3-4px), flat offset shadows, crimson accent borders. No rounded corners — squared or rough.
+1. **Parachute descent** (0-12%): Tiny at top, grows as it falls. Parachute collapses at soil line. Starts very small (almost a dot) — the reveal that it's a worm is part of the delight.
 
-13. **Typography treatment** — Rubik Dirt headers get subtle text-shadow for depth. Body text stays clean mono for readability contrast.
+2. **Tunnel digger** (12-80%): The main act. The worm burrows through the earth along a carefully designed path. The tunnel appears flush behind its back — never ahead, never gapped. The path goes off-screen at content sections (so you focus on the content), then returns.
+   - **Side profile face**: One droopy stoned eye, subtle smirk
+   - **Cone-shaped joint**: Tilted upward at an angle, glowing cherry
+   - **Smoke**: Lazy puffs that drift and fade
+   
+3. **Colony arrival** (80-100%): The worm's tunnel trail leads into the dense worm pit. The tunnel worm fades as the colony takes over. Your guide has led you home.
 
-14. **Worm character** — The tunnel worm has personality: side-profile face, droopy stoned eye, cone-shaped joint tilted upward, smoke puffs rising. This is the brand mascot.
+The horizontal Grow section: the worm turns sideways and moves left-to-right at the same speed as your scroll. It's in the background, behind the cards. The soil layer stays consistent (living soil zone) — no transition during horizontal movement.
 
-### Phase 6: Ship
-**Goal: Live on Railway.**
+**Done when:** The worm feels like a character you'd put on a t-shirt. It has presence without being cartoonish.
 
-15. **Performance audit** — Canvas worms must maintain 60fps. Reduce count on mobile. Lazy-load below-fold sections. All animations use GPU-composited properties.
+### Phase 4: The Colony
 
-16. **Mobile responsive** — Every section works at 375px. Horizontal scroll section becomes vertical on mobile. Worm pit reduces density.
+**The payoff. The screenshot. The thing people talk about.**
 
-17. **Deploy to Railway** — Configure for Next.js, push, verify.
+Canvas-rendered worm simulation with:
+- **Realistic locomotion**: Sine wave propagating along body segments with phase delay. Not random wiggling — actual peristaltic movement.
+- **Slow**: These are worms, not snakes. Glacially slow. Meditative.
+- **Density gradient**: Top of zone: 2-3 small distant worms. Bottom: hundreds, packed, overlapping, large. Like the Instagram photo of your worm bin.
+- **Size gradient**: Small at top (far away), large at bottom (macro close-up). The biggest worms at the very bottom should have visible segment rings and highlight sheen.
+- **Color variation**: Brownish-reds with natural variance. Some darker, some pinker, some with an orange cast. Like real red wigglers.
+- **Depth**: Worms at different "depths" — some brighter (foreground), some dimmer (background). Creates a 3D terrarium feel.
+
+The colony only appears in the bottom ~35% of the scroll. It fades in gradually — first a few, then a swarm, then a mass. By the footer, the entire screen is alive.
+
+**Done when:** Someone who keeps worms looks at it and says "that's what it actually looks like."
+
+### Phase 5: Polish to Obsession
+
+**The 1% that separates good from unforgettable.**
+
+- **Graffiti texture system**: Grunge grain overlay, concrete roughness, splatter speckle. Applied globally but intensity varies by depth — rougher at the surface (street level), smoother underground (organic).
+- **Card styling**: Thick dark outlines, flat offset shadows, crimson accent borders. Squared edges. These look like stickers slapped on a wall.
+- **Performance**: 60fps everywhere. Canvas worms must be efficient — spatial partitioning for drawing, reduced count on mobile. Every CSS animation uses `transform`/`opacity` only.
+- **Mobile**: Everything works at 375px. Horizontal scroll section becomes vertical. Worm pit reduces density but keeps the density gradient. Parachute worm still works.
+- **Responsive logo**: `clip-path: circle(50%)` with `object-fit: cover` and slight `scale(1.1)`. Perfect circle, no white edges, regardless of source image.
+- **Sound** (optional, stretch): Subtle ambient soil/underground sound that fades in as you scroll deeper. Muted by default, opt-in.
+
+**Done when:** You've scrolled through it 50 times and haven't found a single thing that feels wrong.
 
 ---
 
-## What Makes This a Masterpiece
+## Priority Order
 
-- **Narrative-driven** — Every scroll position advances a story
-- **One continuous environment** — Not sections on a page, but layers of earth
-- **A character guide** — The worm isn't decoration, it's your companion
-- **Sensory climax** — The worm pit at the bottom is genuinely mesmerizing
-- **Brand-authentic** — The whole experience IS what Wurmz is about: what's under the surface
+Phase 1 first (everything depends on it). Then Phase 2 + Phase 3 in parallel (the earth and the worm are independent). Phase 4 after the journey is complete (the colony is the destination). Phase 5 last (polish on top of polish).
+
+## What Gets Cut
+
+- Mycelium network canvas (deleted — noise)
+- Floating particles (deleted — noise)  
+- Root tendrils SVG (deleted — replaced by soil layer system)
+- Worm cursor (deleted — gimmick)
+- Aura effect (deleted — replaced by soil layers)
+- Organic dividers (already removed)
+
+Less is more. The worm, the earth, the brand. That's it.
