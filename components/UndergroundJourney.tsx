@@ -136,7 +136,7 @@ export default function UndergroundJourney() {
         {/* Worm 1 — large, slow */}
         <path
           d="M200,300 C230,280 260,320 290,300 C320,280 350,320 380,300"
-          stroke="rgba(180,120,90,0.25)"
+          stroke="rgba(200,50,60,0.25)"
           strokeWidth="6"
           fill="none"
           strokeLinecap="round"
@@ -156,7 +156,7 @@ export default function UndergroundJourney() {
         {/* Worm 2 — medium, faster */}
         <path
           d="M800,500 C820,480 840,520 860,500 C880,480 900,520 920,500"
-          stroke="rgba(160,100,70,0.3)"
+          stroke="rgba(190,45,55,0.3)"
           strokeWidth="5"
           fill="none"
           strokeLinecap="round"
@@ -176,7 +176,7 @@ export default function UndergroundJourney() {
         {/* Worm 3 — small, wriggly */}
         <path
           d="M1100,650 C1115,635 1130,665 1145,650 C1160,635 1175,665 1190,650"
-          stroke="rgba(170,110,80,0.2)"
+          stroke="rgba(180,40,50,0.2)"
           strokeWidth="4"
           fill="none"
           strokeLinecap="round"
@@ -196,7 +196,7 @@ export default function UndergroundJourney() {
         {/* Worm 4 — crossing from left */}
         <path
           d="M50,750 C90,730 130,770 170,750 C210,730 250,770 290,750 C330,730 370,770 410,750"
-          stroke="rgba(150,95,65,0.2)"
+          stroke="rgba(170,38,48,0.2)"
           strokeWidth="5"
           fill="none"
           strokeLinecap="round"
@@ -216,7 +216,7 @@ export default function UndergroundJourney() {
         {/* Worm 5 — deep bottom, thick */}
         <path
           d="M600,800 C630,780 660,820 690,800 C720,780 750,820 780,800 C810,780 840,820 870,800"
-          stroke="rgba(180,120,90,0.22)"
+          stroke="rgba(200,50,60,0.22)"
           strokeWidth="7"
           fill="none"
           strokeLinecap="round"
@@ -236,7 +236,7 @@ export default function UndergroundJourney() {
         {/* Worm 6 — right side, small */}
         <path
           d="M1200,850 C1215,835 1230,865 1245,850 C1260,835 1275,865 1290,850"
-          stroke="rgba(160,100,70,0.18)"
+          stroke="rgba(190,45,55,0.18)"
           strokeWidth="4"
           fill="none"
           strokeLinecap="round"

@@ -74,10 +74,10 @@ export default function WormTunnel() {
             <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
           </filter>
           <linearGradient id="worm-body" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#9E6B4A" />
-            <stop offset="30%" stopColor="#C28B6B" />
-            <stop offset="70%" stopColor="#B47D5C" />
-            <stop offset="100%" stopColor="#8B5E3C" />
+            <stop offset="0%" stopColor="#8B2020" />
+            <stop offset="30%" stopColor="#C43A3A" />
+            <stop offset="60%" stopColor="#E63462" />
+            <stop offset="100%" stopColor="#9E2828" />
           </linearGradient>
         </defs>
 
@@ -172,18 +172,18 @@ function WormBody({
       }}
     >
       <g transform={`translate(0, ${wriggle * 0.5})`}>
-        {/* Worm glow */}
+        {/* Worm glow — crimson */}
         <ellipse
           cx="0"
           cy="0"
           rx="35"
           ry="14"
-          fill="rgba(180,120,90,0.12)"
+          fill="rgba(230,52,98,0.15)"
           filter="url(#tunnel-glow)"
         />
 
         {/* Tail */}
-        <ellipse cx="-22" cy={wriggle * 0.3} rx="6" ry="4.5" fill="#8B5E3C" opacity="0.8" />
+        <ellipse cx="-22" cy={wriggle * 0.3} rx="6" ry="4.5" fill="#8B2020" opacity="0.8" />
 
         {/* Body */}
         <ellipse cx="0" cy="0" rx="24" ry="8" fill="url(#worm-body)" />
@@ -196,19 +196,19 @@ function WormBody({
             y1={-7}
             x2={x}
             y2={7}
-            stroke="rgba(120,75,45,0.25)"
+            stroke="rgba(80,15,15,0.3)"
             strokeWidth="0.8"
           />
         ))}
 
         {/* Clitellum band */}
-        <rect x="-3" y="-8.5" width="10" height="17" rx="5" fill="rgba(210,160,120,0.35)" />
+        <rect x="-3" y="-8.5" width="10" height="17" rx="5" fill="rgba(230,52,98,0.25)" />
 
         {/* Head */}
-        <ellipse cx="22" cy={wriggle * 0.25} rx="6" ry="6.5" fill="#B47D5C" />
+        <ellipse cx="22" cy={wriggle * 0.25} rx="6" ry="6.5" fill="#C43A3A" />
 
         {/* Head highlight */}
-        <ellipse cx="24" cy={wriggle * 0.25 - 2} rx="3" ry="2.5" fill="rgba(220,180,140,0.3)" />
+        <ellipse cx="24" cy={wriggle * 0.25 - 2} rx="3" ry="2.5" fill="rgba(230,100,100,0.3)" />
       </g>
     </g>
   );
