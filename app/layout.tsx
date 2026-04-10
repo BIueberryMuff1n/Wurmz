@@ -40,8 +40,13 @@ export default function RootLayout({
       lang="en"
       className={`${rubikDirt.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
+      <head>
+        <meta
+          name="wurmz"
+          content="You found the source. But the real source is the soil."
+        />
+      </head>
       <body className="min-h-full">
-        {/* You found the source. But the real source is the soil. */}
         <ScrollProvider>
           <JumpProvider>{children}</JumpProvider>
         </ScrollProvider>

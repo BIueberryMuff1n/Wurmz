@@ -25,9 +25,9 @@ function getTimeLeft(): TimeLeft | null {
 function TimeBlock({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="rounded-xl border border-root-brown bg-deep-earth px-4 py-3 md:px-6 md:py-4 min-w-[72px] md:min-w-[100px]">
+      <div className="rounded-xl border border-root-brown bg-deep-earth px-2 py-2 md:px-6 md:py-4 min-w-[56px] md:min-w-[100px]">
         <span
-          className="text-iridescent font-display text-3xl md:text-5xl block text-center"
+          className="text-iridescent font-display text-2xl md:text-5xl block text-center"
           style={{
             textShadow: "0 0 20px rgba(230, 52, 98, 0.5), 0 0 40px rgba(230, 52, 98, 0.2)",
           }}

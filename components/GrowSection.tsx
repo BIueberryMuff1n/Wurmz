@@ -1,83 +1,104 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import GrowCard from "./GrowCard";
 
 const cards = [
   {
-    icon: "🪱",
+    icon: "\u{1FAB1}",
     title: "Living Soil",
     description:
-      "No hydroponics. No synthetics. Our plants grow in a thriving underground ecosystem — worms, fungi, and billions of microbes doing what nature does best.",
+      "No hydroponics. No synthetics. Our plants grow in a thriving underground ecosystem \u2014 worms, fungi, and billions of microbes doing what nature does best.",
   },
   {
-    icon: "🏠",
+    icon: "\u{1F3E0}",
     title: "Single Source",
     description:
-      "We grow the flower, wash the hash, and press the rosin — all under one roof. Seed to sale, no middlemen, no mystery. That's single source.",
+      "We grow the flower, wash the hash, and press the rosin \u2014 all under one roof. Seed to sale, no middlemen, no mystery. That\u2019s single source.",
   },
   {
-    icon: "✂️",
+    icon: "\u2702\uFE0F",
     title: "Small Batch",
     description:
-      "NYS micro license — the smallest legal canopy. Every plant gets individual attention. Hand trimmed, natural inputs, zero shortcuts.",
+      "NYS micro license \u2014 the smallest legal canopy. Every plant gets individual attention. Hand trimmed, natural inputs, zero shortcuts.",
   },
 ];
 
 export default function GrowSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [scrollX, setScrollX] = useState(0);
-  const [maxScroll, setMaxScroll] = useState(1);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+  const rafRef = useRef<number>(0);
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    const container = scrollContainerRef.current;
-    if (!section || !container) return;
+  const handleScroll = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      const section = sectionRef.current;
+      if (!section) return;
 
-    function handleScroll() {
-      if (!section || !container) return;
       const rect = section.getBoundingClientRect();
       const sectionHeight = section.offsetHeight;
       const viewH = window.innerHeight;
+      const scrollableDistance = sectionHeight - viewH;
 
-      // When section is in view, map vertical scroll to horizontal scroll
-      // The section is tall (200vh) to give room for horizontal scrolling
-      const scrollableWidth = container.scrollWidth - container.offsetWidth;
-      setMaxScroll(scrollableWidth);
+      if (scrollableDistance <= 0) return;
 
-      if (rect.top < 0 && rect.bottom > viewH) {
-        // We're inside the sticky zone
-        const progress = Math.min(1, Math.max(0, -rect.top / (sectionHeight - viewH)));
-        const xOffset = progress * scrollableWidth;
-        container.scrollLeft = xOffset;
-        setScrollX(xOffset);
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+      // progress: 0 when section top hits viewport top, 1 when section bottom hits viewport bottom
+      const rawProgress = -rect.top / scrollableDistance;
+      setProgress(Math.min(1, Math.max(0, rawProgress)));
+    });
   }, []);
 
-  // Worm progress across the screen (0 = left, 1 = right)
-  const wormProgress = maxScroll > 0 ? scrollX / maxScroll : 0;
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    handleScroll();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [handleScroll]);
+
+  // Calculate how far to translate the card track
+  // We need to shift the track left by (trackWidth - viewportWidth) * progress
+  const [translateX, setTranslateX] = useState(0);
+
+  useEffect(() => {
+    function calcTranslate() {
+      const track = trackRef.current;
+      if (!track) return;
+      const trackWidth = track.scrollWidth;
+      const viewportWidth = window.innerWidth;
+      const maxShift = Math.max(0, trackWidth - viewportWidth);
+      setTranslateX(-progress * maxShift);
+    }
+    calcTranslate();
+    window.addEventListener("resize", calcTranslate);
+    return () => window.removeEventListener("resize", calcTranslate);
+  }, [progress]);
+
+  // Worm moves from -10% to 100% based on progress
+  const wormLeft = -10 + progress * 110;
+
+  // Scroll hint fades out as soon as scrolling starts
+  const hintOpacity = Math.max(0, 1 - progress * 5);
 
   return (
     <section
       ref={sectionRef}
       className="relative"
-      style={{ height: "200vh" }} // Extra height for scroll-to-horizontal mapping
+      style={{ height: "200vh" }}
     >
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <div className="sticky top-0 h-screen overflow-hidden flex flex-col">
         {/* Section header */}
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="font-display text-3xl md:text-5xl text-center text-mycelium pt-12 md:pt-16 mb-8 md:mb-12"
+          className="font-display text-3xl md:text-5xl text-center text-mycelium pt-12 md:pt-16 mb-8 md:mb-12 flex-shrink-0"
         >
           The Grow
         </motion.h2>
@@ -87,9 +108,9 @@ export default function GrowSection() {
           className="absolute pointer-events-none z-0"
           style={{
             top: "55%",
-            left: `${-10 + wormProgress * 100}%`,
+            left: `${wormLeft}%`,
             transform: "translateY(-50%)",
-            transition: "left 0.05s linear",
+            willChange: "left",
           }}
         >
           <svg width="200" height="50" viewBox="0 0 200 50" opacity="0.25">
@@ -119,14 +140,17 @@ export default function GrowSection() {
           </svg>
         </div>
 
-        {/* Horizontal scroll container */}
-        <div
-          ref={scrollContainerRef}
-          className="overflow-hidden relative z-10"
-          style={{ scrollBehavior: "auto" }}
-        >
-          <div className="flex gap-6 px-8 md:px-16 pb-8" style={{ width: "max-content" }}>
-            {cards.map((card, i) => (
+        {/* Horizontal card track — translated via transform */}
+        <div className="flex-1 flex items-center overflow-hidden relative z-10">
+          <div
+            ref={trackRef}
+            className="flex gap-6 px-8 md:px-16"
+            style={{
+              transform: `translateX(${translateX}px)`,
+              willChange: "transform",
+            }}
+          >
+            {cards.map((card) => (
               <div key={card.title} className="w-[85vw] md:w-[400px] flex-shrink-0">
                 <GrowCard {...card} delay={0} />
               </div>
@@ -134,10 +158,13 @@ export default function GrowSection() {
           </div>
         </div>
 
-        {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 text-mycelium/30 font-mono text-sm">
+        {/* Scroll hint — fades out quickly */}
+        <div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 text-mycelium/30 font-mono text-sm"
+          style={{ opacity: hintOpacity, transition: "opacity 0.2s ease-out" }}
+        >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M7 10L13 10M13 10L10 7M13 10L10 13" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M10 4L10 16M10 16L7 13M10 16L13 13" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           scroll
         </div>

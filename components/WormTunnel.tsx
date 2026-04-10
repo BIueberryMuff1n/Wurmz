@@ -7,6 +7,16 @@ export default function WormTunnel() {
   const { progress: scrollProgress, documentHeight: pageHeight } = useScroll();
   const [wriggle, setWriggle] = useState(0);
   const svgRef = useRef<SVGSVGElement>(null);
+  const prevProgressRef = useRef(scrollProgress);
+  const [isScrollingDown, setIsScrollingDown] = useState(true);
+
+  useEffect(() => {
+    const delta = scrollProgress - prevProgressRef.current;
+    if (Math.abs(delta) > 0.001) {
+      setIsScrollingDown(delta > 0);
+    }
+    prevProgressRef.current = scrollProgress;
+  }, [scrollProgress]);
 
   useEffect(() => {
     let frame: number;
@@ -38,6 +48,7 @@ export default function WormTunnel() {
   ].join(" ");
 
   const totalLength = 8800;
+  const wormBodyLen = 180; // must match bodyLen in WormBody
 
   // Tunnel only starts after parachute landing (~12% scroll)
   const tunnelStart = 0.12;
@@ -45,8 +56,29 @@ export default function WormTunnel() {
   const wormProgress = adjustedProgress;
 
   // Tunnel reveals BEHIND the worm — never ahead.
-  // Tunnel must always lag behind worm position.
-  const tunnelReveal = Math.max(0, adjustedProgress * totalLength * 0.65);
+  // The worm center is at adjustedProgress * totalLength along the path.
+  // The worm's TAIL is half its body length behind center.
+  // Clamp tunnel reveal to never exceed the worm's tail position.
+  const wormCenter = adjustedProgress * totalLength;
+  const wormTail = Math.max(0, wormCenter - wormBodyLen / 2);
+  const tunnelReveal = Math.min(wormTail, adjustedProgress * totalLength * 0.85);
+
+  // Fade out as worm approaches colony zone (0.75 → 0.9 = fully invisible)
+  const fadeOpacity = adjustedProgress > 0.75
+    ? Math.max(0, 1 - (adjustedProgress - 0.75) / 0.15)
+    : 1;
+
+  // Cherry flare: gaussian proximity to content section zones (0.25, 0.45, 0.65)
+  const sectionZones = [0.25, 0.45, 0.65];
+  const cherryFlare = sectionZones.reduce((max, zone) => {
+    const dist = adjustedProgress - zone;
+    const gauss = Math.exp(-(dist * dist) / (2 * 0.015 * 0.015)); // sigma=0.015
+    return Math.max(max, gauss);
+  }, 0);
+
+  // Backward glance: at ~50% adjusted progress, the eye looks back
+  const glanceDist = Math.abs(adjustedProgress - 0.5);
+  const isGlancingBack = glanceDist < 0.02;
 
   return (
     <div
@@ -91,7 +123,7 @@ export default function WormTunnel() {
         </defs>
 
         {/* === TUNNEL (revealed behind the worm — hidden until parachute lands) === */}
-        {adjustedProgress > 0.01 && <g>
+        {adjustedProgress > 0.01 && <g opacity={fadeOpacity}>
 
         {/* Outer edge — rough dirt border */}
         <path
@@ -333,7 +365,9 @@ export default function WormTunnel() {
 
         {/* === THE WORM (at the digging front) — hidden until after parachute lands === */}
         {adjustedProgress > 0.01 && (
-          <WormBody tunnelPath={tunnelPath} progress={wormProgress} />
+          <g opacity={fadeOpacity}>
+            <WormBody tunnelPath={tunnelPath} progress={wormProgress} cherryFlare={cherryFlare} isGlancingBack={isGlancingBack} isScrollingDown={isScrollingDown} />
+          </g>
         )}
       </svg>
     </div>
@@ -343,9 +377,15 @@ export default function WormTunnel() {
 function WormBody({
   tunnelPath,
   progress,
+  cherryFlare,
+  isGlancingBack,
+  isScrollingDown,
 }: {
   tunnelPath: string;
   progress: number;
+  cherryFlare: number;
+  isGlancingBack: boolean;
+  isScrollingDown: boolean;
 }) {
   const bodyLen = 180; // longer worm
   const bodyR = 22; // fills the tunnel width
@@ -408,7 +448,46 @@ function WormBody({
         />
       ))}
 
+      {/* === SKATEBOARD (visible when scrolling down) === */}
+      {isScrollingDown && (
+        <g
+          style={{
+            transition: "opacity 0.3s ease-in-out",
+          }}
+        >
+          {/* Deck — dark wood with rounded ends */}
+          <rect
+            x={-20}
+            y={bodyR + 2}
+            width={40}
+            height={4}
+            rx={2}
+            ry={2}
+            fill="#2a2a2a"
+            stroke="rgba(60,60,60,0.3)"
+            strokeWidth="0.5"
+          />
+          {/* Front truck */}
+          <rect x={-14} y={bodyR + 6} width={6} height={2} rx={0.5} ry={0.5} fill="#555" />
+          {/* Rear truck */}
+          <rect x={8} y={bodyR + 6} width={6} height={2} rx={0.5} ry={0.5} fill="#555" />
+          {/* Wheels — 4 at corners */}
+          <circle cx={-14} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
+          <circle cx={-8} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
+          <circle cx={8} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
+          <circle cx={14} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
+        </g>
+      )}
+
       {/* === FACE (side profile view — looking right) === */}
+      {/* Eye group — flips horizontally during backward glance at ~50% scroll */}
+      <g
+        style={{
+          transformOrigin: `${bodyLen / 2 - 12}px -5px`,
+          transform: isGlancingBack ? 'scaleX(-1)' : 'scaleX(1)',
+          transition: 'transform 0.25s ease-in-out',
+        }}
+      >
       {/* Single eye — half-lidded, stoned */}
       <ellipse cx={bodyLen / 2 - 12} cy={-5} rx={5} ry={4} fill="#1a0a05" />
       {/* Eye white/iris */}
@@ -421,6 +500,7 @@ function WormBody({
         d={`M${bodyLen / 2 - 18},${-8} Q${bodyLen / 2 - 12},${-3} ${bodyLen / 2 - 6},${-7}`}
         fill="rgba(140,35,25,0.7)"
       />
+      </g>
       {/* Mouth — slight smirk, side view */}
       <path
         d={`M${bodyLen / 2 - 5},${4} Q${bodyLen / 2},${7} ${bodyLen / 2 + 3},${5}`}
@@ -460,12 +540,12 @@ function WormBody({
       <line x1={-2.5} y1={-1} x2={-2.5} y2={1} stroke="rgba(80,60,30,0.2)" strokeWidth="0.3" />
       {/* Twisted tip at lit end */}
       <path d="M24,-3 Q28,-1 26,0 Q28,1 24,3" fill="#C4AA80" opacity="0.6" />
-      {/* Cherry/ember — glowing orange */}
-      <ellipse cx={26} cy={0} rx={3} ry={2.5} fill="#D4641A" />
-      <ellipse cx={26} cy={0} rx={2} ry={1.5} fill="#F0A030" opacity="0.8" />
-      <ellipse cx={26} cy={0} rx={1} ry={0.8} fill="#FFD080" opacity="0.5" />
-      {/* Ember glow */}
-      <ellipse cx={26} cy={0} rx={6} ry={4.5} fill="rgba(240,144,48,0.1)" />
+      {/* Cherry/ember — glowing orange, flares near content sections */}
+      <ellipse cx={26} cy={0} rx={3 + cherryFlare * 1.5} ry={2.5 + cherryFlare * 1} fill="#D4641A" />
+      <ellipse cx={26} cy={0} rx={2 + cherryFlare * 1} ry={1.5 + cherryFlare * 0.8} fill="#F0A030" opacity={0.8 + cherryFlare * 0.2} />
+      <ellipse cx={26} cy={0} rx={1 + cherryFlare * 0.8} ry={0.8 + cherryFlare * 0.5} fill="#FFD080" opacity={0.5 + cherryFlare * 0.5} />
+      {/* Ember glow — expands and brightens on flare */}
+      <ellipse cx={26} cy={0} rx={6 + cherryFlare * 5} ry={4.5 + cherryFlare * 4} fill={`rgba(240,144,48,${0.1 + cherryFlare * 0.2})`} />
       </g>
 
       {/* === SMOKE TRAIL (from tilted joint tip) === */}

@@ -10,7 +10,7 @@ export default function BrandSection() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         viewport={{ once: true, margin: "-100px" }}
-        className="max-w-3xl rounded-sm border-l-4 border-crimson-neon bg-deep-earth/80 p-8 md:p-12 shadow-[4px_4px_0px_rgba(61,43,31,0.6)]"
+        className="max-w-3xl rounded-sm border-l-4 border-crimson-neon bg-deep-earth/80 p-5 md:p-12 shadow-[4px_4px_0px_rgba(61,43,31,0.6)]"
       >
         <h2 className="font-display text-3xl md:text-5xl text-crimson-neon mb-6">
           Grown From the Ground Up

@@ -38,7 +38,7 @@ body::after {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.28;
   background-image:
     /* Heavy grunge — rough concrete feel */
     url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grunge'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.4' numOctaves='8' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0.1 0.15 0.05 0.2 0.08 0.12 0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grunge)' opacity='0.6'/%3E%3C/svg%3E"),
@@ -56,10 +56,15 @@ body::before {
   inset: 0;
   z-index: 50;
   pointer-events: none;
-  opacity: 0.1;
+  opacity: 0.07;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' seed='42' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 200px 200px;
+}
+
+/* Rough ink feel on display type */
+.font-display {
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.3);
 }
 
 /* Iridescent gradient text utility */
@@ -211,20 +216,26 @@ body::before {
   50% { opacity: 0.8; }
 }
 
-/* Scrollbar styling */
+/* Scrollbar styling — branded */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--soil-black);
+  background: var(--deep-earth);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--root-brown);
+  background: var(--violet-pulse);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--crimson-neon);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--violet-pulse) var(--deep-earth);
 }

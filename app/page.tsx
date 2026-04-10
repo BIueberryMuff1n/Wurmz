@@ -14,6 +14,7 @@ import WormPit from "@/components/WormPit";
 import BuriedArtifacts from "@/components/BuriedArtifacts";
 import PlaneIntroWrapper from "@/components/PlaneIntroWrapper";
 import EasterEggs from "@/components/EasterEggs";
+import CinematicMode from "@/components/CinematicMode";
 
 export default function Home() {
   return (
@@ -36,6 +37,7 @@ export default function Home() {
         <SignupSection />
       </main>
       <Footer />
+      <CinematicMode />
     </>
   );
 }

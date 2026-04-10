@@ -68,7 +68,7 @@ export default function SignupSection() {
             {successMessage}
           </motion.p>
         ) : (
-          <form onSubmit={handleSubmit} className="flex w-full max-w-md gap-3">
+          <form onSubmit={handleSubmit} className="flex w-full max-w-md gap-3 flex-col min-[400px]:flex-row">
             <input
               type="email"
               required

@@ -20,7 +20,7 @@ export default function RotatingTagline() {
   }, []);
 
   return (
-    <div className="relative h-12 flex items-center justify-center">
+    <div className="relative h-8 md:h-12 flex items-center justify-center">
       <AnimatePresence mode="wait">
         <motion.p
           key={taglines[index]}
@@ -28,7 +28,7 @@ export default function RotatingTagline() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="text-iridescent font-mono text-lg md:text-xl tracking-widest uppercase absolute text-center whitespace-nowrap"
+          className="text-iridescent font-mono text-sm md:text-lg lg:text-xl tracking-widest uppercase absolute text-center whitespace-nowrap"
         >
           {taglines[index]}
         </motion.p>

@@ -14,7 +14,8 @@ export default function ParachuteWorm() {
 
   const yPos = 15 + progress * 50;
   const sway = Math.sin(scrollY * 0.008) * 2;
-  const scale = 0.25 + progress * 0.75;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const scale = (0.25 + progress * 0.75) * (isMobile ? 0.65 : 1);
   const chuteOpacity = Math.max(0, 1 - Math.max(0, (progress - 0.65) / 0.35));
   const wormOpacity = progress >= 0.85 ? Math.max(0, 1 - (progress - 0.85) / 0.15) : 1;
 

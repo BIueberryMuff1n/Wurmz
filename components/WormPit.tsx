@@ -67,7 +67,8 @@ export default function WormPit() {
 
     // Initialize worms if empty
     if (wormsRef.current.length === 0) {
-      const count = Math.floor(window.innerWidth / 2.5); // ~550 on desktop
+      const isMobile = window.innerWidth < 768;
+      const count = Math.floor(isMobile ? window.innerWidth / 6 : window.innerWidth / 2.5); // ~128 on mobile, ~550 on desktop
       for (let i = 0; i < count; i++) {
         wormsRef.current.push(createWorm(canvas.width, canvas.height, i));
       }

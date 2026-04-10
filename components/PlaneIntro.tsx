@@ -83,7 +83,7 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
           transition: flyOff ? "none" : undefined,
         }}
       >
-        <svg width="200" height="110" viewBox="0 0 200 110">
+        <svg className="w-[120px] h-[66px] md:w-[200px] md:h-[110px]" viewBox="0 0 200 110">
           {/* === VINTAGE BIPLANE — Wurmz colors, graffiti-covered === */}
 
           {/* === LOWER WING (behind fuselage) === */}
@@ -264,7 +264,7 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
               animation: "bounce-soft 2s ease-in-out infinite",
             }}
           >
-            <span className="font-display text-lg md:text-xl text-crimson-neon hover:text-mycelium transition-colors"
+            <span className="font-display text-sm md:text-lg lg:text-xl text-crimson-neon hover:text-mycelium transition-colors"
               style={{
                 textShadow: "0 0 15px rgba(230,52,98,0.4)",
               }}

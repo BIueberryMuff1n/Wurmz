@@ -55,9 +55,9 @@ export default function ProcessSection() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true, margin: "-80px" }}
-            className="flex gap-6 items-start"
+            className="flex gap-3 md:gap-6 items-start"
           >
-            <span className="font-display text-4xl md:text-6xl text-crimson-neon/30 flex-shrink-0 leading-none">
+            <span className="font-display text-2xl md:text-6xl text-crimson-neon/30 flex-shrink-0 leading-none">
               {step.number}
             </span>
             <div>

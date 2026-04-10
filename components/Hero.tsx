@@ -20,7 +20,7 @@ export default function Hero() {
           width={280}
           height={280}
           priority
-          className="rounded-full"
+          className="rounded-full w-[200px] h-[200px] md:w-[280px] md:h-[280px]"
           style={{
             filter: "drop-shadow(0 0 25px rgba(230,52,98,0.2)) drop-shadow(0 0 50px rgba(139,92,246,0.1))",
           }}

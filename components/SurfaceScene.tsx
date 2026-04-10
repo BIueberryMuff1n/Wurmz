@@ -19,7 +19,7 @@ export default function SurfaceScene() {
   const [shootingStar, setShootingStar] = useState<{ x: number; y: number; angle: number; key: number } | null>(null);
 
   const skyOffset = scrollY * 0.2;
-  const fadeOut = Math.max(0, 1 - scrollY / 800);
+  const fadeOut = Math.max(0, 1 - scrollY / 1000);
 
   const [moonPhase, setMoonPhase] = useState<number | null>(null);
 
@@ -70,9 +70,9 @@ export default function SurfaceScene() {
             #1a1f3a 30%,
             #2d1f3d 45%,
             #3d1f2d 55%,
-            #2a1a18 70%,
-            #1a1208 85%,
-            #110D08 100%
+            #1e1520 70%,
+            #12111a 85%,
+            #0a0f1a 100%
           )`,
         }}
       />
@@ -202,6 +202,77 @@ export default function SurfaceScene() {
         {moonPhase !== null && <MoonWithPhase phase={moonPhase} />}
       </div>
 
+      {/* Faint chemtrails in the sky */}
+      <svg
+        className="absolute inset-0 w-full h-full"
+        style={{
+          transform: `translateY(${skyOffset * 0.4}px)`,
+          opacity: 0.06,
+        }}
+      >
+        {/* Long faint chemtrail line */}
+        <path
+          d="M-100,120 Q400,90 900,140 Q1300,170 1600,130"
+          fill="none"
+          stroke="white"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
+        {/* Slight spreading/dissipation */}
+        <path
+          d="M-100,122 Q400,95 900,145 Q1300,175 1600,135"
+          fill="none"
+          stroke="white"
+          strokeWidth="2"
+          strokeLinecap="round"
+          opacity="0.4"
+        />
+      </svg>
+
+      {/* Very faint NYC skyline silhouette at the horizon */}
+      <svg
+        className="absolute bottom-[32%] left-0 w-full"
+        style={{
+          transform: `translateY(${skyOffset * 0.5}px)`,
+          opacity: 0.04,
+        }}
+        viewBox="0 0 1440 120"
+        preserveAspectRatio="none"
+        height="80"
+      >
+        <path
+          d={[
+            "M0,120",
+            // Brooklyn low buildings
+            "L50,120 L50,105 L55,105 L55,100 L65,100 L65,105 L75,105 L75,95 L80,95 L80,105 L100,105 L100,120",
+            // Williamsburg bridge hint
+            "L140,110 L180,105 L220,110",
+            // Lower Manhattan
+            "L250,120 L250,90 L255,90 L255,70 L260,70 L260,90 L270,90 L270,60 L275,60 L275,55 L280,55 L280,60 L285,60 L285,90 L295,90 L295,75 L300,75 L300,90 L310,90 L310,50 L315,50 L315,45 L318,40 L321,45 L325,50 L325,90",
+            // One WTC
+            "L335,90 L335,25 L337,20 L339,25 L340,90",
+            // More downtown
+            "L350,90 L350,65 L355,65 L355,70 L365,70 L365,90 L375,90 L375,80 L380,80 L380,90",
+            // Midtown gap
+            "L420,120 L460,115 L500,120",
+            // Empire State area
+            "L550,120 L550,85 L555,85 L555,75 L558,75 L558,65 L560,55 L562,40 L564,55 L566,65 L568,75 L572,75 L572,85 L580,85 L580,90 L590,90 L590,120",
+            // More midtown
+            "L620,120 L620,80 L625,80 L625,70 L630,70 L630,75 L640,75 L640,80 L650,80 L650,120",
+            // Chrysler area
+            "L680,120 L680,75 L683,75 L685,60 L686,50 L687,45 L688,50 L689,60 L692,75 L695,75 L695,120",
+            // Upper east side
+            "L750,120 L750,95 L760,95 L760,100 L780,100 L780,90 L785,90 L785,100 L800,100 L800,120",
+            // UES/Harlem fade
+            "L900,120 L900,105 L910,105 L910,110 L940,110 L940,100 L950,100 L950,110 L980,110 L980,120",
+            // Bronx hint
+            "L1050,120 L1050,108 L1060,108 L1060,112 L1080,112 L1080,105 L1090,105 L1090,112 L1100,112 L1100,120",
+            "L1440,120"
+          ].join(" ")}
+          fill="rgba(200,200,220,0.8)"
+        />
+      </svg>
+
       {/* Ground fade — blends seamlessly into the earth system */}
       <div
         className="absolute bottom-0 left-0 right-0"
@@ -209,10 +280,10 @@ export default function SurfaceScene() {
           height: "40%",
           background: `linear-gradient(180deg,
             transparent 0%,
-            rgba(22,18,12,0.2) 20%,
-            rgba(22,18,12,0.5) 45%,
-            rgba(22,18,12,0.8) 70%,
-            rgba(22,18,12,1) 100%
+            rgba(10,15,26,0.2) 20%,
+            rgba(10,15,26,0.5) 45%,
+            rgba(10,15,26,0.8) 70%,
+            rgba(10,15,26,1) 100%
           )`,
         }}
       />
@@ -269,16 +340,16 @@ function MoonWithPhase({ phase }: { phase: number }) {
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: "visible" }}>
-      {/* Soft ambient glow around the moon */}
+      {/* Dark moon base — fully transparent */}
+      <circle cx={cx} cy={cy} r={r} fill="none" />
+
+      {/* Glow — matches the lit crescent shape */}
       <defs>
-        <filter id="moon-glow">
-          <feGaussianBlur stdDeviation="8" />
+        <filter id="moon-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6" />
         </filter>
       </defs>
-      <circle cx={cx} cy={cy} r={r + 2} fill="rgba(230,220,190,0.08)" filter="url(#moon-glow)" />
-
-      {/* Dark moon base — fully transparent, invisible */}
-      <circle cx={cx} cy={cy} r={r} fill="none" />
+      <path d={litPath} fill="rgba(230,220,190,0.12)" filter="url(#moon-glow)" />
 
       {/* Lit portion */}
       <path d={litPath} fill="#E0D4B8" />
