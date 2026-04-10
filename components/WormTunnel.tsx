@@ -216,32 +216,6 @@ function WormBody({
         />
       ))}
 
-      {/* Head end — slightly brighter, rounded */}
-      <circle
-        cx={bodyLen / 2 + 2}
-        cy={0}
-        r={bodyR}
-        fill="#B84030"
-        opacity="0.9"
-      />
-      <circle
-        cx={bodyLen / 2 + 2}
-        cy={0}
-        r={bodyR}
-        fill="none"
-        stroke="rgba(40,12,8,0.5)"
-        strokeWidth="3"
-      />
-
-      {/* Tail end — tapered, darker */}
-      <ellipse
-        cx={-bodyLen / 2 - 4}
-        cy={0}
-        rx={bodyR - 4}
-        ry={bodyR - 2}
-        fill="#7A2818"
-        opacity="0.8"
-      />
     </g>
   );
 }
