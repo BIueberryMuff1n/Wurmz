@@ -163,6 +163,11 @@ function WormBody({
   progress: number;
   wriggle: number;
 }) {
+  // Understated graffiti-style worm — fills the tunnel, rough strokes
+  // The worm IS the tunnel. Simple, bold, like a spray-painted shape.
+  const bodyLen = 120;
+  const bodyR = 18; // matches tunnel width
+
   return (
     <g
       style={{
@@ -171,45 +176,72 @@ function WormBody({
         offsetRotate: "auto",
       }}
     >
-      <g transform={`translate(0, ${wriggle * 0.5})`}>
-        {/* Worm glow — crimson */}
-        <ellipse
-          cx="0"
-          cy="0"
-          rx="35"
-          ry="14"
-          fill="rgba(230,52,98,0.15)"
-          filter="url(#tunnel-glow)"
+      {/* Worm body — one continuous rounded shape, graffiti style */}
+      {/* Outer stroke — thick dark outline like ink */}
+      <rect
+        x={-bodyLen / 2}
+        y={-bodyR - 1}
+        width={bodyLen}
+        height={bodyR * 2 + 2}
+        rx={bodyR}
+        ry={bodyR}
+        fill="none"
+        stroke="rgba(40,12,8,0.6)"
+        strokeWidth="4"
+      />
+
+      {/* Main body fill — brownish red gradient */}
+      <rect
+        x={-bodyLen / 2}
+        y={-bodyR}
+        width={bodyLen}
+        height={bodyR * 2}
+        rx={bodyR}
+        ry={bodyR}
+        fill="url(#worm-body)"
+        opacity="0.85"
+      />
+
+      {/* Subtle segment lines — understated, not cartoonish */}
+      {[-40, -20, 0, 20, 40].map((x, i) => (
+        <line
+          key={i}
+          x1={x}
+          y1={-bodyR + 3}
+          x2={x}
+          y2={bodyR - 3}
+          stroke="rgba(60,15,10,0.2)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
         />
+      ))}
 
-        {/* Tail */}
-        <ellipse cx="-22" cy={wriggle * 0.3} rx="6" ry="4.5" fill="#8B2020" opacity="0.8" />
+      {/* Head end — slightly brighter, rounded */}
+      <circle
+        cx={bodyLen / 2 + 2}
+        cy={0}
+        r={bodyR}
+        fill="#B84030"
+        opacity="0.9"
+      />
+      <circle
+        cx={bodyLen / 2 + 2}
+        cy={0}
+        r={bodyR}
+        fill="none"
+        stroke="rgba(40,12,8,0.5)"
+        strokeWidth="3"
+      />
 
-        {/* Body */}
-        <ellipse cx="0" cy="0" rx="24" ry="8" fill="url(#worm-body)" />
-
-        {/* Segment lines */}
-        {[-16, -10, -4, 2, 8, 14].map((x, i) => (
-          <line
-            key={i}
-            x1={x}
-            y1={-7}
-            x2={x}
-            y2={7}
-            stroke="rgba(80,15,15,0.3)"
-            strokeWidth="0.8"
-          />
-        ))}
-
-        {/* Clitellum band */}
-        <rect x="-3" y="-8.5" width="10" height="17" rx="5" fill="rgba(230,52,98,0.25)" />
-
-        {/* Head */}
-        <ellipse cx="22" cy={wriggle * 0.25} rx="6" ry="6.5" fill="#C43A3A" />
-
-        {/* Head highlight */}
-        <ellipse cx="24" cy={wriggle * 0.25 - 2} rx="3" ry="2.5" fill="rgba(230,100,100,0.3)" />
-      </g>
+      {/* Tail end — tapered, darker */}
+      <ellipse
+        cx={-bodyLen / 2 - 4}
+        cy={0}
+        rx={bodyR - 4}
+        ry={bodyR - 2}
+        fill="#7A2818"
+        opacity="0.8"
+      />
     </g>
   );
 }

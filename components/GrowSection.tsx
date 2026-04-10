@@ -5,22 +5,22 @@ import GrowCard from "./GrowCard";
 
 const cards = [
   {
-    icon: "🌱",
+    icon: "🪱",
     title: "Living Soil",
     description:
-      "A thriving ecosystem beneath the surface. Our soil is alive with billions of microorganisms that feed and protect every plant naturally.",
+      "No hydroponics. No synthetics. Our plants grow in a thriving underground ecosystem — worms, fungi, and billions of microbes doing what nature does best.",
   },
   {
-    icon: "🪱",
-    title: "The Microbiome",
+    icon: "🏠",
+    title: "Single Source",
     description:
-      "Worms, fungi, and beneficial bacteria work together in a living network. No bottles, no salts — just nature doing what nature does.",
+      "We grow the flower, wash the hash, and press the rosin — all under one roof. Seed to sale, no middlemen, no mystery. That's single source.",
   },
   {
-    icon: "🚫",
-    title: "No Synthetics",
+    icon: "✂️",
+    title: "Small Batch",
     description:
-      "Zero synthetic nutrients, zero pesticides, zero shortcuts. Every harvest is powered by the soil food web, the way it was meant to be.",
+      "NYS micro license — the smallest legal canopy. Every plant gets individual attention. Hand trimmed, natural inputs, zero shortcuts.",
   },
 ];
 

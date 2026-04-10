@@ -10,17 +10,16 @@ export default function BrandSection() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         viewport={{ once: true, margin: "-100px" }}
-        className="max-w-3xl rounded-2xl border border-root-brown bg-deep-earth p-8 md:p-12"
+        className="max-w-3xl rounded-sm border-l-4 border-crimson-neon bg-deep-earth/80 p-8 md:p-12 shadow-[4px_4px_0px_rgba(61,43,31,0.6)]"
       >
         <h2 className="font-display text-3xl md:text-5xl text-crimson-neon mb-6">
           Grown From the Ground Up
         </h2>
         <p className="font-mono text-base md:text-lg text-mycelium/80 leading-relaxed">
-          Wurmz is craft cannabis cultivated the way nature intended — in rich,
-          living soil teeming with life. No synthetic nutrients, no chemical
-          shortcuts. Just worms, microbes, and millions of years of evolution
-          doing what they do best. Every harvest carries the terroir of the soil
-          it grew in.
+          Wurmz is small-batch craft cannabis grown the way nature intended —
+          in living soil, hand trimmed, processed entirely in-house. We hold a
+          NYS micro license, the smallest canopy allowed. No corporate farms,
+          no cutting corners. Just worms, microbes, and the craft.
         </p>
       </motion.div>
     </section>
