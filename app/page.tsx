@@ -6,10 +6,12 @@ import SignupSection from "@/components/SignupSection";
 import Footer from "@/components/Footer";
 import FloatingParticles from "@/components/FloatingParticles";
 import RootTendrils from "@/components/RootTendrils";
+import AuraEffect from "@/components/AuraEffect";
 
 export default function Home() {
   return (
     <>
+      <AuraEffect />
       <RootTendrils />
       <FloatingParticles />
       <main className="relative z-20">
