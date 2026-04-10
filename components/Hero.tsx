@@ -16,8 +16,12 @@ export default function Hero() {
         className="relative"
       >
         <div
-          className="rounded-full p-1"
-          style={{ animation: "glow-pulse 4s ease-in-out infinite" }}
+          className="rounded-full overflow-hidden"
+          style={{
+            animation: "glow-pulse 4s ease-in-out infinite",
+            width: 280,
+            height: 280,
+          }}
         >
           <Image
             src="/logo.png"
@@ -25,7 +29,8 @@ export default function Hero() {
             width={280}
             height={280}
             priority
-            className="rounded-full"
+            className="rounded-full scale-110"
+            style={{ objectFit: "cover" }}
           />
         </div>
       </motion.div>

@@ -53,17 +53,16 @@ export default function WormTunnel() {
     "C740,3300 720,3350 720,3400",       // Bottom
   ].join(" ");
 
-  const totalLength = 5800;
+  const totalLength = 8800;
 
   // Tunnel only starts after parachute landing (~12% scroll)
   const tunnelStart = 0.12;
   const adjustedProgress = Math.max(0, (scrollProgress - tunnelStart) / (1 - tunnelStart));
   const wormProgress = adjustedProgress;
 
-  // Tunnel reveals BEHIND the worm — it's the trail the worm dug.
-  // Tunnel ends exactly at the worm's back edge (center minus half body length).
-  // Worm body is 180px, so tunnel stops ~90px before the worm's center position.
-  const tunnelReveal = Math.max(0, adjustedProgress * totalLength - 90);
+  // Tunnel reveals BEHIND the worm — never ahead.
+  // Use a smaller multiplier for tunnel than worm so tunnel always lags.
+  const tunnelReveal = Math.max(0, adjustedProgress * totalLength * 0.85);
 
   return (
     <div
@@ -252,67 +251,59 @@ function WormBody({
         />
       ))}
 
-      {/* === FACE (front/right end) === */}
-      {/* Eyes — half-lidded, chill */}
-      <ellipse cx={bodyLen / 2 - 18} cy={-6} rx={4} ry={3.5} fill="#1a0a05" />
-      <ellipse cx={bodyLen / 2 - 18} cy={6} rx={4} ry={3.5} fill="#1a0a05" />
+      {/* === FACE (side profile view — looking right) === */}
+      {/* Single eye — half-lidded, stoned */}
+      <ellipse cx={bodyLen / 2 - 12} cy={-5} rx={5} ry={4} fill="#1a0a05" />
+      {/* Eye white/iris */}
+      <ellipse cx={bodyLen / 2 - 11} cy={-5} rx={3} ry={2.5} fill="#2a1510" />
+      <circle cx={bodyLen / 2 - 10} cy={-4.5} r={1.5} fill="#1a0a05" />
       {/* Eye shine */}
-      <circle cx={bodyLen / 2 - 16} cy={-7} r={1.5} fill="rgba(255,255,255,0.5)" />
-      <circle cx={bodyLen / 2 - 16} cy={5} r={1.5} fill="rgba(255,255,255,0.5)" />
-      {/* Eyelids — half closed, stoned look */}
+      <circle cx={bodyLen / 2 - 9} cy={-6} r={1} fill="rgba(255,255,255,0.6)" />
+      {/* Heavy eyelid — droopy, stoned */}
       <path
-        d={`M${bodyLen / 2 - 23},${-9} Q${bodyLen / 2 - 18},${-5} ${bodyLen / 2 - 13},${-9}`}
-        fill="rgba(160,40,30,0.6)"
+        d={`M${bodyLen / 2 - 18},${-8} Q${bodyLen / 2 - 12},${-3} ${bodyLen / 2 - 6},${-7}`}
+        fill="rgba(140,35,25,0.7)"
       />
+      {/* Mouth — slight smirk, side view */}
       <path
-        d={`M${bodyLen / 2 - 23},${3} Q${bodyLen / 2 - 18},${7} ${bodyLen / 2 - 13},${3}`}
-        fill="rgba(160,40,30,0.6)"
-      />
-      {/* Smile — subtle smirk */}
-      <path
-        d={`M${bodyLen / 2 - 10},${-2} Q${bodyLen / 2 - 5},${2} ${bodyLen / 2 - 10},${2}`}
+        d={`M${bodyLen / 2 - 5},${4} Q${bodyLen / 2},${7} ${bodyLen / 2 + 3},${5}`}
         fill="none"
         stroke="#1a0a05"
         strokeWidth="1.5"
         strokeLinecap="round"
       />
 
-      {/* === JOINT === */}
-      {/* Joint body — white/tan cylinder sticking out of mouth */}
-      <rect
-        x={bodyLen / 2 - 6}
-        y={-2.5}
-        width={22}
-        height={5}
-        rx={2}
-        ry={2}
-        fill="#E8DCC8"
-        stroke="rgba(180,160,130,0.5)"
+      {/* === JOINT (cone-shaped, tilted upward) === */}
+      <g transform={`translate(${bodyLen / 2}, 3) rotate(-30)`}>
+      {/* Joint positioned relative to mouth, rotated -30deg (tilted up) */}
+      {/* Joint body — cone shape, wider at lit end */}
+      <polygon
+        points="-4,-2 22,-3.5 22,3.5 -4,2"
+        fill="#E2D5B8"
+        stroke="rgba(180,160,130,0.4)"
         strokeWidth="0.5"
       />
-      {/* Joint filter/tip — brown end near mouth */}
-      <rect
-        x={bodyLen / 2 - 6}
-        y={-2.5}
-        width={6}
-        height={5}
-        rx={1.5}
-        ry={1.5}
-        fill="#C4A87A"
-      />
-      {/* Joint cherry/lit end — glowing orange */}
-      <circle cx={bodyLen / 2 + 16} cy={0} r={3} fill="#E8841A" />
-      <circle cx={bodyLen / 2 + 16} cy={0} r={2} fill="#F5A623" opacity="0.8" />
-      <circle cx={bodyLen / 2 + 16} cy={0} r={4} fill="rgba(245,166,35,0.2)" />
+      {/* Paper crinkle lines */}
+      <line x1={4} y1={-1.8} x2={4} y2={1.8} stroke="rgba(160,140,110,0.2)" strokeWidth="0.5" />
+      <line x1={10} y1={-2.5} x2={10} y2={2.5} stroke="rgba(160,140,110,0.2)" strokeWidth="0.5" />
+      <line x1={16} y1={-3} x2={16} y2={3} stroke="rgba(160,140,110,0.2)" strokeWidth="0.5" />
+      {/* Filter/crutch */}
+      <rect x={-5} y={-2} width={6} height={4} rx={1} ry={1} fill="#B89E6A" />
+      {/* Twisted tip */}
+      <path d="M22,-3 Q26,-1 24,0 Q26,1 22,3" fill="#D4C8A8" opacity="0.7" />
+      {/* Cherry/ember */}
+      <ellipse cx={24} cy={0} rx={3} ry={2.5} fill="#D4641A" />
+      <ellipse cx={24} cy={0} rx={2} ry={1.5} fill="#F09030" opacity="0.8" />
+      <ellipse cx={24} cy={0} rx={5} ry={4} fill="rgba(240,144,48,0.15)" />
+      </g>
 
-      {/* === SMOKE TRAIL === */}
-      {/* Smoke puffs rising from joint tip */}
+      {/* === SMOKE TRAIL (from tilted joint tip) === */}
       {[
-        { cx: bodyLen / 2 + 22, cy: -4, r: 3, o: 0.15 },
-        { cx: bodyLen / 2 + 28, cy: -9, r: 4, o: 0.12 },
-        { cx: bodyLen / 2 + 32, cy: -16, r: 5, o: 0.09 },
-        { cx: bodyLen / 2 + 34, cy: -25, r: 6, o: 0.06 },
-        { cx: bodyLen / 2 + 33, cy: -35, r: 7, o: 0.04 },
+        { cx: bodyLen / 2 + 18, cy: -12, r: 3, o: 0.15 },
+        { cx: bodyLen / 2 + 20, cy: -20, r: 4, o: 0.12 },
+        { cx: bodyLen / 2 + 19, cy: -30, r: 5.5, o: 0.09 },
+        { cx: bodyLen / 2 + 16, cy: -42, r: 7, o: 0.06 },
+        { cx: bodyLen / 2 + 13, cy: -55, r: 8, o: 0.04 },
       ].map((puff, i) => (
         <circle
           key={`smoke-${i}`}

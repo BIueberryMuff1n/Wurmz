@@ -51,7 +51,7 @@ export default function WormPit() {
 
     // Initialize worms if empty
     if (wormsRef.current.length === 0) {
-      const count = Math.floor(window.innerWidth / 18); // ~80 on desktop
+      const count = Math.floor(window.innerWidth / 3); // ~500 on desktop, DENSE
       for (let i = 0; i < count; i++) {
         wormsRef.current.push(createWorm(canvas.width, canvas.height, i));
       }
