@@ -121,14 +121,14 @@ function createWorm(w: number, h: number, seed: number): Worm {
 
   return {
     segments,
-    speed: (0.4 + pseudoRandom(seed * 41) * 0.6) * sizeMultiplier,
+    speed: (0.08 + pseudoRandom(seed * 41) * 0.12) * sizeMultiplier, // worms are SLOW
     angle,
-    turnRate: 0.02 + pseudoRandom(seed * 43) * 0.04,
-    turnTimer: Math.floor(pseudoRandom(seed * 47) * 120),
+    turnRate: 0.005 + pseudoRandom(seed * 43) * 0.01, // gentle turns
+    turnTimer: Math.floor(80 + pseudoRandom(seed * 47) * 200), // long between turns
     thickness: (3 + pseudoRandom(seed * 53) * 4) * sizeMultiplier,
     color: { r: rBase, g: gBase, b: bBase },
     waveOffset: pseudoRandom(seed * 59) * Math.PI * 2,
-    waveSpeed: 0.05 + pseudoRandom(seed * 61) * 0.05,
+    waveSpeed: 0.012 + pseudoRandom(seed * 61) * 0.015, // slow undulation
   };
 }
 
@@ -136,8 +136,8 @@ function updateWorm(worm: Worm, w: number, h: number, time: number) {
   // Direction changes
   worm.turnTimer--;
   if (worm.turnTimer <= 0) {
-    worm.turnRate = (Math.random() - 0.5) * 0.08;
-    worm.turnTimer = 40 + Math.floor(Math.random() * 120);
+    worm.turnRate = (Math.random() - 0.5) * 0.02; // gentle direction changes
+    worm.turnTimer = 100 + Math.floor(Math.random() * 250); // long intervals
   }
 
   // Update heading with organic turning
