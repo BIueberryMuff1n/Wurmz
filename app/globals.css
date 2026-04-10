@@ -176,18 +176,20 @@ body::before {
   }
 }
 
-/* Shooting star streak */
-@keyframes shooting-star {
+/* Shooting star — moves across the sky */
+@keyframes shooting-star-move {
   0% {
-    transform: translateX(0) scaleX(0.3);
+    transform: translateX(0) translateY(0);
     opacity: 0;
   }
-  10% {
+  5% {
     opacity: 1;
-    transform: translateX(20px) scaleX(1);
+  }
+  80% {
+    opacity: 0.8;
   }
   100% {
-    transform: translateX(200px) scaleX(0.1);
+    transform: translateX(300px) translateY(120px);
     opacity: 0;
   }
 }

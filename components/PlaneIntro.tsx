@@ -59,14 +59,20 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
 
   const { scrollY } = useScroll();
 
-  // Plane fades out as you scroll down (stays in sky longer than surface scene)
-  const planeFadeOut = Math.max(0, 1 - scrollY / 1200);
+  // Plane fades out with the sky — same rate as surface scene
+  const planeFadeOut = Math.max(0, 1 - scrollY / 800);
 
   if (planeFadeOut <= 0) return null;
   if (hasJumped && planeX > 110) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[15]" style={{ opacity: planeFadeOut }}>
+    <div
+      className="pointer-events-none fixed inset-0 z-[15]"
+      style={{
+        opacity: planeFadeOut,
+        transform: `translateY(${-scrollY * 0.2}px)`,
+      }}
+    >
       {/* Plane */}
       <div
         className="absolute"

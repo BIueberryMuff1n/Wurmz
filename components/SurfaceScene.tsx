@@ -116,27 +116,83 @@ export default function SurfaceScene() {
         ))}
       </div>
 
-      {/* Shooting star */}
+      {/* Shooting star — arcs across the entire sky */}
       {shootingStar && (
-        <div
+        <svg
           key={shootingStar.key}
-          className="absolute"
-          style={{
-            left: `${shootingStar.x}%`,
-            top: `${shootingStar.y}%`,
-            transform: `rotate(${shootingStar.angle}deg)`,
-          }}
+          className="absolute inset-0 w-full h-full"
+          style={{ overflow: "visible" }}
         >
-          <div
-            style={{
-              width: 60,
-              height: 1.5,
-              background: "linear-gradient(90deg, rgba(255,255,255,0.8), rgba(255,255,255,0))",
-              borderRadius: 1,
-              animation: "shooting-star 1.2s ease-out forwards",
-            }}
-          />
-        </div>
+          {/* Arc path — bright head, fizzling trail */}
+          {/* Bright head that streaks across */}
+          <circle r="3" fill="white" opacity="0">
+            <animateMotion
+              path="M-50,40 Q400,80 750,250 Q1100,420 1500,480"
+              dur="1.8s"
+              fill="freeze"
+            />
+            <animate
+              attributeName="opacity"
+              values="0;1;0.9;0.5;0"
+              keyTimes="0;0.05;0.3;0.7;1"
+              dur="1.8s"
+              fill="freeze"
+            />
+            <animate
+              attributeName="r"
+              values="3;3;2.5;1.5;0.5"
+              keyTimes="0;0.1;0.4;0.7;1"
+              dur="1.8s"
+              fill="freeze"
+            />
+          </circle>
+          {/* Glow around head */}
+          <circle r="8" fill="rgba(255,255,255,0.15)" opacity="0">
+            <animateMotion
+              path="M-50,40 Q400,80 750,250 Q1100,420 1500,480"
+              dur="1.8s"
+              fill="freeze"
+            />
+            <animate
+              attributeName="opacity"
+              values="0;0.4;0.2;0.05;0"
+              keyTimes="0;0.05;0.3;0.7;1"
+              dur="1.8s"
+              fill="freeze"
+            />
+          </circle>
+          {/* Trail — fading streak behind the head */}
+          <path
+            d="M-50,40 Q400,80 750,250 Q1100,420 1500,480"
+            fill="none"
+            stroke="white"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            opacity="0"
+          >
+            <animate
+              attributeName="stroke-dasharray"
+              values="0 3000;150 3000;80 3000;20 3000;0 3000"
+              keyTimes="0;0.1;0.4;0.7;1"
+              dur="1.8s"
+              fill="freeze"
+            />
+            <animate
+              attributeName="stroke-dashoffset"
+              values="0;-400;-1500;-2500;-3000"
+              keyTimes="0;0.1;0.4;0.7;1"
+              dur="1.8s"
+              fill="freeze"
+            />
+            <animate
+              attributeName="opacity"
+              values="0;0.7;0.4;0.1;0"
+              keyTimes="0;0.05;0.3;0.7;1"
+              dur="1.8s"
+              fill="freeze"
+            />
+          </path>
+        </svg>
       )}
 
       {/* Airplane contrail — slow diagonal drift */}
@@ -184,17 +240,17 @@ export default function SurfaceScene() {
         {moonPhase !== null && <MoonWithPhase phase={moonPhase} />}
       </div>
 
-      {/* Ground fade */}
+      {/* Ground fade — blends seamlessly into the earth system */}
       <div
         className="absolute bottom-0 left-0 right-0"
         style={{
-          height: "35%",
+          height: "40%",
           background: `linear-gradient(180deg,
             transparent 0%,
-            rgba(30,23,16,0.3) 15%,
-            rgba(30,23,16,0.7) 40%,
-            #1E1710 60%,
-            #170F0A 100%
+            rgba(22,18,12,0.2) 20%,
+            rgba(22,18,12,0.5) 45%,
+            rgba(22,18,12,0.8) 70%,
+            rgba(22,18,12,1) 100%
           )`,
         }}
       />
@@ -250,29 +306,17 @@ function MoonWithPhase({ phase }: { phase: number }) {
   }
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      {/* Glow */}
-      <circle cx={cx} cy={cy} r={r + 10} fill="rgba(245,240,232,0.03)" />
-
-      {/* Dark moon base (the unlit part) */}
-      <circle cx={cx} cy={cy} r={r} fill="#1a1f2a" />
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: "visible" }}>
+      {/* Dark moon base — transparent so sky shows through */}
+      <circle cx={cx} cy={cy} r={r} fill="rgba(10,15,26,0.3)" />
 
       {/* Lit portion */}
       <path d={litPath} fill="#E0D4B8" />
 
-      {/* Crater details on lit portion */}
-      <circle cx={cx - 4} cy={cy - 5} r={2.5} fill="rgba(170,160,140,0.25)" />
-      <circle cx={cx + 5} cy={cy + 4} r={2} fill="rgba(170,160,140,0.2)" />
-      <circle cx={cx - 1} cy={cy + 7} r={1.8} fill="rgba(170,160,140,0.18)" />
-      <circle cx={cx + 8} cy={cy - 2} r={1.5} fill="rgba(170,160,140,0.15)" />
-
-      {/* Soft edge glow */}
-      <circle
-        cx={cx} cy={cy} r={r + 1}
-        fill="none"
-        stroke="rgba(230,220,200,0.06)"
-        strokeWidth="3"
-      />
+      {/* Crater details */}
+      <circle cx={cx - 4} cy={cy - 5} r={2.5} fill="rgba(170,160,140,0.2)" />
+      <circle cx={cx + 5} cy={cy + 4} r={2} fill="rgba(170,160,140,0.15)" />
+      <circle cx={cx - 1} cy={cy + 7} r={1.8} fill="rgba(170,160,140,0.12)" />
     </svg>
   );
 }
