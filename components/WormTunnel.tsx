@@ -61,8 +61,8 @@ export default function WormTunnel() {
   const wormProgress = adjustedProgress;
 
   // Tunnel reveals BEHIND the worm — never ahead.
-  // Use a smaller multiplier for tunnel than worm so tunnel always lags.
-  const tunnelReveal = Math.max(0, adjustedProgress * totalLength * 0.85);
+  // Tunnel must always lag behind worm position.
+  const tunnelReveal = Math.max(0, adjustedProgress * totalLength * 0.65);
 
   return (
     <div
@@ -81,25 +81,13 @@ export default function WormTunnel() {
             <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
           </filter>
 
-          {/* Bold dirt texture pattern for inside the tunnel */}
-          <pattern
-            id="dirt-fill"
-            width="20"
-            height="20"
-            patternUnits="userSpaceOnUse"
-          >
-            <rect width="20" height="20" fill="#1a1008" />
-            {/* Dirt chunks */}
-            <circle cx="3" cy="5" r="2" fill="#2a1c10" opacity="0.8" />
-            <circle cx="14" cy="3" r="1.5" fill="#3d2b1f" opacity="0.6" />
-            <circle cx="8" cy="12" r="2.5" fill="#2a1c10" opacity="0.7" />
-            <circle cx="17" cy="15" r="1.8" fill="#3d2b1f" opacity="0.5" />
-            <circle cx="5" cy="18" r="1.2" fill="#2a1c10" opacity="0.6" />
-            <circle cx="12" cy="8" r="1" fill="#4a3520" opacity="0.4" />
-            {/* Small rocks */}
-            <rect x="1" y="14" width="2" height="1.5" rx="0.5" fill="#3d2b1f" opacity="0.5" />
-            <rect x="15" y="9" width="3" height="2" rx="0.8" fill="#2a1c10" opacity="0.4" />
-          </pattern>
+          {/* Tunnel interior gradient — matches soil layers, darker in center */}
+          <linearGradient id="tunnel-soil" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3a2a18" /> {/* lighter soil at top */}
+            <stop offset="30%" stopColor="#2a1c10" />
+            <stop offset="60%" stopColor="#1a1008" /> {/* rich dark soil */}
+            <stop offset="100%" stopColor="#0e0804" /> {/* deepest */}
+          </linearGradient>
 
           {/* Worm gradient — brownish to bright red */}
           <linearGradient id="worm-body" x1="0" y1="0" x2="1" y2="0">
@@ -142,11 +130,11 @@ export default function WormTunnel() {
           strokeDashoffset={totalLength - tunnelReveal}
         />
 
-        {/* Inner dirt texture — bold, visible */}
+        {/* Inner soil gradient — matches surrounding layers */}
         <path
           d={tunnelPath}
           fill="none"
-          stroke="url(#dirt-fill)"
+          stroke="url(#tunnel-soil)"
           strokeWidth="46"
           strokeLinecap="round"
           strokeDasharray={totalLength}
