@@ -107,6 +107,21 @@ The worm exists in three states, seamlessly transitioning between them:
 
 The horizontal Grow section: the worm turns sideways and moves left-to-right at the same speed as your scroll. It's in the background, behind the cards. The soil layer stays consistent (living soil zone) — no transition during horizontal movement.
 
+**Easter eggs along the tunnel path:**
+
+Scratched into the tunnel walls at specific points — barely visible (5-10% opacity), rough handwritten style, like graffiti left in the underground. You'd miss most of them unless scrolling slowly. Each one is positioned using `offsetPath` at fixed percentages along the tunnel:
+
+- ~15%: "dig deeper" (right as the tunnel starts)
+- ~25%: tiny scratched leaf doodle
+- ~35%: "🪱 wuz here"
+- ~45%: "feed the soil"
+- ~55%: small scratched mushroom
+- ~65%: "no shortcuts"
+- ~72%: "420" (barely visible)
+- ~78%: "if you can read this, you're underground"
+
+These use a rough, scratchy font or are drawn as SVG paths to look hand-carved. They're rotated to follow the tunnel angle. They reward the slow scroller — a gift for people who are actually paying attention.
+
 **Done when:** The worm feels like a character you'd put on a t-shirt. It has presence without being cartoonish.
 
 ### Phase 4: The Colony
