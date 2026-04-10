@@ -269,6 +269,14 @@ function MoonWithPhase({ phase }: { phase: number }) {
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: "visible" }}>
+      {/* Soft ambient glow around the moon */}
+      <defs>
+        <filter id="moon-glow">
+          <feGaussianBlur stdDeviation="8" />
+        </filter>
+      </defs>
+      <circle cx={cx} cy={cy} r={r + 2} fill="rgba(230,220,190,0.08)" filter="url(#moon-glow)" />
+
       {/* Dark moon base — fully transparent, invisible */}
       <circle cx={cx} cy={cy} r={r} fill="none" />
 
