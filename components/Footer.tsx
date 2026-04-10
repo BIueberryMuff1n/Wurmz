@@ -5,7 +5,7 @@ export default function Footer() {
         {/* Social links */}
         <div className="flex gap-6">
           <a
-            href="https://instagram.com"
+            href="https://instagram.com/wurmz.ny"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
