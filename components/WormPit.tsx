@@ -51,7 +51,7 @@ export default function WormPit() {
 
     // Initialize worms if empty
     if (wormsRef.current.length === 0) {
-      const count = Math.floor(window.innerWidth / 3); // ~500 on desktop, DENSE
+      const count = Math.floor(window.innerWidth / 2.5); // ~550 on desktop
       for (let i = 0; i < count; i++) {
         wormsRef.current.push(createWorm(canvas.width, canvas.height, i));
       }
@@ -96,7 +96,10 @@ export default function WormPit() {
 function createWorm(w: number, h: number, seed: number): Worm {
   const segCount = 14 + Math.floor(pseudoRandom(seed * 7) * 10);
   const x = pseudoRandom(seed * 13) * w;
-  const y = pseudoRandom(seed * 17) * h;
+  // Bias Y toward the bottom — square the random to cluster low
+  // Most worms end up in the bottom 40% of the screen
+  const yRandom = pseudoRandom(seed * 17);
+  const y = h * (yRandom * yRandom); // squared = bottom-heavy
   const angle = pseudoRandom(seed * 23) * Math.PI * 2;
 
   const segments: [number, number][] = [];
@@ -112,13 +115,17 @@ function createWorm(w: number, h: number, seed: number): Worm {
   const gBase = 35 + Math.floor(pseudoRandom(seed * 31) * 30);
   const bBase = 30 + Math.floor(pseudoRandom(seed * 37) * 25);
 
+  // Worms near the bottom are bigger (macro view feel)
+  const depthFactor = y / h; // 0 at top, 1 at bottom
+  const sizeMultiplier = 0.5 + depthFactor * 1.5; // 0.5x at top, 2x at bottom
+
   return {
     segments,
-    speed: 0.4 + pseudoRandom(seed * 41) * 0.6,
+    speed: (0.4 + pseudoRandom(seed * 41) * 0.6) * sizeMultiplier,
     angle,
     turnRate: 0.02 + pseudoRandom(seed * 43) * 0.04,
     turnTimer: Math.floor(pseudoRandom(seed * 47) * 120),
-    thickness: 3 + pseudoRandom(seed * 53) * 4,
+    thickness: (3 + pseudoRandom(seed * 53) * 4) * sizeMultiplier,
     color: { r: rBase, g: gBase, b: bBase },
     waveOffset: pseudoRandom(seed * 59) * Math.PI * 2,
     waveSpeed: 0.05 + pseudoRandom(seed * 61) * 0.05,

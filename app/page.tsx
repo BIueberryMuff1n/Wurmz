@@ -1,6 +1,8 @@
 import Hero from "@/components/Hero";
 import BrandSection from "@/components/BrandSection";
 import GrowSection from "@/components/GrowSection";
+import ProcessSection from "@/components/ProcessSection";
+import PhilosophySection from "@/components/PhilosophySection";
 import CountdownSection from "@/components/CountdownSection";
 import SignupSection from "@/components/SignupSection";
 import Footer from "@/components/Footer";
@@ -22,6 +24,8 @@ export default function Home() {
         <Hero />
         <BrandSection />
         <GrowSection />
+        <ProcessSection />
+        <PhilosophySection />
         <CountdownSection />
         <SignupSection />
       </main>

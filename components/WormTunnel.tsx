@@ -106,7 +106,8 @@ export default function WormTunnel() {
           </linearGradient>
         </defs>
 
-        {/* === TUNNEL (revealed behind the worm) === */}
+        {/* === TUNNEL (revealed behind the worm — hidden until parachute lands) === */}
+        {adjustedProgress <= 0.01 ? null : <>
 
         {/* Outer edge — rough dirt border */}
         <path
@@ -164,8 +165,12 @@ export default function WormTunnel() {
           strokeDashoffset={totalLength - tunnelReveal}
         />
 
-        {/* === THE WORM (at the digging front) === */}
-        <WormBody tunnelPath={tunnelPath} progress={wormProgress} />
+        </>}
+
+        {/* === THE WORM (at the digging front) — hidden until after parachute lands === */}
+        {adjustedProgress > 0.01 && (
+          <WormBody tunnelPath={tunnelPath} progress={wormProgress} />
+        )}
       </svg>
     </div>
   );
