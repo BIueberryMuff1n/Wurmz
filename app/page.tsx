@@ -4,10 +4,6 @@ import GrowSection from "@/components/GrowSection";
 import CountdownSection from "@/components/CountdownSection";
 import SignupSection from "@/components/SignupSection";
 import Footer from "@/components/Footer";
-import FloatingParticles from "@/components/FloatingParticles";
-import RootTendrils from "@/components/RootTendrils";
-import MyceliumNetwork from "@/components/MyceliumNetwork";
-import WormCursor from "@/components/WormCursor";
 import UndergroundJourney from "@/components/UndergroundJourney";
 import WormTunnel from "@/components/WormTunnel";
 import SurfaceScene from "@/components/SurfaceScene";
@@ -19,10 +15,6 @@ export default function Home() {
       <UndergroundJourney />
       <SurfaceScene />
       <WormTunnel />
-      <MyceliumNetwork />
-      <RootTendrils />
-      <FloatingParticles />
-      <WormCursor />
       <main className="relative z-20">
         <Hero />
         <OrganicDivider color="#1E1710" />
