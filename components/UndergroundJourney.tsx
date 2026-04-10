@@ -43,12 +43,12 @@ export default function UndergroundJourney() {
       <div className="absolute inset-0" style={{ backgroundColor: bgColor }} />
 
       {/* === STRAW / MULCH TOP LAYER === */}
-      {/* Golden straw color wash */}
+      {/* Golden straw color wash — soft gradient, no hard edge */}
       <div
         className="absolute inset-0"
         style={{
-          opacity: strawOpacity * 0.5,
-          background: "linear-gradient(180deg, rgba(180,155,100,0.2) 0%, rgba(150,120,60,0.15) 50%, transparent 100%)",
+          opacity: strawOpacity * 0.35,
+          background: "radial-gradient(ellipse at 50% 30%, rgba(160,135,80,0.2) 0%, transparent 70%)",
         }}
       />
       {/* Straw fiber texture — horizontal streaks */}
@@ -163,31 +163,7 @@ export default function UndergroundJourney() {
         }}
       />
 
-      {/* Worms — sparse at top, DENSE mass at bottom */}
-      <svg
-        className="absolute inset-0 w-full h-full"
-        style={{ opacity: wormOpacity }}
-        viewBox="0 0 1440 900"
-        preserveAspectRatio="none"
-      >
-        {generateWorms().map((worm, i) => (
-          <path
-            key={i}
-            d={worm.d}
-            stroke={worm.color}
-            strokeWidth={worm.w}
-            fill="none"
-            strokeLinecap="round"
-          >
-            <animate
-              attributeName="d"
-              dur={worm.dur}
-              repeatCount="indefinite"
-              values={`${worm.d};${worm.altD};${worm.d}`}
-            />
-          </path>
-        ))}
-      </svg>
+      {/* Worms are now rendered by WormPit canvas component */}
     </div>
   );
 }
@@ -285,13 +261,14 @@ function smoothStep(edge0: number, edge1: number, x: number): number {
 function getBackgroundColor(progress: number): string {
   const colors = [
     { r: 17, g: 15, b: 10 },    // 0.0 — sky/surface dark
-    { r: 45, g: 35, b: 20 },    // 0.15 — straw/mulch (warmer, golden-brown)
-    { r: 55, g: 40, b: 22 },    // 0.3 — light soil with perlite (tan)
-    { r: 35, g: 25, b: 14 },    // 0.5 — rich living soil (dark brown)
-    { r: 20, g: 14, b: 8 },     // 0.7 — deep soil
-    { r: 12, g: 8, b: 5 },      // 1.0 — deepest earth
+    { r: 30, g: 24, b: 15 },    // 0.12 — transition to soil
+    { r: 40, g: 30, b: 18 },    // 0.25 — light soil (tan)
+    { r: 35, g: 25, b: 14 },    // 0.45 — rich living soil
+    { r: 22, g: 16, b: 9 },     // 0.65 — deep soil
+    { r: 14, g: 10, b: 6 },     // 0.85 — deeper
+    { r: 10, g: 7, b: 4 },      // 1.0 — deepest earth
   ];
-  const stops = [0, 0.15, 0.3, 0.5, 0.7, 1.0];
+  const stops = [0, 0.12, 0.25, 0.45, 0.65, 0.85, 1.0];
 
   let i = 0;
   for (; i < stops.length - 1; i++) {
