@@ -151,6 +151,29 @@ The colony only appears in the bottom ~35% of the scroll. It fades in gradually 
 - **Responsive logo**: `clip-path: circle(50%)` with `object-fit: cover` and slight `scale(1.1)`. Perfect circle, no white edges, regardless of source image.
 - **Sound** (optional, stretch): Subtle ambient soil/underground sound that fades in as you scroll deeper. Muted by default, opt-in.
 
+**Brilliant Details — the things people screenshot and share:**
+
+**Along the journey:**
+- The worm's joint cherry **flares brighter when passing content sections** — like it takes a puff while you're reading. Subtle ember glow tied to scroll position near content.
+- **Buried artifacts in the soil layers** — tiny bones, bottle caps, lost coins, a buried key, embedded at random depths. Barely visible (3-8% opacity), different objects at different soil depths. The archaeology of the underground.
+- A **buried "Wurmz" graffiti tag** deep in the soil (~60% scroll) — like someone spray-painted a rock underground. You scroll past it and it's gone.
+- At exactly ~50% scroll, the **worm glances backward** — its eye briefly looks toward you (the camera) before turning back. A one-frame fourth-wall break. Blink and you miss it.
+
+**At the colony:**
+- **One worm wears a tiny crown** — the queen. You have to find her among hundreds.
+- **Hovering over a colony worm makes it squirm faster** — it reacts to your presence through the glass.
+- **One golden worm** — 1 in 500 is gold colored. The rarest easter egg.
+
+**Structural:**
+- The **scroll indicator is a tiny wiggling worm**, not a chevron arrow.
+- **Email signup success rotates** between: "Welcome underground", "You've been wormed", "See you on 4/20", "You're in 🪱"
+- **Browser tab title changes as you scroll**: "Wurmz" → "Wurmz — digging..." → "Wurmz — deeper..." → "Wurmz — 🪱🪱🪱"
+
+**Meta / dev easter eggs:**
+- HTML source comment: `<!-- You found the source. But the real source is the soil. -->`
+- Console.log on page load: `🪱 You're looking at the roots. Respect.`
+- A second console message at the colony zone: `🪱🪱🪱 You made it to the bottom. Welcome home.`
+
 **Done when:** You've scrolled through it 50 times and haven't found a single thing that feels wrong.
 
 ---
