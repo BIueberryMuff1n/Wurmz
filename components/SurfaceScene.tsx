@@ -125,7 +125,7 @@ export default function SurfaceScene() {
         >
           {/* The streak: a single path with a moving dash that shrinks */}
           <path
-            d="M-50,30 Q350,60 700,220 Q1050,380 1500,450"
+            d="M-50,70 Q350,15 750,120 Q1100,250 1550,420"
             fill="none"
             stroke="white"
             strokeWidth="2"
@@ -269,8 +269,8 @@ function MoonWithPhase({ phase }: { phase: number }) {
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ overflow: "visible" }}>
-      {/* Dark moon base — transparent so sky shows through */}
-      <circle cx={cx} cy={cy} r={r} fill="rgba(10,15,26,0.3)" />
+      {/* Dark moon base — fully transparent, invisible */}
+      <circle cx={cx} cy={cy} r={r} fill="none" />
 
       {/* Lit portion */}
       <path d={litPath} fill="#E0D4B8" />
