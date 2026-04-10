@@ -8,34 +8,23 @@ import ScrollIndicator from "./ScrollIndicator";
 export default function Hero() {
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6">
-      {/* Logo with glow ring */}
+      {/* Logo */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
-        className="relative"
       >
-        <div
+        <Image
+          src="/logo.png"
+          alt="Wurmz — Organic Living Soil"
+          width={280}
+          height={280}
+          priority
+          className="rounded-full"
           style={{
-            animation: "glow-pulse 4s ease-in-out infinite",
-            width: 280,
-            height: 280,
-            borderRadius: "50%",
+            filter: "drop-shadow(0 0 25px rgba(230,52,98,0.2)) drop-shadow(0 0 50px rgba(139,92,246,0.1))",
           }}
-        >
-          <Image
-            src="/logo.png"
-            alt="Wurmz — Organic Living Soil"
-            width={280}
-            height={280}
-            priority
-            style={{
-              clipPath: "circle(42% at center)",
-              objectFit: "cover",
-              transform: "scale(1.3)",
-            }}
-          />
-        </div>
+        />
       </motion.div>
 
       {/* Tagline */}

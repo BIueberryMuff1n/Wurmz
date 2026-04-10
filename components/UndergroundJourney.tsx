@@ -2,276 +2,223 @@
 
 import { useScroll } from "./ScrollContext";
 
+// ═══════════════════════════════════════════════════════════════
+// THE EARTH — Continuous color field with 40+ control points
+// and cubic Hermite interpolation. Film-quality color grading.
+// ═══════════════════════════════════════════════════════════════
+
+// Color control points: [progress, r, g, b]
+// Tuned by hand for imperceptible transitions
+const COLOR_STOPS: [number, number, number, number][] = [
+  // Sky zone
+  [0.00, 10, 15, 26],    // deep night sky
+  [0.02, 12, 18, 30],    // sky, hint of warmth
+  [0.04, 16, 22, 34],    // sky brightening slightly
+  [0.06, 20, 24, 36],    // transitional
+  [0.08, 24, 24, 34],    // purple-brown begins
+  [0.10, 28, 24, 30],    // dusk meets earth
+  // Surface / straw zone
+  [0.12, 32, 24, 24],    // first soil hint
+  [0.13, 36, 26, 22],    // warming
+  [0.14, 40, 28, 20],    // amber entering
+  [0.15, 46, 32, 20],    // straw zone begins
+  [0.16, 50, 36, 22],    // golden warmth
+  [0.17, 54, 38, 22],    // peak straw
+  [0.18, 56, 40, 22],    // peak golden
+  [0.19, 54, 38, 22],    // straw fading
+  [0.20, 50, 36, 20],    // cooling
+  // Topsoil with perlite
+  [0.22, 46, 34, 20],    // transition
+  [0.24, 42, 30, 18],    // topsoil begins
+  [0.26, 40, 28, 18],    // mid topsoil
+  [0.28, 38, 28, 16],    // perlite zone peak
+  [0.30, 36, 26, 16],    // topsoil deepening
+  [0.32, 34, 24, 14],    // getting richer
+  [0.34, 32, 22, 14],    // transition zone
+  // Living soil
+  [0.36, 30, 22, 12],    // living soil begins
+  [0.38, 28, 20, 12],    // rich
+  [0.40, 26, 18, 10],    // deeper
+  [0.42, 24, 18, 10],    // core living soil
+  [0.44, 24, 16, 10],    // dark and rich
+  [0.46, 22, 16, 9],     // deepening
+  [0.48, 22, 15, 9],     // continuous
+  [0.50, 20, 14, 8],     // mid-depth
+  // Deep soil
+  [0.53, 20, 13, 8],     // transition
+  [0.56, 18, 12, 7],     // deep zone
+  [0.59, 17, 11, 7],     // darker
+  [0.62, 16, 10, 6],     // approaching colony
+  [0.65, 14, 10, 6],     // deep
+  [0.68, 14, 9, 5],      // very deep
+  // Colony zone
+  [0.72, 12, 8, 5],      // colony begins
+  [0.76, 11, 8, 4],      // dense dark
+  [0.80, 10, 7, 4],      // deeper
+  [0.84, 9, 6, 4],       // near bottom
+  [0.88, 8, 6, 3],       // almost black
+  [0.92, 7, 5, 3],       // deepest
+  [0.96, 6, 4, 3],       // near absolute
+  [1.00, 5, 3, 2],       // the bottom
+];
+
+// Cubic Hermite interpolation for ultra-smooth transitions
+function hermite(t: number): number {
+  // Smoothstep: 3t² - 2t³
+  return t * t * (3 - 2 * t);
+}
+
+export function getEarthColor(progress: number): string {
+  // Find the two surrounding stops
+  let i = 0;
+  for (; i < COLOR_STOPS.length - 1; i++) {
+    if (progress <= COLOR_STOPS[i + 1][0]) break;
+  }
+  i = Math.min(i, COLOR_STOPS.length - 2);
+
+  const [p0, r0, g0, b0] = COLOR_STOPS[i];
+  const [p1, r1, g1, b1] = COLOR_STOPS[i + 1];
+
+  // Normalized position between the two stops
+  const range = p1 - p0;
+  const t = range > 0 ? hermite((progress - p0) / range) : 0;
+
+  const r = Math.round(r0 + (r1 - r0) * t);
+  const g = Math.round(g0 + (g1 - g0) * t);
+  const b = Math.round(b0 + (b1 - b0) * t);
+
+  return `rgb(${r},${g},${b})`;
+}
+
+// Gaussian opacity curve — smooth bell curve centered at `peak`
+function gaussian(progress: number, peak: number, sigma: number): number {
+  const diff = progress - peak;
+  return Math.exp(-(diff * diff) / (2 * sigma * sigma));
+}
+
+// One-directional ramp — fades in and stays
+function rampIn(progress: number, start: number, full: number): number {
+  if (progress <= start) return 0;
+  if (progress >= full) return 1;
+  return hermite((progress - start) / (full - start));
+}
+
 export default function UndergroundJourney() {
-  const { progress: scrollProgress } = useScroll();
+  const { progress } = useScroll();
 
-  // Soil layer phases:
-  // 0.0 - 0.12: Sky / surface
-  // 0.12 - 0.25: Straw/mulch top layer (golden, fibrous)
-  // 0.25 - 0.45: Light soil with perlite (tan/brown with white speckles)
-  // 0.45 - 0.7: Rich living soil (dark brown, organic)
-  // 0.7 - 1.0: Deep earth (near black, dense)
+  const bgColor = getEarthColor(progress);
 
-  const bgColor = getBackgroundColor(scrollProgress);
-
-  // Layer opacities
-  const strawOpacity = smoothStep(0.1, 0.15, scrollProgress) * (1 - smoothStep(0.25, 0.35, scrollProgress));
-  const perliteOpacity = smoothStep(0.2, 0.3, scrollProgress) * (1 - smoothStep(0.45, 0.55, scrollProgress));
-  const richSoilOpacity = smoothStep(0.4, 0.5, scrollProgress) * (1 - smoothStep(0.75, 0.85, scrollProgress));
-  const deepOpacity = smoothStep(0.7, 0.85, scrollProgress);
-
-  // Root visibility in the rich soil zone
-  const rootOpacity = smoothStep(0.35, 0.5, scrollProgress) * (1 - smoothStep(0.7, 0.85, scrollProgress));
-
-  // Worm visibility at the deep zone
-  const wormOpacity = smoothStep(0.65, 0.8, scrollProgress);
+  // Texture layer opacities — gaussian curves centered at their zone
+  const strawOpacity = gaussian(progress, 0.17, 0.04) * 0.35;
+  const perliteOpacity = gaussian(progress, 0.28, 0.06) * 0.4;
+  const rootOpacity = gaussian(progress, 0.44, 0.08) * 0.12;
+  const deepVignette = rampIn(progress, 0.65, 0.85) * 0.5;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[2]">
-      {/* Base background color */}
+      {/* Continuous color field */}
       <div className="absolute inset-0" style={{ backgroundColor: bgColor }} />
 
-      {/* === STRAW / MULCH TOP LAYER === */}
-      {/* Golden straw color wash — soft gradient, no hard edge */}
+      {/* === STRAW / MULCH TEXTURE === */}
       <div
         className="absolute inset-0"
-        style={{
-          opacity: strawOpacity * 0.35,
-          background: "radial-gradient(ellipse at 50% 30%, rgba(160,135,80,0.2) 0%, transparent 70%)",
-        }}
-      />
-      {/* Straw fiber texture — horizontal streaks */}
-      <svg
-        className="absolute inset-0 w-full h-full"
-        style={{ opacity: strawOpacity * 0.3 }}
-        viewBox="0 0 1440 900"
-        preserveAspectRatio="none"
+        style={{ opacity: strawOpacity }}
       >
-        {/* Straw/hay fibers — thin golden lines at various angles */}
-        {Array.from({ length: 40 }, (_, i) => {
-          const x = (i * 37 + 15) % 1440;
-          const y = 200 + (i * 23 + 7) % 500;
-          const angle = -15 + (i % 7) * 5;
-          const len = 30 + (i % 5) * 15;
-          return (
-            <line
-              key={`straw-${i}`}
-              x1={x}
-              y1={y}
-              x2={x + len * Math.cos((angle * Math.PI) / 180)}
-              y2={y + len * Math.sin((angle * Math.PI) / 180)}
-              stroke={i % 3 === 0 ? "#C4A55A" : "#A8903C"}
-              strokeWidth={1 + (i % 3) * 0.5}
-              opacity={0.3 + (i % 4) * 0.1}
-              strokeLinecap="round"
-            />
-          );
-        })}
-      </svg>
+        {/* Warm amber wash */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "radial-gradient(ellipse at 50% 50%, rgba(160,135,80,0.25) 0%, transparent 70%)",
+          }}
+        />
+        {/* Straw fibers */}
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="none">
+          {Array.from({ length: 35 }, (_, i) => {
+            const x = (i * 41 + 15) % 1440;
+            const y = 150 + (i * 29 + 7) % 600;
+            const angle = -20 + (i % 9) * 5;
+            const len = 25 + (i % 5) * 12;
+            const rad = (angle * Math.PI) / 180;
+            return (
+              <line
+                key={i}
+                x1={x} y1={y}
+                x2={x + len * Math.cos(rad)} y2={y + len * Math.sin(rad)}
+                stroke={i % 3 === 0 ? "#C4A55A" : "#A8903C"}
+                strokeWidth={1 + (i % 3) * 0.4}
+                opacity={0.25 + (i % 4) * 0.08}
+                strokeLinecap="round"
+              />
+            );
+          })}
+        </svg>
+      </div>
 
-      {/* === PERLITE / LIGHT SOIL LAYER === */}
-      {/* Warm tan base */}
+      {/* === PERLITE / TOPSOIL TEXTURE === */}
       <div
         className="absolute inset-0"
-        style={{
-          opacity: perliteOpacity * 0.3,
-          background: "radial-gradient(ellipse at 50% 50%, rgba(120,90,50,0.25) 0%, transparent 70%)",
-        }}
-      />
-      {/* Perlite speckles — white/light dots scattered */}
-      <svg
-        className="absolute inset-0 w-full h-full"
-        style={{ opacity: perliteOpacity * 0.5 }}
-        viewBox="0 0 1440 900"
-        preserveAspectRatio="none"
+        style={{ opacity: perliteOpacity }}
       >
-        {Array.from({ length: 60 }, (_, i) => {
-          const x = (i * 47 + 23) % 1440;
-          const y = (i * 31 + 11) % 900;
-          const r = 1.5 + (i % 4) * 1.2;
-          return (
-            <circle
-              key={`perl-${i}`}
-              cx={x}
-              cy={y}
-              r={r}
-              fill={i % 5 === 0 ? "rgba(240,235,220,0.35)" : "rgba(220,210,190,0.25)"}
-            />
-          );
-        })}
-        {/* Larger perlite chunks */}
-        {Array.from({ length: 15 }, (_, i) => {
-          const x = (i * 97 + 50) % 1440;
-          const y = (i * 67 + 30) % 900;
-          return (
-            <ellipse
-              key={`chunk-${i}`}
-              cx={x}
-              cy={y}
-              rx={3 + (i % 3) * 2}
-              ry={2 + (i % 2) * 1.5}
-              fill="rgba(235,225,205,0.2)"
-              transform={`rotate(${(i * 30) % 180} ${x} ${y})`}
-            />
-          );
-        })}
-      </svg>
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="none">
+          {/* Perlite speckles — white dots */}
+          {Array.from({ length: 50 }, (_, i) => {
+            const x = (i * 47 + 23) % 1440;
+            const y = (i * 31 + 11) % 900;
+            const r = 1.2 + (i % 4) * 1;
+            return (
+              <circle
+                key={i}
+                cx={x} cy={y} r={r}
+                fill={i % 5 === 0 ? "rgba(240,235,220,0.3)" : "rgba(220,210,190,0.2)"}
+              />
+            );
+          })}
+          {/* Larger perlite chunks */}
+          {Array.from({ length: 12 }, (_, i) => {
+            const x = (i * 97 + 50) % 1440;
+            const y = (i * 67 + 30) % 900;
+            return (
+              <ellipse
+                key={`chunk-${i}`}
+                cx={x} cy={y}
+                rx={2.5 + (i % 3) * 1.5}
+                ry={2 + (i % 2) * 1}
+                fill="rgba(235,225,205,0.18)"
+                transform={`rotate(${(i * 30) % 180} ${x} ${y})`}
+              />
+            );
+          })}
+        </svg>
+      </div>
 
-      {/* === RICH LIVING SOIL === */}
-      <div
-        className="absolute inset-0"
-        style={{
-          opacity: richSoilOpacity * 0.4,
-          background: "linear-gradient(180deg, transparent 10%, rgba(40,28,15,0.4) 40%, rgba(25,18,10,0.5) 80%)",
-        }}
-      />
-      {/* Root system */}
+      {/* === ROOT NETWORK === */}
       <svg
         className="absolute inset-0 w-full h-full"
-        style={{ opacity: rootOpacity * 0.12 }}
+        style={{ opacity: rootOpacity }}
         viewBox="0 0 1440 900"
         preserveAspectRatio="none"
       >
         <g stroke="#654321" fill="none" strokeLinecap="round">
-          <path d="M720,0 C710,150 730,300 715,450 C700,600 725,750 720,900" strokeWidth="4" opacity="0.5" />
-          <path d="M720,150 C650,200 550,180 450,220" strokeWidth="2.5" opacity="0.35" />
-          <path d="M720,150 C790,200 890,180 990,220" strokeWidth="2.5" opacity="0.35" />
-          <path d="M715,350 C630,380 520,360 400,400" strokeWidth="2" opacity="0.25" />
-          <path d="M715,350 C800,380 920,360 1040,400" strokeWidth="2" opacity="0.25" />
+          <path d="M720,0 C710,150 730,300 715,450 C700,600 725,750 720,900" strokeWidth="3.5" opacity="0.5" />
+          <path d="M720,150 C650,200 550,180 450,220" strokeWidth="2" opacity="0.35" />
+          <path d="M720,150 C790,200 890,180 990,220" strokeWidth="2" opacity="0.35" />
+          <path d="M715,350 C630,380 520,360 400,400" strokeWidth="1.5" opacity="0.25" />
+          <path d="M715,350 C800,380 920,360 1040,400" strokeWidth="1.5" opacity="0.25" />
           <path d="M450,220 C400,250 350,240 300,270" strokeWidth="1" opacity="0.2" />
           <path d="M990,220 C1040,250 1090,240 1140,270" strokeWidth="1" opacity="0.2" />
         </g>
       </svg>
 
-      {/* === DEEP EARTH === */}
+      {/* === DEEP VIGNETTE === */}
       <div
         className="absolute inset-0"
         style={{
-          opacity: deepOpacity,
-          background: "radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(10,6,3,0.5) 80%)",
+          opacity: deepVignette,
+          background: "radial-gradient(ellipse at 50% 50%, transparent 15%, rgba(5,3,2,0.6) 85%)",
         }}
       />
 
-      {/* Worms are now rendered by WormPit canvas component */}
+      {/* Worms are rendered by WormPit canvas component */}
     </div>
   );
-}
-
-// Generate worms with increasing density toward the bottom
-function generateWorms() {
-  const worms: { d: string; altD: string; w: number; dur: string; color: string }[] = [];
-
-  // Seeded pseudo-random for consistent layout
-  function seeded(seed: number) {
-    return ((Math.sin(seed * 127.1 + 311.7) * 43758.5453) % 1 + 1) % 1;
-  }
-
-  // Zone 1: Top area (y: 100-350) — just 2 lonely worms
-  for (let i = 0; i < 2; i++) {
-    const x = 200 + seeded(i * 7) * 1000;
-    const y = 150 + seeded(i * 13) * 180;
-    const len = 60 + seeded(i * 19) * 40;
-    const amp = 15 + seeded(i * 23) * 10;
-    worms.push(makeWorm(x, y, len, amp, 3 + seeded(i * 29) * 2, 3 + seeded(i * 31) * 3, 0.15, i));
-  }
-
-  // Zone 2: Middle (y: 350-550) — about 8 worms
-  for (let i = 0; i < 8; i++) {
-    const x = 50 + seeded(i * 11 + 100) * 1340;
-    const y = 370 + seeded(i * 17 + 100) * 160;
-    const len = 50 + seeded(i * 23 + 100) * 60;
-    const amp = 12 + seeded(i * 29 + 100) * 12;
-    worms.push(makeWorm(x, y, len, amp, 3 + seeded(i * 31 + 100) * 2, 2 + seeded(i * 37 + 100) * 3, 0.2, i + 10));
-  }
-
-  // Zone 3: Dense bottom (y: 550-900) — 80+ worms, packed like the photo
-  for (let i = 0; i < 80; i++) {
-    const x = seeded(i * 7 + 200) * 1440;
-    const y = 560 + seeded(i * 11 + 200) * 340;
-    const len = 30 + seeded(i * 13 + 200) * 80;
-    const amp = 8 + seeded(i * 17 + 200) * 15;
-    const w = 2.5 + seeded(i * 19 + 200) * 4;
-    const dur = 1.5 + seeded(i * 23 + 200) * 4;
-    // Denser = more opaque
-    const depthFactor = (y - 560) / 340; // 0 at top of zone, 1 at bottom
-    const opacity = 0.12 + depthFactor * 0.2;
-    worms.push(makeWorm(x, y, len, amp, w, dur, opacity, i + 20));
-  }
-
-  return worms;
-}
-
-function makeWorm(
-  x: number, y: number, len: number, amp: number,
-  w: number, dur: number, opacity: number, seed: number
-) {
-  // Generate a sinusoidal worm path
-  const segs = 3 + Math.floor((len / 30));
-  const segLen = len / segs;
-
-  let d = `M${x},${y}`;
-  for (let s = 0; s < segs; s++) {
-    const cx = x + segLen * (s + 0.5);
-    const cy = y + (s % 2 === 0 ? -amp : amp);
-    const ex = x + segLen * (s + 1);
-    const ey = y;
-    d += ` C${cx},${cy} ${cx},${cy} ${ex},${ey}`;
-  }
-
-  // Alternate position (wriggle)
-  let altD = `M${x},${y}`;
-  for (let s = 0; s < segs; s++) {
-    const cx = x + segLen * (s + 0.5);
-    const cy = y + (s % 2 === 0 ? amp : -amp); // flipped
-    const ex = x + segLen * (s + 1);
-    const ey = y;
-    altD += ` C${cx},${cy} ${cx},${cy} ${ex},${ey}`;
-  }
-
-  // Color variation — brownish reds, some darker, some brighter
-  const r = 140 + Math.floor(((Math.sin(seed * 3.7) + 1) / 2) * 70);
-  const g = 30 + Math.floor(((Math.sin(seed * 5.3) + 1) / 2) * 30);
-  const b = 30 + Math.floor(((Math.sin(seed * 7.1) + 1) / 2) * 25);
-
-  return {
-    d,
-    altD,
-    w,
-    dur: `${dur}s`,
-    color: `rgba(${r},${g},${b},${opacity})`,
-  };
-}
-
-function smoothStep(edge0: number, edge1: number, x: number): number {
-  const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
-  return t * t * (3 - 2 * t);
-}
-
-function getBackgroundColor(progress: number): string {
-  const colors = [
-    { r: 17, g: 15, b: 10 },    // 0.0 — sky/surface dark
-    { r: 30, g: 24, b: 15 },    // 0.12 — transition to soil
-    { r: 40, g: 30, b: 18 },    // 0.25 — light soil (tan)
-    { r: 35, g: 25, b: 14 },    // 0.45 — rich living soil
-    { r: 22, g: 16, b: 9 },     // 0.65 — deep soil
-    { r: 14, g: 10, b: 6 },     // 0.85 — deeper
-    { r: 10, g: 7, b: 4 },      // 1.0 — deepest earth
-  ];
-  const stops = [0, 0.12, 0.25, 0.45, 0.65, 0.85, 1.0];
-
-  let i = 0;
-  for (; i < stops.length - 1; i++) {
-    if (progress <= stops[i + 1]) break;
-  }
-  i = Math.min(i, stops.length - 2);
-
-  const t = (progress - stops[i]) / (stops[i + 1] - stops[i]);
-  const c1 = colors[i];
-  const c2 = colors[i + 1];
-
-  const r = Math.round(c1.r + (c2.r - c1.r) * t);
-  const g = Math.round(c1.g + (c2.g - c1.g) * t);
-  const b = Math.round(c1.b + (c2.b - c1.b) * t);
-
-  return `rgb(${r}, ${g}, ${b})`;
 }
