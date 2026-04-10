@@ -163,46 +163,118 @@ export default function UndergroundJourney() {
         }}
       />
 
-      {/* Deep worms — red, matching logo */}
+      {/* Worms — sparse at top, DENSE mass at bottom */}
       <svg
         className="absolute inset-0 w-full h-full"
         style={{ opacity: wormOpacity }}
         viewBox="0 0 1440 900"
         preserveAspectRatio="none"
       >
-        {[
-          { d: "M200,300 C230,280 260,320 290,300 C320,280 350,320 380,300", w: 6, dur: "4s" },
-          { d: "M800,500 C820,480 840,520 860,500 C880,480 900,520 920,500", w: 5, dur: "3s" },
-          { d: "M1100,650 C1115,635 1130,665 1145,650 C1160,635 1175,665 1190,650", w: 4, dur: "2.5s" },
-          { d: "M50,750 C90,730 130,770 170,750 C210,730 250,770 290,750 C330,730 370,770 410,750", w: 5, dur: "5s" },
-          { d: "M600,800 C630,780 660,820 690,800 C720,780 750,820 780,800 C810,780 840,820 870,800", w: 7, dur: "6s" },
-          { d: "M1200,850 C1215,835 1230,865 1245,850 C1260,835 1275,865 1290,850", w: 4, dur: "3.5s" },
-        ].map((worm, i) => {
-          const altD = worm.d.replace(
-            /(\d+),(\d+)/g,
-            (_, x, y) => `${x},${parseInt(y) + (parseInt(y) % 2 === 0 ? 12 : -12)}`
-          );
-          return (
-            <path
-              key={i}
-              d={worm.d}
-              stroke="rgba(200,50,60,0.2)"
-              strokeWidth={worm.w}
-              fill="none"
-              strokeLinecap="round"
-            >
-              <animate
-                attributeName="d"
-                dur={worm.dur}
-                repeatCount="indefinite"
-                values={`${worm.d};${altD};${worm.d}`}
-              />
-            </path>
-          );
-        })}
+        {generateWorms().map((worm, i) => (
+          <path
+            key={i}
+            d={worm.d}
+            stroke={worm.color}
+            strokeWidth={worm.w}
+            fill="none"
+            strokeLinecap="round"
+          >
+            <animate
+              attributeName="d"
+              dur={worm.dur}
+              repeatCount="indefinite"
+              values={`${worm.d};${worm.altD};${worm.d}`}
+            />
+          </path>
+        ))}
       </svg>
     </div>
   );
+}
+
+// Generate worms with increasing density toward the bottom
+function generateWorms() {
+  const worms: { d: string; altD: string; w: number; dur: string; color: string }[] = [];
+
+  // Seeded pseudo-random for consistent layout
+  function seeded(seed: number) {
+    return ((Math.sin(seed * 127.1 + 311.7) * 43758.5453) % 1 + 1) % 1;
+  }
+
+  // Zone 1: Top area (y: 100-350) — just 2 lonely worms
+  for (let i = 0; i < 2; i++) {
+    const x = 200 + seeded(i * 7) * 1000;
+    const y = 150 + seeded(i * 13) * 180;
+    const len = 60 + seeded(i * 19) * 40;
+    const amp = 15 + seeded(i * 23) * 10;
+    worms.push(makeWorm(x, y, len, amp, 3 + seeded(i * 29) * 2, 3 + seeded(i * 31) * 3, 0.15, i));
+  }
+
+  // Zone 2: Middle (y: 350-550) — about 8 worms
+  for (let i = 0; i < 8; i++) {
+    const x = 50 + seeded(i * 11 + 100) * 1340;
+    const y = 370 + seeded(i * 17 + 100) * 160;
+    const len = 50 + seeded(i * 23 + 100) * 60;
+    const amp = 12 + seeded(i * 29 + 100) * 12;
+    worms.push(makeWorm(x, y, len, amp, 3 + seeded(i * 31 + 100) * 2, 2 + seeded(i * 37 + 100) * 3, 0.2, i + 10));
+  }
+
+  // Zone 3: Dense bottom (y: 550-900) — 80+ worms, packed like the photo
+  for (let i = 0; i < 80; i++) {
+    const x = seeded(i * 7 + 200) * 1440;
+    const y = 560 + seeded(i * 11 + 200) * 340;
+    const len = 30 + seeded(i * 13 + 200) * 80;
+    const amp = 8 + seeded(i * 17 + 200) * 15;
+    const w = 2.5 + seeded(i * 19 + 200) * 4;
+    const dur = 1.5 + seeded(i * 23 + 200) * 4;
+    // Denser = more opaque
+    const depthFactor = (y - 560) / 340; // 0 at top of zone, 1 at bottom
+    const opacity = 0.12 + depthFactor * 0.2;
+    worms.push(makeWorm(x, y, len, amp, w, dur, opacity, i + 20));
+  }
+
+  return worms;
+}
+
+function makeWorm(
+  x: number, y: number, len: number, amp: number,
+  w: number, dur: number, opacity: number, seed: number
+) {
+  // Generate a sinusoidal worm path
+  const segs = 3 + Math.floor((len / 30));
+  const segLen = len / segs;
+
+  let d = `M${x},${y}`;
+  for (let s = 0; s < segs; s++) {
+    const cx = x + segLen * (s + 0.5);
+    const cy = y + (s % 2 === 0 ? -amp : amp);
+    const ex = x + segLen * (s + 1);
+    const ey = y;
+    d += ` C${cx},${cy} ${cx},${cy} ${ex},${ey}`;
+  }
+
+  // Alternate position (wriggle)
+  let altD = `M${x},${y}`;
+  for (let s = 0; s < segs; s++) {
+    const cx = x + segLen * (s + 0.5);
+    const cy = y + (s % 2 === 0 ? amp : -amp); // flipped
+    const ex = x + segLen * (s + 1);
+    const ey = y;
+    altD += ` C${cx},${cy} ${cx},${cy} ${ex},${ey}`;
+  }
+
+  // Color variation — brownish reds, some darker, some brighter
+  const r = 140 + Math.floor(((Math.sin(seed * 3.7) + 1) / 2) * 70);
+  const g = 30 + Math.floor(((Math.sin(seed * 5.3) + 1) / 2) * 30);
+  const b = 30 + Math.floor(((Math.sin(seed * 7.1) + 1) / 2) * 25);
+
+  return {
+    d,
+    altD,
+    w,
+    dur: `${dur}s`,
+    color: `rgba(${r},${g},${b},${opacity})`,
+  };
 }
 
 function smoothStep(edge0: number, edge1: number, x: number): number {
