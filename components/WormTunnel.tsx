@@ -251,6 +251,102 @@ function WormBody({
           strokeLinecap="round"
         />
       ))}
+
+      {/* === FACE (front/right end) === */}
+      {/* Eyes — half-lidded, chill */}
+      <ellipse cx={bodyLen / 2 - 18} cy={-6} rx={4} ry={3.5} fill="#1a0a05" />
+      <ellipse cx={bodyLen / 2 - 18} cy={6} rx={4} ry={3.5} fill="#1a0a05" />
+      {/* Eye shine */}
+      <circle cx={bodyLen / 2 - 16} cy={-7} r={1.5} fill="rgba(255,255,255,0.5)" />
+      <circle cx={bodyLen / 2 - 16} cy={5} r={1.5} fill="rgba(255,255,255,0.5)" />
+      {/* Eyelids — half closed, stoned look */}
+      <path
+        d={`M${bodyLen / 2 - 23},${-9} Q${bodyLen / 2 - 18},${-5} ${bodyLen / 2 - 13},${-9}`}
+        fill="rgba(160,40,30,0.6)"
+      />
+      <path
+        d={`M${bodyLen / 2 - 23},${3} Q${bodyLen / 2 - 18},${7} ${bodyLen / 2 - 13},${3}`}
+        fill="rgba(160,40,30,0.6)"
+      />
+      {/* Smile — subtle smirk */}
+      <path
+        d={`M${bodyLen / 2 - 10},${-2} Q${bodyLen / 2 - 5},${2} ${bodyLen / 2 - 10},${2}`}
+        fill="none"
+        stroke="#1a0a05"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+
+      {/* === JOINT === */}
+      {/* Joint body — white/tan cylinder sticking out of mouth */}
+      <rect
+        x={bodyLen / 2 - 6}
+        y={-2.5}
+        width={22}
+        height={5}
+        rx={2}
+        ry={2}
+        fill="#E8DCC8"
+        stroke="rgba(180,160,130,0.5)"
+        strokeWidth="0.5"
+      />
+      {/* Joint filter/tip — brown end near mouth */}
+      <rect
+        x={bodyLen / 2 - 6}
+        y={-2.5}
+        width={6}
+        height={5}
+        rx={1.5}
+        ry={1.5}
+        fill="#C4A87A"
+      />
+      {/* Joint cherry/lit end — glowing orange */}
+      <circle cx={bodyLen / 2 + 16} cy={0} r={3} fill="#E8841A" />
+      <circle cx={bodyLen / 2 + 16} cy={0} r={2} fill="#F5A623" opacity="0.8" />
+      <circle cx={bodyLen / 2 + 16} cy={0} r={4} fill="rgba(245,166,35,0.2)" />
+
+      {/* === SMOKE TRAIL === */}
+      {/* Smoke puffs rising from joint tip */}
+      {[
+        { cx: bodyLen / 2 + 22, cy: -4, r: 3, o: 0.15 },
+        { cx: bodyLen / 2 + 28, cy: -9, r: 4, o: 0.12 },
+        { cx: bodyLen / 2 + 32, cy: -16, r: 5, o: 0.09 },
+        { cx: bodyLen / 2 + 34, cy: -25, r: 6, o: 0.06 },
+        { cx: bodyLen / 2 + 33, cy: -35, r: 7, o: 0.04 },
+      ].map((puff, i) => (
+        <circle
+          key={`smoke-${i}`}
+          cx={puff.cx}
+          cy={puff.cy}
+          r={puff.r}
+          fill={`rgba(200,200,200,${puff.o})`}
+        >
+          <animate
+            attributeName="cy"
+            values={`${puff.cy};${puff.cy - 8};${puff.cy}`}
+            dur={`${3 + i * 0.5}s`}
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="cx"
+            values={`${puff.cx};${puff.cx + 4};${puff.cx}`}
+            dur={`${4 + i * 0.7}s`}
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="r"
+            values={`${puff.r};${puff.r + 2};${puff.r}`}
+            dur={`${3.5 + i * 0.4}s`}
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="opacity"
+            values={`${puff.o};${puff.o * 0.5};${puff.o}`}
+            dur={`${3 + i * 0.6}s`}
+            repeatCount="indefinite"
+          />
+        </circle>
+      ))}
     </g>
   );
 }
