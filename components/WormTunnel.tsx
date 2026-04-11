@@ -408,7 +408,7 @@ function WormBody({
         ry={bodyR}
         fill="none"
         stroke="rgba(40,12,8,0.7)"
-        strokeWidth="4"
+        strokeWidth="3"
       />
 
       {/* Main body fill */}

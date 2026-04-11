@@ -114,6 +114,13 @@ export default function GrowSection() {
           }}
         >
           <svg width="200" height="50" viewBox="0 0 200 50" opacity="0.25">
+            <defs>
+              <linearGradient id="grow-worm-body" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#7A2818" />
+                <stop offset="50%" stopColor="#C43A3A" />
+                <stop offset="100%" stopColor="#8B2020" />
+              </linearGradient>
+            </defs>
             {/* Worm body */}
             <rect
               x="10" y="5" width="180" height="40" rx="20" ry="20"
@@ -121,13 +128,13 @@ export default function GrowSection() {
             />
             <rect
               x="10" y="5" width="180" height="40" rx="20" ry="20"
-              fill="#B83228" opacity="0.8"
+              fill="url(#grow-worm-body)" opacity="0.9"
             />
             {/* Segments */}
             {[45, 75, 105, 135, 165].map((x, i) => (
               <line
                 key={i} x1={x} y1={10} x2={x} y2={40}
-                stroke="rgba(60,15,10,0.2)" strokeWidth="1.5"
+                stroke="rgba(60,15,10,0.2)" strokeWidth="1.5" strokeLinecap="round"
               />
             ))}
             {/* Eye */}
@@ -137,6 +144,14 @@ export default function GrowSection() {
             <path d="M172,14 Q178,18 184,14" fill="rgba(140,35,25,0.6)" />
             {/* Smirk */}
             <path d="M182,28 Q186,32 184,33" fill="none" stroke="#1a0a05" strokeWidth="1.5" strokeLinecap="round" />
+            {/* RAW joint — simplified, no smoke animation per bible state 4 */}
+            <g transform="translate(185, 27) rotate(-30)">
+              <polygon points="0,-1 14,-2 14,2 0,1" fill="#C8B088" stroke="rgba(140,110,70,0.4)" strokeWidth="0.4" />
+              <rect x="-1.5" y="-1" width="3" height="2" rx="1" fill="#A08050" />
+              <circle cx="15" cy="0" r="1.8" fill="#D4641A" />
+              <circle cx="15" cy="0" r="1.2" fill="#F0A030" opacity="0.8" />
+              <circle cx="15" cy="0" r="0.6" fill="#FFD080" opacity="0.6" />
+            </g>
           </svg>
         </div>
 

@@ -164,19 +164,27 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
           <path d="M118,36 L138,34" stroke="rgba(30,18,10,0.6)" strokeWidth="2" strokeLinecap="round" />
 
           {/* === WORM ON THE EDGE — same capsule style as tunnel worm === */}
+          {/* Worm body gradient */}
+          <defs>
+            <linearGradient id="plane-worm-body" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#7A2818" />
+              <stop offset="50%" stopColor="#C43A3A" />
+              <stop offset="100%" stopColor="#8B2020" />
+            </linearGradient>
+          </defs>
           {/* Body — horizontal capsule sitting on the cockpit rim */}
           <rect
             x="118" y="26" width="28" height="11" rx="5.5" ry="5.5"
-            fill="none" stroke="rgba(40,12,8,0.7)" strokeWidth="1.5"
+            fill="none" stroke="rgba(40,12,8,0.7)" strokeWidth="2"
           />
           <rect
             x="118" y="26" width="28" height="11" rx="5.5" ry="5.5"
-            fill="#B83228" opacity="0.9"
+            fill="url(#plane-worm-body)" opacity="0.9"
           />
           {/* Segment lines */}
           {[126, 132, 138].map((x, i) => (
             <line key={`seg-${i}`} x1={x} y1={28} x2={x} y2={35}
-              stroke="rgba(60,15,10,0.2)" strokeWidth="0.8" strokeLinecap="round" />
+              stroke="rgba(60,15,10,0.2)" strokeWidth="1.5" strokeLinecap="round" />
           ))}
 
           {/* Face — side profile, same as tunnel worm */}
@@ -194,6 +202,7 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
             <rect x="-1" y="-0.7" width="2" height="1.4" rx="0.7" fill="#A08050" />
             <circle cx="11" cy="0" r="1.2" fill="#D4641A" />
             <circle cx="11" cy="0" r="0.8" fill="#F0A030" opacity="0.8" />
+            <circle cx="11" cy="0" r="0.4" fill="#FFD080" opacity="0.6" />
             {/* Smoke */}
             <circle cx="13" cy="-2" r="0.8" fill="rgba(200,200,200,0.12)">
               <animate attributeName="cy" values="-2;-4;-2" dur="3s" repeatCount="indefinite" />
@@ -204,8 +213,8 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
           </g>
 
           {/* Tail end dangling off the edge */}
-          <path d="M118,32 Q114,35 115,40" stroke="#B83228" strokeWidth="3" strokeLinecap="round" fill="none" />
-          <path d="M118,32 Q114,35 115,40" stroke="rgba(40,12,8,0.5)" strokeWidth="4" strokeLinecap="round" fill="none" />
+          <path d="M118,32 Q114,35 115,40" stroke="rgba(40,12,8,0.7)" strokeWidth="4" strokeLinecap="round" fill="none" />
+          <path d="M118,32 Q114,35 115,40" stroke="#7A2818" strokeWidth="3" strokeLinecap="round" fill="none" />
 
           {/* Skateboard leaning against cockpit wall */}
           <g transform="translate(138, 28) rotate(15)">

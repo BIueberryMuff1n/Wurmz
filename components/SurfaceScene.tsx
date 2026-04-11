@@ -17,6 +17,7 @@ function getMoonPhase(): number {
 export default function SurfaceScene() {
   const { scrollY } = useScroll();
   const [shootingStar, setShootingStar] = useState<{ x: number; y: number; angle: number; key: number } | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const skyOffset = scrollY * 0.2;
   const fadeOut = Math.max(0, 1 - scrollY / 1000);
@@ -25,6 +26,16 @@ export default function SurfaceScene() {
 
   useEffect(() => {
     setMoonPhase(getMoonPhase());
+  }, []);
+
+  // Detect mobile viewport
+  useEffect(() => {
+    function checkMobile() {
+      setIsMobile(window.innerWidth < 768);
+    }
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // Periodic shooting stars
@@ -77,12 +88,12 @@ export default function SurfaceScene() {
         }}
       />
 
-      {/* Stars */}
+      {/* Stars — fewer on mobile to reduce clutter */}
       <div
         className="absolute inset-0"
         style={{ transform: `translateY(${skyOffset * 0.5}px)` }}
       >
-        {[
+        {([
           { x: 10, y: 5, s: 1.5, o: 0.6 },
           { x: 25, y: 12, s: 1, o: 0.4 },
           { x: 40, y: 3, s: 2, o: 0.7 },
@@ -99,7 +110,7 @@ export default function SurfaceScene() {
           { x: 32, y: 14, s: 1.5, o: 0.45 },
           { x: 67, y: 4, s: 1, o: 0.5 },
           { x: 94, y: 18, s: 1.5, o: 0.4 },
-        ].map((star, i) => (
+        ] as const).slice(0, isMobile ? 8 : 16).map((star, i) => (
           <div
             key={i}
             className="absolute rounded-full bg-white"
@@ -190,13 +201,14 @@ export default function SurfaceScene() {
         />
       </div>
 
-      {/* Moon — real phase */}
+      {/* Moon — real phase, smaller on mobile */}
       <div
         className="absolute"
         style={{
           right: "15%",
           top: "8%",
-          transform: `translateY(${skyOffset * 0.3}px)`,
+          transform: `translateY(${skyOffset * 0.3}px) scale(${isMobile ? 0.7 : 1})`,
+          transformOrigin: "center center",
         }}
       >
         {moonPhase !== null && <MoonWithPhase phase={moonPhase} />}
@@ -205,14 +217,16 @@ export default function SurfaceScene() {
       {/* Faint chemtrails — top left area, two parallel lines */}
       <svg
         className="absolute inset-0 w-full h-full"
+        viewBox={isMobile ? "0 0 375 400" : undefined}
+        preserveAspectRatio="none"
         style={{
           transform: `translateY(${skyOffset * 0.4}px)`,
           opacity: 0.07,
         }}
       >
-        {/* Upper chemtrail — steep diagonal, left side lower */}
+        {/* Upper chemtrail — shorter on mobile */}
         <path
-          d="M-20,140 C150,110 350,70 550,30"
+          d={isMobile ? "M-20,140 C80,120 180,90 280,50" : "M-20,140 C150,110 350,70 550,30"}
           fill="none"
           stroke="white"
           strokeWidth="1.2"
@@ -220,7 +234,7 @@ export default function SurfaceScene() {
         />
         {/* Lower chemtrail — close parallel */}
         <path
-          d="M-20,148 C150,118 350,78 550,38"
+          d={isMobile ? "M-20,148 C80,128 180,98 280,58" : "M-20,148 C150,118 350,78 550,38"}
           fill="none"
           stroke="white"
           strokeWidth="1"
@@ -238,7 +252,7 @@ export default function SurfaceScene() {
           zIndex: 2,
         }}
         viewBox="0 0 1440 80"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid slice"
         height="50"
       >
         {/* NYC skyline — accurate profile from NJ/Hoboken looking east */}

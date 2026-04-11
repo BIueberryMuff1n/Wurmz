@@ -60,6 +60,14 @@ export default function ParachuteWorm() {
 
           {/* Worm + skateboard + backpack */}
           <svg width="80" height="55" viewBox="0 0 80 55">
+            <defs>
+              <linearGradient id="chute-worm-body" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#7A2818" />
+                <stop offset="50%" stopColor="#C43A3A" />
+                <stop offset="100%" stopColor="#8B2020" />
+              </linearGradient>
+            </defs>
+
             {/* Backpack — behind worm */}
             <rect x="6" y="2" width="18" height="20" rx="4" ry="4"
               fill="#4A5A30" stroke="rgba(30,40,15,0.7)" strokeWidth="1.5" />
@@ -71,11 +79,37 @@ export default function ParachuteWorm() {
             <rect x="5" y="10" width="58" height="24" rx="12" ry="12"
               fill="none" stroke="rgba(40,12,8,0.7)" strokeWidth="2.5" />
             <rect x="5" y="10" width="58" height="24" rx="12" ry="12"
-              fill="#B83228" opacity="0.9" />
+              fill="url(#chute-worm-body)" opacity="0.9" />
             {[20, 32, 44].map((x, i) => (
               <line key={i} x1={x} y1={14} x2={x} y2={30}
                 stroke="rgba(60,15,10,0.2)" strokeWidth="1.5" strokeLinecap="round" />
             ))}
+
+            {/* Face — side profile */}
+            {/* Eye */}
+            <ellipse cx="57" cy="17" rx="3" ry="2.5" fill="#1a0a05" />
+            <circle cx="58" cy="16.5" r="1" fill="rgba(255,255,255,0.5)" />
+            {/* Eyelid — droopy */}
+            <path d="M53,14 Q57,17.5 61,14" fill="rgba(140,35,25,0.6)" />
+            {/* Smirk */}
+            <path d="M59,25 Q62,28 60,29" fill="none" stroke="#1a0a05" strokeWidth="1" strokeLinecap="round" />
+
+            {/* RAW joint — tilted up from mouth */}
+            <g transform="translate(60, 25) rotate(-30)">
+              <polygon points="0,-0.8 12,-1.5 12,1.5 0,0.8" fill="#C8B088" stroke="rgba(140,110,70,0.4)" strokeWidth="0.3" />
+              <rect x="-1.2" y="-0.8" width="2.4" height="1.6" rx="0.8" fill="#A08050" />
+              <text x="3" y="0.5" fontSize="1.8" fill="rgba(100,80,45,0.12)" fontFamily="sans-serif" fontWeight="bold">RAW</text>
+              <circle cx="13" cy="0" r="1.5" fill="#D4641A" />
+              <circle cx="13" cy="0" r="1" fill="#F0A030" opacity="0.8" />
+              <circle cx="13" cy="0" r="0.5" fill="#FFD080" opacity="0.6" />
+              {/* Smoke */}
+              <circle cx="15" cy="-2" r="1" fill="rgba(200,200,200,0.08)">
+                <animate attributeName="cy" values="-2;-5;-2" dur="3s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="16" cy="-5" r="1.5" fill="rgba(200,200,200,0.05)">
+                <animate attributeName="cy" values="-5;-8;-5" dur="4s" repeatCount="indefinite" />
+              </circle>
+            </g>
 
             {/* === SKATEBOARD === */}
             {/* Deck */}
