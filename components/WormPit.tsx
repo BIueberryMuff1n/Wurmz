@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useScroll } from "./ScrollContext";
+import { gaussian, rampIn } from "./DesignSystem";
 
 interface Worm {
   // Array of segment positions [x, y]
@@ -27,19 +28,20 @@ export default function WormPit() {
   const animRef = useRef<number>(0);
   const mouseRef = useRef<{ x: number; y: number } | null>(null);
   const hoveredWormRef = useRef<Worm | null>(null);
-  const [visible, setVisible] = useState(false);
 
-  const { progress } = useScroll();
+  // 0-A: no visible state — always mounted, opacity drives visibility
+  const { progress, scrollY } = useScroll();
   const progressRef = useRef(progress);
   progressRef.current = progress;
+  const scrollYRef = useRef(scrollY);
+  scrollYRef.current = scrollY;
+
+  // 0-A: gaussian opacity curve — no hard gate, no sudden appearance
+  const pitOpacity =
+    gaussian(progress, 0.75, 0.18) * 0.85 +
+    rampIn(progress, 0.40, 0.55) * 0.10;
 
   useEffect(() => {
-    setVisible(progress > 0.45); // start showing worms earlier
-  }, [progress]);
-
-  useEffect(() => {
-    if (!visible) return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -52,13 +54,12 @@ export default function WormPit() {
     resize();
     window.addEventListener("resize", resize);
 
-    // Mouse tracking for hover interaction
+    // Mouse tracking — store page-space coords for worm hover detection
     function onMouseMove(e: MouseEvent) {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
+      mouseRef.current = { x: e.clientX, y: e.clientY + scrollYRef.current };
     }
     function onMouseLeave() {
       mouseRef.current = null;
-      // Reset hovered worm speed
       if (hoveredWormRef.current) {
         hoveredWormRef.current.speed = hoveredWormRef.current.baseSpeed;
         hoveredWormRef.current = null;
@@ -67,14 +68,14 @@ export default function WormPit() {
     canvas.addEventListener("mousemove", onMouseMove);
     canvas.addEventListener("mouseleave", onMouseLeave);
 
-    // Initialize worms if empty
+    // Initialize worms using full page height for world-space placement
     if (wormsRef.current.length === 0) {
       const isMobile = window.innerWidth < 768;
-      const count = Math.floor(isMobile ? 40 : 150); // lean: fewer, fatter worms
+      const count = Math.floor(isMobile ? 40 : 150);
+      const pageH = document.documentElement.scrollHeight;
       for (let i = 0; i < count; i++) {
-        wormsRef.current.push(createWorm(canvas.width, canvas.height, i));
+        wormsRef.current.push(createWorm(window.innerWidth, pageH, i));
       }
-      // Sort by depth so deeper worms draw first (painter's algorithm)
       wormsRef.current.sort((a, b) => a.depth - b.depth);
     }
 
@@ -85,13 +86,38 @@ export default function WormPit() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       time++;
 
-      // Living background — worms fill the viewport, no scroll offset
-      // They're always present when deep enough, like looking through glass
+      const p = progressRef.current;
+
+      // Soil texture in viewport space (before page translation)
+      if (p > 0.6) {
+        const soilAlpha = Math.min(0.15, (p - 0.6) / 0.3 * 0.15);
+        for (let s = 0; s < 30; s++) {
+          const sx = pseudoRandom(s * 13 + time * 0.001) * canvas.width;
+          const sy = pseudoRandom(s * 17 + 500) * canvas.height;
+          const sr = 1 + pseudoRandom(s * 23) * 3;
+          ctx.beginPath();
+          ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(30,22,14,${soilAlpha})`;
+          ctx.fill();
+        }
+        for (let s = 0; s < 8; s++) {
+          const cx = pseudoRandom(s * 31 + 200) * canvas.width;
+          const cy = pseudoRandom(s * 37 + 200) * canvas.height;
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, 4 + pseudoRandom(s * 41) * 6, 2 + pseudoRandom(s * 43) * 4, pseudoRandom(s * 47) * Math.PI, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(25,18,10,${soilAlpha * 0.7})`;
+          ctx.fill();
+        }
+      }
+
+      // 0-D: translate to page space — worms exist at fixed page coordinates and scroll with content
       ctx.save();
+      ctx.translate(0, -scrollYRef.current);
 
       const worms = wormsRef.current;
+      const pageH = document.documentElement.scrollHeight;
 
-      // Hover: throttled to every 5th frame for performance
+      // Hover check in page-space coords
       const mouse = mouseRef.current;
       if (mouse && time % 5 === 0) {
         let nearestDist = Infinity;
@@ -106,9 +132,7 @@ export default function WormPit() {
             nearestWorm = worm;
           }
         }
-        // Only affect worms within 120px radius
         if (nearestWorm && nearestDist < 120 * 120) {
-          // Reset previous hovered worm
           if (hoveredWormRef.current && hoveredWormRef.current !== nearestWorm) {
             hoveredWormRef.current.speed = hoveredWormRef.current.baseSpeed;
           }
@@ -122,44 +146,15 @@ export default function WormPit() {
         }
       }
 
-      // Draw worms — count increases with scroll depth
-      const p = progressRef.current;
-      // Very sparse until 70%, then ramps steeply to packed at 90%+
-      const densityFraction = p <= 0.5
-        ? 0
-        : Math.min(1, Math.max(0, Math.pow((p - 0.5) / 0.5, 2.5))); // smooth continuous ramp: 0 at 0.5, 1 at 1.0
+      // 0-B: smooth density ramp — no if/else gate, continuous from 0.45 to full at 0.95
+      const densityFraction = Math.pow(rampIn(p, 0.45, 0.95), 2.0);
       const drawCount = Math.max(3, Math.floor(worms.length * densityFraction));
 
-      // Draw subtle soil texture on the canvas — makes it feel like real earth
-      if (p > 0.6) {
-        const soilAlpha = Math.min(0.15, (p - 0.6) / 0.3 * 0.15);
-        // Scattered soil particles
-        for (let s = 0; s < 30; s++) {
-          const sx = pseudoRandom(s * 13 + time * 0.001) * canvas.width;
-          const sy = pseudoRandom(s * 17 + 500) * canvas.height;
-          const sr = 1 + pseudoRandom(s * 23) * 3;
-          ctx.beginPath();
-          ctx.arc(sx, sy, sr, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(30,22,14,${soilAlpha})`;
-          ctx.fill();
-        }
-        // A few larger dirt clumps
-        for (let s = 0; s < 8; s++) {
-          const cx = pseudoRandom(s * 31 + 200) * canvas.width;
-          const cy = pseudoRandom(s * 37 + 200) * canvas.height;
-          ctx.beginPath();
-          ctx.ellipse(cx, cy, 4 + pseudoRandom(s * 41) * 6, 2 + pseudoRandom(s * 43) * 4, pseudoRandom(s * 47) * Math.PI, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(25,18,10,${soilAlpha * 0.7})`;
-          ctx.fill();
-        }
-      }
-
       // DEPTH COMPOSITING: back worms → embedded objects → front worms
-      // This creates real depth — objects have things behind AND in front
 
       // Pass 1: Update all visible worms
       for (let i = 0; i < drawCount; i++) {
-        updateWorm(worms[i], canvas.width, canvas.height, time);
+        updateWorm(worms[i], canvas.width, pageH, time);
       }
 
       // Pass 2: Draw BACK layer worms (depth < 0.5 — dimmer, behind everything)
@@ -169,10 +164,10 @@ export default function WormPit() {
         }
       }
 
-      // Pass 3: Draw embedded objects (concrete block with T-Rex graffiti)
+      // Pass 3: Draw embedded objects at fixed page position
       if (p > 0.75) {
         const blockOpacity = Math.min(0.3, (p - 0.75) / 0.15 * 0.3);
-        drawConcreteBlock(ctx, canvas.width * 0.72, canvas.height * 0.45, blockOpacity);
+        drawConcreteBlock(ctx, canvas.width * 0.72, pageH * 0.88, blockOpacity);
       }
 
       // Pass 4: Draw FRONT layer worms (depth >= 0.5 — brighter, in front)
@@ -182,7 +177,7 @@ export default function WormPit() {
         }
       }
 
-      ctx.restore(); // undo scroll translate
+      ctx.restore();
       animRef.current = requestAnimationFrame(animate);
     }
 
@@ -194,20 +189,17 @@ export default function WormPit() {
       canvas.removeEventListener("mousemove", onMouseMove);
       canvas.removeEventListener("mouseleave", onMouseLeave);
     };
-  }, [visible]);
+  }, []);
 
-  if (!visible) return null;
-
-  // Opacity: very faint early, solid only at footer
-  const pitOpacity = progress < 0.70
-    ? Math.max(0, (progress - 0.45) / 0.25) * 0.15 // barely visible: 0-15%
-    : Math.min(0.85, 0.15 + ((progress - 0.70) / 0.30) * 0.70); // ramp: 15-85%
-
+  // 0-A: always render canvas, use display:none below threshold to avoid layout cost
   return (
     <canvas
       ref={canvasRef}
       className="pointer-events-auto fixed inset-0 z-[4]"
-      style={{ opacity: pitOpacity }}
+      style={{
+        opacity: pitOpacity,
+        display: pitOpacity < 0.002 ? "none" : undefined,
+      }}
     />
   );
 }
@@ -216,12 +208,14 @@ function createWorm(w: number, h: number, seed: number): Worm {
   const isQueen = seed === 42;
   const isGolden = seed === 137;
 
-  const segCount = 10 + Math.floor(pseudoRandom(seed * 7) * 4); // 10-14 segments — within performance budget
+  const segCount = 10 + Math.floor(pseudoRandom(seed * 7) * 4);
   const x = pseudoRandom(seed * 13) * w;
-  // Full viewport, bottom-heavy — like looking into a worm bin cross-section
-  // Uniform random across full height, but with quadratic bottom bias
+
+  // 0-C: bottom-heavy distribution — mass concentrated in lower portion of page
+  // Math.pow(r, 0.4) maps uniform random to a distribution heavy near r=1 (bottom)
   const yRandom = pseudoRandom(seed * 17);
-  const y = h * (yRandom * yRandom * 0.4 + yRandom * 0.6); // smooth bottom-heavy curve
+  const y = h * (0.15 + Math.pow(yRandom, 0.4) * 0.85);
+
   const angle = pseudoRandom(seed * 23) * Math.PI * 2;
 
   const segments: [number, number][] = [];
@@ -232,42 +226,34 @@ function createWorm(w: number, h: number, seed: number): Worm {
     ]);
   }
 
-  // Color: golden worm gets gold, queen and others get brownish-reds
   let color: { r: number; g: number; b: number };
   if (isGolden) {
     color = { r: 218, g: 165, b: 32 };
   } else {
-    const rBase = 140 + Math.floor(pseudoRandom(seed * 29) * 60); // 140-200
-    const gBase = 30 + Math.floor(pseudoRandom(seed * 31) * 25);  // 30-55
-    const bBase = 20 + Math.floor(pseudoRandom(seed * 37) * 20);  // 20-40
+    const rBase = 140 + Math.floor(pseudoRandom(seed * 29) * 60);
+    const gBase = 30 + Math.floor(pseudoRandom(seed * 31) * 25);
+    const bBase = 20 + Math.floor(pseudoRandom(seed * 37) * 20);
     color = { r: rBase, g: gBase, b: bBase };
   }
 
-  // Worms near the bottom are bigger (macro view feel)
-  const depthFactor = y / h; // 0 at top, 1 at bottom
-  let sizeMultiplier = 0.4 + depthFactor * 3.6; // 0.4x at top, 4x at bottom — VERY fat worms at bottom
+  const depthFactor = y / h;
+  let sizeMultiplier = 0.4 + depthFactor * 3.6;
+  if (isQueen) sizeMultiplier *= 1.3;
 
-  // Queen is slightly larger
-  if (isQueen) {
-    sizeMultiplier *= 1.3;
-  }
-
-  // Depth layering: random depth value 0-1
   const depth = pseudoRandom(seed * 67);
-
-  const baseSpeed = (0.02 + pseudoRandom(seed * 41) * 0.04) * sizeMultiplier; // worms are SLOW
+  const baseSpeed = (0.02 + pseudoRandom(seed * 41) * 0.04) * sizeMultiplier;
 
   return {
     segments,
     speed: baseSpeed,
     baseSpeed,
     angle,
-    turnRate: 0.005 + pseudoRandom(seed * 43) * 0.01, // gentle turns
-    turnTimer: Math.floor(80 + pseudoRandom(seed * 47) * 200), // long between turns
-    thickness: (3 + pseudoRandom(seed * 53) * 4) * sizeMultiplier, // natural worm width
+    turnRate: 0.005 + pseudoRandom(seed * 43) * 0.01,
+    turnTimer: Math.floor(80 + pseudoRandom(seed * 47) * 200),
+    thickness: (3 + pseudoRandom(seed * 53) * 4) * sizeMultiplier,
     color,
     waveOffset: pseudoRandom(seed * 59) * Math.PI * 2,
-    waveSpeed: 0.012 + pseudoRandom(seed * 61) * 0.015, // slow undulation
+    waveSpeed: 0.012 + pseudoRandom(seed * 61) * 0.015,
     depth,
     isQueen,
     isGolden,
@@ -276,37 +262,40 @@ function createWorm(w: number, h: number, seed: number): Worm {
 }
 
 function updateWorm(worm: Worm, w: number, h: number, time: number) {
-  // Direction changes
   worm.turnTimer--;
   if (worm.turnTimer <= 0) {
-    worm.turnRate = (Math.random() - 0.5) * 0.02; // gentle direction changes
-    worm.turnTimer = 100 + Math.floor(Math.random() * 250); // long intervals
+    // 0-E: deterministic pseudoRandom — no Math.random() in animation loop
+    const r1 = pseudoRandom(worm.seed * 91 + time * 0.01);
+    const r2 = pseudoRandom(worm.seed * 113 + time * 0.013);
+    worm.turnRate = (r1 - 0.5) * 0.02;
+    worm.turnTimer = 100 + Math.floor(r2 * 250);
   }
 
-  // Update heading with organic turning
   worm.angle += worm.turnRate;
 
-  // Body wave — sinusoidal motion propagating along the body
   const waveAmp = 0.3 + worm.thickness * 0.05;
   const headWave = Math.sin(time * worm.waveSpeed + worm.waveOffset) * waveAmp;
   worm.angle += headWave * 0.02;
 
-  // Move head
   const head = worm.segments[0];
   const newX = head[0] + Math.cos(worm.angle) * worm.speed;
   const newY = head[1] + Math.sin(worm.angle) * worm.speed;
 
-  // X wraps around, Y has gentle downward gravity
   const margin = 50;
   let finalX = ((newX + margin) % (w + margin * 2)) - margin;
   let finalY = newY;
 
-  // Wrap around all edges — worms reappear on opposite side
-  if (finalY < -margin) finalY = h + margin - 10;
-  if (finalY > h + margin) finalY = -margin + 10;
+  // 3-A: gravity well — worms above upper boundary are nudged downward, no teleport
+  const upperBoundary = h * 0.18;
+  if (finalY < upperBoundary) {
+    const pressure = (upperBoundary - finalY) / upperBoundary;
+    worm.angle += (Math.PI / 2 - worm.angle) * pressure * 0.04;
+  }
+  // Only wrap at the very bottom — bottom edge is the floor
+  if (finalY > h + margin) finalY = h * 0.2;
+
   worm.segments[0] = [finalX, finalY];
 
-  // Each segment follows the one ahead — creates the wave propagation
   for (let i = 1; i < worm.segments.length; i++) {
     const prev = worm.segments[i - 1];
     const curr = worm.segments[i];
@@ -321,7 +310,6 @@ function updateWorm(worm: Worm, w: number, h: number, time: number) {
       curr[1] = prev[1] - dy * ratio;
     }
 
-    // Add perpendicular wave to each segment (phase-delayed)
     const wavePhase = time * worm.waveSpeed + worm.waveOffset + i * 0.4;
     const perpAmp = Math.sin(wavePhase) * waveAmp * 0.5;
     const segAngle = Math.atan2(dy, dx);
@@ -336,12 +324,8 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
 
   const { r, g, b } = worm.color;
 
-  // Depth-based alpha: deeper worms (lower depth) are dimmer
-  // depth 0 -> alphaMultiplier 0.5, depth 1 -> alphaMultiplier 1.0
-  // Multiplied by 0.6 to reduce overall worm intensity so content stays readable
-  const alphaMultiplier = 0.5 + worm.depth * 0.5; // depth layering only, no extra reduction
+  const alphaMultiplier = 0.5 + worm.depth * 0.5;
 
-  // Draw body as a thick smooth path
   // Outer dark outline
   ctx.beginPath();
   ctx.moveTo(segs[0][0], segs[0][1]);
@@ -374,7 +358,7 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
   ctx.lineJoin = "round";
   ctx.stroke();
 
-  // Highlight — thin lighter stroke along center for 3D roundness
+  // Highlight — thin lighter stroke for 3D roundness
   ctx.beginPath();
   ctx.moveTo(segs[0][0], segs[0][1]);
   for (let i = 1; i < segs.length; i++) {
@@ -407,10 +391,12 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
     }
   }
 
-  // Queen crown: 3 small golden triangles above the head
   if (worm.isQueen) {
     drawCrown(ctx, worm);
   }
+
+  // suppress unused param warning — time available for future animated effects
+  void time;
 }
 
 function drawCrown(ctx: CanvasRenderingContext2D, worm: Worm) {
@@ -418,25 +404,20 @@ function drawCrown(ctx: CanvasRenderingContext2D, worm: Worm) {
   const head = segs[0];
   const next = segs[1];
 
-  // Direction the worm is facing
   const headAngle = Math.atan2(head[1] - next[1], head[0] - next[0]);
-  // Crown sits perpendicular to the body, on top of the head
   const crownUp = headAngle - Math.PI / 2;
 
   const crownBase = worm.thickness * 0.8;
   const crownHeight = worm.thickness * 1.2;
 
-  // Base center of crown: offset from head center in the "up" direction
   const baseX = head[0] + Math.cos(crownUp) * worm.thickness * 0.5;
   const baseY = head[1] + Math.sin(crownUp) * worm.thickness * 0.5;
 
-  // Perpendicular to crownUp for spreading the triangles
   const perpAngle = crownUp + Math.PI / 2;
 
   ctx.save();
-  ctx.fillStyle = "rgba(255, 215, 0, 0.6)"; // #FFD700 at 0.6 opacity
+  ctx.fillStyle = "rgba(255, 215, 0, 0.6)";
 
-  // Draw 3 small triangles (left, center, right)
   const offsets = [-1, 0, 1];
   for (const offset of offsets) {
     const spread = offset * crownBase * 0.5;
@@ -463,7 +444,6 @@ function drawCrown(ctx: CanvasRenderingContext2D, worm: Worm) {
   ctx.restore();
 }
 
-// Embedded concrete block with T-Rex graffiti — drawn between worm layers for depth
 function drawConcreteBlock(ctx: CanvasRenderingContext2D, x: number, y: number, opacity: number) {
   if (opacity < 0.01) return;
   ctx.save();
@@ -472,18 +452,15 @@ function drawConcreteBlock(ctx: CanvasRenderingContext2D, x: number, y: number, 
   const w = 120, h = 80;
   const bx = x - w / 2, by = y - h / 2;
 
-  // Shadow beneath — makes it feel like it sticks out
   ctx.fillStyle = "rgba(0,0,0,0.3)";
   ctx.fillRect(bx + 4, by + 4, w, h);
 
-  // Concrete block
   ctx.fillStyle = "#4A4540";
   ctx.strokeStyle = "rgba(60,55,50,0.6)";
   ctx.lineWidth = 2;
   ctx.fillRect(bx, by, w, h);
   ctx.strokeRect(bx, by, w, h);
 
-  // Concrete cracks
   ctx.strokeStyle = "rgba(80,75,65,0.25)";
   ctx.lineWidth = 0.5;
   ctx.beginPath();
@@ -493,7 +470,6 @@ function drawConcreteBlock(ctx: CanvasRenderingContext2D, x: number, y: number, 
   ctx.lineTo(bx + 90, by + 55);
   ctx.stroke();
 
-  // Rebar stubs
   ctx.strokeStyle = "#6B5A45";
   ctx.lineWidth = 2;
   ctx.lineCap = "round";
@@ -510,26 +486,22 @@ function drawConcreteBlock(ctx: CanvasRenderingContext2D, x: number, y: number, 
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
 
-  // Cranium
   ctx.beginPath();
   ctx.moveTo(bx + 20, by + 38);
   ctx.bezierCurveTo(bx + 20, by + 25, bx + 40, by + 18, bx + 55, by + 18);
   ctx.bezierCurveTo(bx + 70, by + 18, bx + 80, by + 25, bx + 82, by + 35);
   ctx.stroke();
 
-  // Jaw
   ctx.beginPath();
   ctx.moveTo(bx + 20, by + 38);
   ctx.bezierCurveTo(bx + 20, by + 48, bx + 35, by + 55, bx + 50, by + 55);
   ctx.bezierCurveTo(bx + 65, by + 55, bx + 75, by + 50, bx + 82, by + 42);
   ctx.stroke();
 
-  // Eye socket
   ctx.beginPath();
   ctx.arc(bx + 60, by + 30, 6, 0, Math.PI * 2);
   ctx.stroke();
 
-  // Teeth — violet colored
   ctx.strokeStyle = "#8B5CF6";
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -541,7 +513,6 @@ function drawConcreteBlock(ctx: CanvasRenderingContext2D, x: number, y: number, 
   }
   ctx.stroke();
 
-  // Paint drips
   ctx.strokeStyle = "rgba(230,52,98,0.3)";
   ctx.lineWidth = 1;
   ctx.beginPath();
@@ -551,7 +522,6 @@ function drawConcreteBlock(ctx: CanvasRenderingContext2D, x: number, y: number, 
   ctx.lineTo(bx + 55, by + 63);
   ctx.stroke();
 
-  // "WURMZ" tag
   ctx.font = "bold 8px sans-serif";
   ctx.fillStyle = "rgba(230,52,98,0.4)";
   ctx.fillText("WURMZ", bx + 25, by + 72);
