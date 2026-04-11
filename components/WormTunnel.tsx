@@ -37,18 +37,19 @@ export default function WormTunnel() {
     "C700,800 750,900 720,1000",         // Initial dig down
     "C680,1100 -100,1150 -200,1200",     // EXIT LEFT — Brand section
     "C-300,1250 -100,1300 200,1350",     // Curve back from left
-    "C500,1400 720,1450 720,1500",       // Approaching Grow section
-    "C720,1550 -200,1600 -300,1650",     // EXIT LEFT — disappear into horizontal tunnel
-    "C-400,1700 -300,1800 -200,1850",    // Stay hidden off-screen during Grow scroll
-    "C-100,1900 200,1950 720,2000",      // Re-emerge after Grow
-    "C750,2100 720,2200 720,2350",       // Re-center for Process
+    "C500,1400 400,1450 200,1480",       // Approaching Grow — curve up-left
+    "C50,1500 100,1520 400,1540",        // Sweep RIGHT across top of cards
+    "C700,1560 1100,1580 1500,1620",     // Continue right past cards
+    "C1600,1650 1550,1750 1400,1850",    // Loop around right edge, curve down
+    "C1200,1950 900,2000 720,2050",      // Sweep back to center
+    "C600,2100 720,2200 720,2350",       // Lead eye down to Process
     "C690,2500 -150,2550 -200,2650",     // EXIT LEFT — signup
     "C-250,2750 300,2800 720,2900",      // Curve back
     "C750,3000 680,3100 720,3200",       // Final descent
     "C740,3300 720,3350 720,3400",       // Bottom
   ].join(" ");
 
-  const totalLength = 8800;
+  const totalLength = 10000; // longer path with horizontal sweep
   // Segmented worm: 6 segments spaced 0.008 apart = 0.04 total span + segment half-width
   const wormBodyLen = 0.01 * totalLength + 15; // ~103px effective body length with tight spacing
 
