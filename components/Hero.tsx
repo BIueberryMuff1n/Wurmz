@@ -22,7 +22,8 @@ export default function Hero() {
           priority
           className="rounded-full w-[200px] h-[200px] md:w-[280px] md:h-[280px]"
           style={{
-            filter: "drop-shadow(0 0 25px rgba(230,52,98,0.2)) drop-shadow(0 0 50px rgba(139,92,246,0.1))",
+            transform: "perspective(800px) rotateX(8deg) rotateY(-12deg) rotateZ(-3deg)",
+            filter: "drop-shadow(8px 12px 20px rgba(0,0,0,0.5)) drop-shadow(0 0 30px rgba(230,52,98,0.15))",
           }}
         />
       </motion.div>
