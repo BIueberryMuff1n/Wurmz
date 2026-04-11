@@ -255,7 +255,7 @@ function createWorm(w: number, h: number, seed: number): Worm {
   // Depth layering: random depth value 0-1
   const depth = pseudoRandom(seed * 67);
 
-  const baseSpeed = (0.08 + pseudoRandom(seed * 41) * 0.12) * sizeMultiplier;
+  const baseSpeed = (0.02 + pseudoRandom(seed * 41) * 0.04) * sizeMultiplier; // worms are SLOW
 
   return {
     segments,
