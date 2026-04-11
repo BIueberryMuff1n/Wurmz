@@ -70,7 +70,7 @@ export default function WormPit() {
     // Initialize worms if empty
     if (wormsRef.current.length === 0) {
       const isMobile = window.innerWidth < 768;
-      const count = Math.floor(isMobile ? window.innerWidth / 6 : window.innerWidth / 2.5); // ~128 on mobile, ~550 on desktop
+      const count = Math.floor(isMobile ? window.innerWidth / 3 : window.innerWidth / 1.2); // ~250 on mobile, ~1200 on desktop — PACKED
       for (let i = 0; i < count; i++) {
         wormsRef.current.push(createWorm(canvas.width, canvas.height, i));
       }
@@ -146,8 +146,8 @@ export default function WormPit() {
 
   if (!visible) return null;
 
-  // Opacity ramps up: faint at 0.45, moderate at 0.65, full at 0.85+
-  const pitOpacity = Math.min(0.6, Math.max(0, (progress - 0.45) / 0.4) * 0.6);
+  // Opacity ramps up: faint at 0.45, solid at 0.85+
+  const pitOpacity = Math.min(0.9, Math.max(0, (progress - 0.45) / 0.35) * 0.9);
 
   return (
     <canvas
@@ -191,7 +191,7 @@ function createWorm(w: number, h: number, seed: number): Worm {
 
   // Worms near the bottom are bigger (macro view feel)
   const depthFactor = y / h; // 0 at top, 1 at bottom
-  let sizeMultiplier = 0.5 + depthFactor * 1.5; // 0.5x at top, 2x at bottom
+  let sizeMultiplier = 0.5 + depthFactor * 2.5; // 0.5x at top, 3x at bottom — FAT worms near bottom
 
   // Queen is slightly larger
   if (isQueen) {
@@ -282,7 +282,7 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
   // Depth-based alpha: deeper worms (lower depth) are dimmer
   // depth 0 -> alphaMultiplier 0.5, depth 1 -> alphaMultiplier 1.0
   // Multiplied by 0.6 to reduce overall worm intensity so content stays readable
-  const alphaMultiplier = (0.5 + worm.depth * 0.5) * 0.6;
+  const alphaMultiplier = 0.5 + worm.depth * 0.5; // depth layering only, no extra reduction
 
   // Draw body as a thick smooth path
   // Outer dark outline
