@@ -256,49 +256,70 @@ export default function SurfaceScene() {
         preserveAspectRatio="xMidYMid meet"
         height="140"
       >
-        {/* NYC skyline — concentrated lower Manhattan cluster from NJ/Hoboken */}
-        {/* Based on actual photos: tight cluster in center, WTC dominant spike */}
+        {/* NYC skyline — full Manhattan panorama silhouette */}
         <path
           d={[
             "M0,80",
 
-            // Empty water on far left
-            "L350,80",
+            // === FAR LEFT — low buildings + church steeple ===
+            "L40,80 L40,72 L45,72 L45,68 L48,68 L48,72 L55,72 L55,65 L58,65 L58,70 L65,70",
+            // Church steeple
+            "L68,70 L68,60 L69,55 L69.5,48 L70,55 L70,60 L72,70",
+            "L78,70 L78,66 L82,66 L82,62 L86,62 L86,58 L90,58 L90,62 L95,62 L95,66 L100,66 L100,70 L108,70 L108,80",
 
-            // === LEFT EDGE — shorter buildings stepping up ===
-            "L380,80 L380,68 L384,68 L384,62 L388,62 L388,58 L392,58 L392,55 L396,55 L396,52 L400,52",
-            // Dense cluster stepping up toward WTC
-            "L400,48 L404,48 L404,44 L408,44 L408,48 L412,48 L412,40 L416,40 L416,44 L420,44 L420,38 L424,38 L424,42 L428,42 L428,36 L432,36 L432,40 L436,40 L436,34 L440,34",
+            // Small gap
+            "L120,80",
 
-            // === DENSE DOWNTOWN CLUSTER — many towers close together ===
-            "L440,32 L444,32 L444,28 L448,28 L448,32 L452,32 L452,26 L456,26 L456,30 L460,30 L460,24 L464,24 L464,28 L468,28 L468,22 L472,22 L472,26",
+            // === STEPPING UP — toward downtown ===
+            "L120,72 L125,72 L125,65 L130,65 L130,60 L134,60 L134,56 L138,56 L138,52 L142,52 L142,58 L148,58 L148,50 L152,50 L152,54 L156,54 L156,46 L160,46 L160,50 L165,50 L165,44 L170,44 L170,48 L175,48",
 
-            // === ONE WTC — the SPIKE, dramatically taller ===
-            "L480,26 L480,18 L482,18 L482,10 L483,8 L483.5,4 L484,1 L484.5,4 L485,8 L486,10 L486,18 L488,18 L488,26",
+            // === DENSE CLUSTER — downtown towers ===
+            "L175,42 L180,42 L180,38 L184,38 L184,42 L188,42 L188,35 L192,35 L192,40 L196,40 L196,34 L200,34 L200,38 L204,38 L204,30 L208,30 L208,34 L212,34 L212,28 L216,28",
 
-            // === RIGHT OF WTC — more towers stepping back down ===
-            "L492,26 L492,22 L496,22 L496,26 L500,26 L500,20 L504,20 L504,24 L508,24 L508,28 L512,28 L512,24 L516,24 L516,30 L520,30 L520,26 L524,26 L524,32",
-            "L528,32 L528,36 L532,36 L532,32 L536,32 L536,38 L540,38 L540,34 L544,34 L544,40 L548,40 L548,36 L552,36 L552,42",
+            // === ONE WTC — tallest spike ===
+            "L220,28 L220,20 L222,20 L222,12 L223,10 L223.5,5 L224,2 L224.5,5 L225,10 L226,12 L226,20 L228,20 L228,28",
 
-            // === STEPPING DOWN — right side of cluster ===
-            "L556,42 L556,46 L560,46 L560,50 L564,50 L564,48 L568,48 L568,54 L572,54 L572,50 L576,50 L576,56 L580,56 L580,52 L584,52 L584,58 L588,58 L588,62 L592,62 L592,58 L596,58 L596,64 L600,64 L600,68 L604,68 L604,72",
+            // === RIGHT OF WTC — dense towers ===
+            "L232,28 L232,24 L236,24 L236,30 L240,30 L240,26 L244,26 L244,32 L248,32 L248,28 L252,28 L252,34 L256,34 L256,30 L260,30 L260,36 L264,36 L264,32 L268,32 L268,38 L272,38 L272,34 L276,34 L276,40",
 
-            // Trailing off to right
-            "L610,72 L610,74 L618,74 L618,76 L626,76 L626,78 L640,78 L640,80",
+            // === MID-SECTION — slightly lower, varied ===
+            "L280,40 L280,44 L284,44 L284,38 L288,38 L288,42 L292,42 L292,46 L296,46",
+            // Church/pointy spire
+            "L298,46 L298,38 L299,34 L299.5,28 L300,34 L300,38 L302,46",
+            "L306,46 L306,42 L310,42 L310,48 L314,48 L314,44 L318,44 L318,50",
 
-            // Empty right
+            // === EMPIRE STATE AREA — tall with antenna ===
+            "L330,50 L330,42 L332,42 L332,34 L334,34 L334,28 L335,24 L335.5,18 L336,12 L336.5,18 L337,24 L338,28 L340,34 L342,42 L344,42 L344,50",
+
+            // === DENSE MIDTOWN — many towers ===
+            "L348,50 L348,44 L352,44 L352,40 L356,40 L356,36 L360,36 L360,40 L364,40 L364,34 L368,34 L368,38 L372,38 L372,32 L376,32 L376,36 L380,36 L380,40 L384,40 L384,36 L388,36 L388,42 L392,42 L392,38 L396,38 L396,44",
+
+            // Thin antenna tower
+            "L400,44 L401,44 L401,30 L401.5,22 L402,16 L402.5,22 L403,30 L403,44",
+
+            // === CHRYSLER-LIKE SPIRE ===
+            "L410,44 L410,38 L412,38 L412,32 L413,28 L413.5,22 L414,18 L414.5,22 L415,28 L416,32 L418,38 L420,44",
+
+            // === STEPPING DOWN — upper east ===
+            "L424,44 L424,48 L428,48 L428,42 L432,42 L432,46 L436,46 L436,50 L440,50 L440,54 L444,54 L444,50 L448,50 L448,56 L452,56 L452,52 L456,52 L456,58 L460,58 L460,62",
+
+            // === FAR RIGHT — scattered, trailing off ===
+            "L466,62 L466,58 L470,58 L470,55 L473,55 L473,50 L475,50 L475,46 L477,46 L477,50 L480,50 L480,55 L484,55 L484,60 L488,60 L488,64 L492,64 L492,68",
+            "L500,68 L500,64 L504,64 L504,60 L506,60 L506,56 L508,56 L508,60 L510,60 L510,66 L515,66 L515,70 L520,70 L520,74 L530,74 L530,78 L540,78 L540,80",
+
             "L1440,80"
           ].join(" ")}
           fill="rgba(140,145,165,0.85)"
         />
-        {/* Window lights — concentrated in the cluster */}
+        {/* Window lights — scattered across the full panorama */}
         {[
-          [420,36], [436,32], [452,24], [468,20], [484,6], [500,22],
-          [516,26], [532,34], [448,30], [472,24], [504,22], [540,36],
-          [560,44], [580,54], [412,42], [428,38]
+          [160,44], [192,36], [224,8], [236,26], [260,32], [288,40],
+          [336,16], [356,38], [376,34], [402,20], [414,22], [432,44],
+          [200,32], [248,30], [300,36], [370,36], [448,52], [474,48],
+          [506,58], [152,48], [272,36], [392,40]
         ].map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r={0.6} fill="rgba(255,240,180,0.5)">
-            <animate attributeName="opacity" values="0.2;0.7;0.2" dur={`${2 + (i % 3)}s`} repeatCount="indefinite" />
+          <circle key={i} cx={x} cy={y} r={0.5} fill="rgba(255,240,180,0.5)">
+            <animate attributeName="opacity" values="0.15;0.6;0.15" dur={`${2.5 + (i % 4) * 0.5}s`} repeatCount="indefinite" />
           </circle>
         ))}
       </svg>
