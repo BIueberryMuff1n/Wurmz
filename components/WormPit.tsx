@@ -85,6 +85,16 @@ export default function WormPit() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       time++;
 
+      // CRITICAL: Offset drawing by scroll so worms scroll with the page
+      // Worms live in page coordinates — we translate the canvas to match
+      const scrollY = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - canvas.height;
+      // Only offset in the worm zone (bottom portion of page)
+      const wormZoneStart = maxScroll * 0.5;
+      const scrollOffset = Math.max(0, scrollY - wormZoneStart);
+      ctx.save();
+      ctx.translate(0, -scrollOffset * 0.3); // parallax — worms move slower than content
+
       const worms = wormsRef.current;
 
       // Hover: find nearest worm to mouse and boost its speed
@@ -137,6 +147,7 @@ export default function WormPit() {
         }
       }
 
+      ctx.restore(); // undo scroll translate
       animRef.current = requestAnimationFrame(animate);
     }
 

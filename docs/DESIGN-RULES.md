@@ -84,7 +84,15 @@ The earth has distinct zones but transitions must be IMPERCEPTIBLE:
 - No `Math.random()` in render (causes hydration mismatch)
 - Use `pseudoRandom(seed)` for deterministic randomness
 
-## Rule 10: Mobile
+## Rule 10: No Fixed Overlays That Break Depth
+
+Background visual effects (worms, textures, particles) must NEVER feel like a wallpaper stuck to the viewport. They must move with the page to maintain the illusion of depth.
+
+**Implementation:** The worm pit canvas stays `position: fixed` for animation performance, but the drawing context is translated by scroll offset (`ctx.translate(0, -scrollOffset)`) so worms appear to exist at fixed page coordinates and scroll with the content.
+
+**Test:** Scroll slowly. If background elements stay perfectly still while content moves, the depth illusion is broken.
+
+## Rule 11: Mobile
 
 - All content responsive at 375px
 - Plane, parachute, worm scaled down on mobile
