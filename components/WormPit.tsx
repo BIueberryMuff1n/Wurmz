@@ -134,10 +134,32 @@ export default function WormPit() {
             : Math.min(1, 0.50 + ((p - 0.85) / 0.15) * 0.50); // packed: 50-100%
       const drawCount = Math.max(3, Math.floor(worms.length * densityFraction));
 
-      // Only update AND draw worms that are visible (skip the rest entirely)
+      // DEPTH COMPOSITING: back worms → embedded objects → front worms
+      // This creates real depth — objects have things behind AND in front
+
+      // Pass 1: Update all visible worms
       for (let i = 0; i < drawCount; i++) {
         updateWorm(worms[i], canvas.width, canvas.height, time);
-        drawWorm(ctx, worms[i], time);
+      }
+
+      // Pass 2: Draw BACK layer worms (depth < 0.5 — dimmer, behind everything)
+      for (let i = 0; i < drawCount; i++) {
+        if (worms[i].depth < 0.5) {
+          drawWorm(ctx, worms[i], time);
+        }
+      }
+
+      // Pass 3: Draw embedded objects (concrete block with T-Rex graffiti)
+      if (p > 0.75) {
+        const blockOpacity = Math.min(0.3, (p - 0.75) / 0.15 * 0.3);
+        drawConcreteBlock(ctx, canvas.width * 0.72, canvas.height * 0.45, blockOpacity);
+      }
+
+      // Pass 4: Draw FRONT layer worms (depth >= 0.5 — brighter, in front)
+      for (let i = 0; i < drawCount; i++) {
+        if (worms[i].depth >= 0.5) {
+          drawWorm(ctx, worms[i], time);
+        }
       }
 
       ctx.restore(); // undo scroll translate
@@ -386,6 +408,102 @@ function drawCrown(ctx: CanvasRenderingContext2D, worm: Worm) {
     ctx.closePath();
     ctx.fill();
   }
+
+  ctx.restore();
+}
+
+// Embedded concrete block with T-Rex graffiti — drawn between worm layers for depth
+function drawConcreteBlock(ctx: CanvasRenderingContext2D, x: number, y: number, opacity: number) {
+  if (opacity < 0.01) return;
+  ctx.save();
+  ctx.globalAlpha = opacity;
+
+  const w = 120, h = 80;
+  const bx = x - w / 2, by = y - h / 2;
+
+  // Shadow beneath — makes it feel like it sticks out
+  ctx.fillStyle = "rgba(0,0,0,0.3)";
+  ctx.fillRect(bx + 4, by + 4, w, h);
+
+  // Concrete block
+  ctx.fillStyle = "#4A4540";
+  ctx.strokeStyle = "rgba(60,55,50,0.6)";
+  ctx.lineWidth = 2;
+  ctx.fillRect(bx, by, w, h);
+  ctx.strokeRect(bx, by, w, h);
+
+  // Concrete cracks
+  ctx.strokeStyle = "rgba(80,75,65,0.25)";
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(bx + 15, by + 10);
+  ctx.lineTo(bx + 50, by + 30);
+  ctx.moveTo(bx + 70, by + 15);
+  ctx.lineTo(bx + 90, by + 55);
+  ctx.stroke();
+
+  // Rebar stubs
+  ctx.strokeStyle = "#6B5A45";
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(bx + w, by + 20);
+  ctx.lineTo(bx + w + 8, by + 18);
+  ctx.moveTo(bx + w, by + 55);
+  ctx.lineTo(bx + w + 6, by + 57);
+  ctx.stroke();
+
+  // === GRAFFITI T-REX SKULL ===
+  ctx.strokeStyle = "#E63462";
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+
+  // Cranium
+  ctx.beginPath();
+  ctx.moveTo(bx + 20, by + 38);
+  ctx.bezierCurveTo(bx + 20, by + 25, bx + 40, by + 18, bx + 55, by + 18);
+  ctx.bezierCurveTo(bx + 70, by + 18, bx + 80, by + 25, bx + 82, by + 35);
+  ctx.stroke();
+
+  // Jaw
+  ctx.beginPath();
+  ctx.moveTo(bx + 20, by + 38);
+  ctx.bezierCurveTo(bx + 20, by + 48, bx + 35, by + 55, bx + 50, by + 55);
+  ctx.bezierCurveTo(bx + 65, by + 55, bx + 75, by + 50, bx + 82, by + 42);
+  ctx.stroke();
+
+  // Eye socket
+  ctx.beginPath();
+  ctx.arc(bx + 60, by + 30, 6, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Teeth — violet colored
+  ctx.strokeStyle = "#8B5CF6";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let t = 0; t < 6; t++) {
+    const tx = bx + 28 + t * 8;
+    ctx.moveTo(tx, by + 40);
+    ctx.lineTo(tx + 3, by + 50);
+    ctx.lineTo(tx + 6, by + 40);
+  }
+  ctx.stroke();
+
+  // Paint drips
+  ctx.strokeStyle = "rgba(230,52,98,0.3)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(bx + 35, by + 55);
+  ctx.lineTo(bx + 35, by + 65);
+  ctx.moveTo(bx + 55, by + 55);
+  ctx.lineTo(bx + 55, by + 63);
+  ctx.stroke();
+
+  // "WURMZ" tag
+  ctx.font = "bold 8px sans-serif";
+  ctx.fillStyle = "rgba(230,52,98,0.4)";
+  ctx.fillText("WURMZ", bx + 25, by + 72);
 
   ctx.restore();
 }

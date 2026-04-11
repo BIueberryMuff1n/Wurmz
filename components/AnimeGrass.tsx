@@ -48,7 +48,7 @@ export default function AnimeGrass() {
           const x = blade(i * 7) * 1440;
           const height = 30 + blade(i * 13) * 55; // 30-85px tall
           const width = 4 + blade(i * 19) * 5; // 4-9px wide — lush, thick blades
-          const baseY = 100 + blade(i * 23) * 15; // slight Y variation
+          const baseY = 90 + blade(i * 23) * 25; // staggered Y (range 90-115) to soften grass base
 
           // Wind wave propagates left to right — blades respond based on X position
           const wavePhase = x / 300 - time * 1.5; // wave moves right at speed 1.5
@@ -56,10 +56,25 @@ export default function AnimeGrass() {
           const naturalVariation = blade(i * 31) * 0.4; // each blade slightly different
           const sway = localWind * (12 + naturalVariation * 8);
 
-          // Color variation — vivid greens, anime-style
-          const greenBase = 50 + Math.floor(blade(i * 41) * 60); // 50-110 — much greener
-          const greenR = 20 + Math.floor(blade(i * 43) * 30);
-          const greenB = 5 + Math.floor(blade(i * 47) * 10);
+          // Color variation — vivid greens with dried/yellow and darker blades
+          const colorRoll = blade(i * 61);
+          let greenBase: number, greenR: number, greenB: number;
+          if (colorRoll < 0.2) {
+            // 20% dried/yellow-ish blades
+            greenR = 60 + Math.floor(blade(i * 43) * 20); // 60-80
+            greenBase = 40 + Math.floor(blade(i * 41) * 20); // 40-60
+            greenB = 2 + Math.floor(blade(i * 47) * 5);
+          } else if (colorRoll < 0.3) {
+            // 10% darker green blades
+            greenR = 10 + Math.floor(blade(i * 43) * 10); // 10-20
+            greenBase = 30 + Math.floor(blade(i * 41) * 20); // 30-50
+            greenB = 2 + Math.floor(blade(i * 47) * 6);
+          } else {
+            // 70% normal vivid greens
+            greenBase = 50 + Math.floor(blade(i * 41) * 60); // 50-110
+            greenR = 20 + Math.floor(blade(i * 43) * 30);
+            greenB = 5 + Math.floor(blade(i * 47) * 10);
+          }
           const alpha = 0.6 + blade(i * 53) * 0.35;
 
           // Control points for the curved blade
@@ -77,6 +92,43 @@ export default function AnimeGrass() {
               fill={`rgba(${greenR},${greenBase},${greenB},${alpha})`}
               stroke={`rgba(${Math.max(0, greenR - 5)},${Math.max(0, greenBase - 10)},${greenB},${alpha * 0.5})`}
               strokeWidth="0.5"
+            />
+          );
+        })}
+
+        {/* Extra-short blades to soften the grass base edge */}
+        {Array.from({ length: 30 }, (_, i) => {
+          const x = blade(i * 9 + 900) * 1440;
+          const height = 6 + blade(i * 13 + 900) * 12; // very short: 6-18px
+          const width = 2 + blade(i * 19 + 900) * 3;
+          const baseY = 108 + blade(i * 23 + 900) * 12; // start lower: 108-120
+
+          const wavePhase = x / 300 - time * 1.5;
+          const localWind = windStrength * Math.sin(wavePhase);
+          const sway = localWind * 4;
+
+          const colorRoll = blade(i * 61 + 900);
+          let gR: number, gG: number, gB: number;
+          if (colorRoll < 0.3) {
+            gR = 50 + Math.floor(blade(i * 43 + 900) * 20);
+            gG = 35 + Math.floor(blade(i * 41 + 900) * 20);
+            gB = 3;
+          } else {
+            gR = 15 + Math.floor(blade(i * 43 + 900) * 20);
+            gG = 40 + Math.floor(blade(i * 41 + 900) * 40);
+            gB = 5;
+          }
+
+          const tipX = x + sway;
+          const tipY = baseY - height;
+
+          return (
+            <path
+              key={`e${i}`}
+              d={`M${x - width / 2},${baseY} Q${x + sway * 0.5},${baseY - height * 0.6} ${tipX},${tipY} Q${x + sway * 0.5 + width / 2},${baseY - height * 0.6} ${x + width / 2},${baseY} Z`}
+              fill={`rgba(${gR},${gG},${gB},0.5)`}
+              stroke={`rgba(${gR - 5},${gG - 8},${gB},0.25)`}
+              strokeWidth="0.3"
             />
           );
         })}

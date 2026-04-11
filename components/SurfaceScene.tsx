@@ -328,12 +328,13 @@ export default function SurfaceScene() {
       <div
         className="absolute bottom-0 left-0 right-0"
         style={{
-          height: "15%",
+          height: "25%",
           background: `linear-gradient(180deg,
             transparent 0%,
-            rgba(28,20,14,0.6) 30%,
-            rgba(22,16,10,0.9) 70%,
-            rgba(18,14,8,1) 100%
+            rgba(24,18,12,0.3) 20%,
+            rgba(22,16,10,0.6) 50%,
+            rgba(18,14,8,0.85) 80%,
+            rgba(14,10,6,1) 100%
           )`,
         }}
       />
@@ -350,6 +351,43 @@ export default function SurfaceScene() {
           )`,
         }}
       />
+
+      {/* Tease roots — faint lines poking down from the grass zone */}
+      <svg
+        className="absolute bottom-0 left-0 right-0"
+        style={{ height: "12%", opacity: 1, zIndex: 1 }}
+        preserveAspectRatio="none"
+        viewBox="0 0 1000 100"
+      >
+        <path
+          d="M180,5 C178,25 170,50 165,75"
+          fill="none"
+          stroke="rgba(80,55,30,0.12)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <path
+          d="M420,2 C425,30 430,55 440,85"
+          fill="none"
+          stroke="rgba(80,55,30,0.12)"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M650,8 C645,28 640,48 632,70"
+          fill="none"
+          stroke="rgba(80,55,30,0.12)"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+        <path
+          d="M860,4 C862,22 858,45 850,65"
+          fill="none"
+          stroke="rgba(80,55,30,0.12)"
+          strokeWidth="1.1"
+          strokeLinecap="round"
+        />
+      </svg>
 
       {/* Anime grass at the ground line — part of surface, scrolls with it */}
       <AnimeGrass />

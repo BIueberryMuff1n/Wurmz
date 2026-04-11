@@ -10,8 +10,8 @@ export default function BrandSection() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         viewport={{ once: true, margin: "-100px" }}
-        className="relative max-w-3xl bg-deep-earth/92 backdrop-blur-sm p-5 md:p-12"
-        style={{ border: "3px solid rgba(80,65,50,0.6)", borderLeft: "4px solid #E63462", boxShadow: "inset 0 0 20px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.4)" }}
+        className="relative max-w-3xl bg-deep-earth/95 backdrop-blur-sm p-5 md:p-12"
+        style={{ border: "3px solid rgba(80,65,50,0.6)", borderLeft: "4px solid #E63462", boxShadow: "inset 0 0 20px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.35)" }}
       >
         {/* Corner bolts */}
         <div className="absolute top-2 left-2 w-2.5 h-2.5 rounded-full bg-root-brown/50 border border-root-brown/30" />
