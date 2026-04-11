@@ -48,7 +48,8 @@ export default function WormTunnel() {
   ].join(" ");
 
   const totalLength = 8800;
-  const wormBodyLen = 140; // must match bodyLen in WormBody
+  // Segmented worm: 6 segments spaced 0.008 apart = 0.04 total span + segment half-width
+  const wormBodyLen = 0.04 * totalLength + 15; // ~367px effective body length
 
   // Tunnel only starts after parachute landing (~12% scroll)
   const tunnelStart = 0.12;
@@ -387,208 +388,219 @@ function WormBody({
   isGlancingBack: boolean;
   isScrollingDown: boolean;
 }) {
-  const bodyLen = 140; // longer worm
+  const bodyLen = 140; // total worm length (logical)
   const bodyR = 16; // fills the tunnel width
+  const segCount = 6; // number of body segments
+  const segWidth = 30; // each segment width — overlaps slightly
+  const segSpacing = 0.008; // 0.8% of path between each segment center
+  const pathStyle = `path("${tunnelPath}")`;
+
+  // Segment 0 = head (highest offset-distance), segment N-1 = tail (lowest)
+  const segments = Array.from({ length: segCount }, (_, i) => {
+    const segProgress = Math.max(0, progress - i * segSpacing);
+    return {
+      index: i,
+      progress: segProgress,
+      isHead: i === 0,
+      isTail: i === segCount - 1,
+    };
+  });
 
   return (
-    <g
-      style={{
-        offsetPath: `path("${tunnelPath}")`,
-        offsetDistance: `${progress * 100}%`,
-        offsetRotate: "auto",
-      }}
-    >
-      {/* Outer stroke — thick dark outline, graffiti ink style */}
-      <rect
-        x={-bodyLen / 2}
-        y={-bodyR - 1}
-        width={bodyLen}
-        height={bodyR * 2 + 2}
-        rx={bodyR}
-        ry={bodyR}
-        fill="none"
-        stroke="rgba(40,12,8,0.7)"
-        strokeWidth="3"
-      />
-
-      {/* Main body fill */}
-      <rect
-        x={-bodyLen / 2}
-        y={-bodyR}
-        width={bodyLen}
-        height={bodyR * 2}
-        rx={bodyR}
-        ry={bodyR}
-        fill="url(#worm-body)"
-        opacity="0.9"
-      />
-
-      {/* 3D roundness overlay */}
-      <rect
-        x={-bodyLen / 2}
-        y={-bodyR}
-        width={bodyLen}
-        height={bodyR * 2}
-        rx={bodyR}
-        ry={bodyR}
-        fill="url(#worm-body-v)"
-      />
-
-      {/* Segment lines — subtle rings */}
-      {[-70, -50, -30, -10, 10, 30, 50, 70].map((x, i) => (
-        <line
-          key={i}
-          x1={x}
-          y1={-bodyR + 4}
-          x2={x}
-          y2={bodyR - 4}
-          stroke="rgba(60,15,10,0.2)"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      ))}
-
-      {/* === SKATEBOARD (visible when scrolling down) === */}
-      {isScrollingDown && (
+    <>
+      {/* Render segments tail-first so head draws on top */}
+      {[...segments].reverse().map((seg) => (
         <g
+          key={seg.index}
           style={{
-            transition: "opacity 0.3s ease-in-out",
+            offsetPath: pathStyle,
+            offsetDistance: `${seg.progress * 100}%`,
+            offsetRotate: "auto",
           }}
         >
-          {/* Deck — dark wood with rounded ends */}
+          {/* Outer stroke — thick dark outline */}
           <rect
-            x={-20}
-            y={bodyR + 2}
-            width={40}
-            height={4}
-            rx={2}
-            ry={2}
-            fill="#2a2a2a"
-            stroke="rgba(60,60,60,0.3)"
-            strokeWidth="0.5"
+            x={-segWidth / 2}
+            y={-bodyR - 1}
+            width={segWidth}
+            height={bodyR * 2 + 2}
+            rx={bodyR}
+            ry={bodyR}
+            fill="none"
+            stroke="rgba(40,12,8,0.7)"
+            strokeWidth="3"
           />
-          {/* Front truck */}
-          <rect x={-14} y={bodyR + 6} width={6} height={2} rx={0.5} ry={0.5} fill="#555" />
-          {/* Rear truck */}
-          <rect x={8} y={bodyR + 6} width={6} height={2} rx={0.5} ry={0.5} fill="#555" />
-          {/* Wheels — 4 at corners */}
-          <circle cx={-14} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
-          <circle cx={-8} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
-          <circle cx={8} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
-          <circle cx={14} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
+
+          {/* Main body fill */}
+          <rect
+            x={-segWidth / 2}
+            y={-bodyR}
+            width={segWidth}
+            height={bodyR * 2}
+            rx={bodyR}
+            ry={bodyR}
+            fill="url(#worm-body)"
+            opacity="0.9"
+          />
+
+          {/* 3D roundness overlay */}
+          <rect
+            x={-segWidth / 2}
+            y={-bodyR}
+            width={segWidth}
+            height={bodyR * 2}
+            rx={bodyR}
+            ry={bodyR}
+            fill="url(#worm-body-v)"
+          />
+
+          {/* === SKATEBOARD on tail segment === */}
+          {seg.isTail && isScrollingDown && (
+            <g
+              style={{
+                transition: "opacity 0.3s ease-in-out",
+              }}
+            >
+              {/* Deck */}
+              <rect
+                x={-20}
+                y={bodyR + 2}
+                width={40}
+                height={4}
+                rx={2}
+                ry={2}
+                fill="#2a2a2a"
+                stroke="rgba(60,60,60,0.3)"
+                strokeWidth="0.5"
+              />
+              {/* Front truck */}
+              <rect x={-14} y={bodyR + 6} width={6} height={2} rx={0.5} ry={0.5} fill="#555" />
+              {/* Rear truck */}
+              <rect x={8} y={bodyR + 6} width={6} height={2} rx={0.5} ry={0.5} fill="#555" />
+              {/* Wheels */}
+              <circle cx={-14} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
+              <circle cx={-8} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
+              <circle cx={8} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
+              <circle cx={14} cy={bodyR + 10} r={2.5} fill="#E8DCC8" opacity={0.6} />
+            </g>
+          )}
+
+          {/* === FACE + JOINT + SMOKE on head segment === */}
+          {seg.isHead && (
+            <>
+              {/* Eye group — flips during backward glance */}
+              <g
+                style={{
+                  transformOrigin: `${segWidth / 2 - 4}px -5px`,
+                  transform: isGlancingBack ? 'scaleX(-1)' : 'scaleX(1)',
+                  transition: 'transform 0.25s ease-in-out',
+                }}
+              >
+                {/* Single eye — half-lidded, stoned */}
+                <ellipse cx={segWidth / 2 - 4} cy={-5} rx={5} ry={4} fill="#1a0a05" />
+                {/* Eye white/iris */}
+                <ellipse cx={segWidth / 2 - 3} cy={-5} rx={3} ry={2.5} fill="#2a1510" />
+                <circle cx={segWidth / 2 - 2} cy={-4.5} r={1.5} fill="#1a0a05" />
+                {/* Eye shine */}
+                <circle cx={segWidth / 2 - 1} cy={-6} r={1} fill="rgba(255,255,255,0.6)" />
+                {/* Heavy eyelid — droopy, stoned */}
+                <path
+                  d={`M${segWidth / 2 - 10},${-8} Q${segWidth / 2 - 4},${-3} ${segWidth / 2 + 2},${-7}`}
+                  fill="rgba(140,35,25,0.7)"
+                />
+              </g>
+              {/* Mouth — slight smirk */}
+              <path
+                d={`M${segWidth / 2 + 3},${4} Q${segWidth / 2 + 8},${7} ${segWidth / 2 + 11},${5}`}
+                fill="none"
+                stroke="#1a0a05"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+
+              {/* === RAW JOINT === */}
+              <g transform={`translate(${segWidth / 2 + 8}, 3) rotate(-30)`}>
+                {/* Cone body */}
+                <polygon
+                  points="-4,-1.8 24,-3.5 24,3.5 -4,1.8"
+                  fill="#C8B088"
+                  stroke="rgba(140,110,70,0.5)"
+                  strokeWidth="0.6"
+                />
+                {/* RAW paper texture */}
+                <polygon
+                  points="-3,-1.5 23,-3 23,3 -3,1.5"
+                  fill="#D4BE95"
+                  opacity="0.4"
+                />
+                {/* Paper crinkle/fold lines */}
+                <line x1={3} y1={-1.6} x2={3} y2={1.6} stroke="rgba(120,95,55,0.15)" strokeWidth="0.4" />
+                <line x1={8} y1={-2.2} x2={8} y2={2.2} stroke="rgba(120,95,55,0.15)" strokeWidth="0.4" />
+                <line x1={13} y1={-2.6} x2={13} y2={2.6} stroke="rgba(120,95,55,0.12)" strokeWidth="0.4" />
+                <line x1={18} y1={-3} x2={18} y2={3} stroke="rgba(120,95,55,0.12)" strokeWidth="0.4" />
+                {/* RAW watermark */}
+                <text x="6" y="0.8" fontSize="2.5" fill="rgba(100,80,45,0.12)" fontFamily="sans-serif" fontWeight="bold">RAW</text>
+                {/* Crutch/filter */}
+                <rect x={-5} y={-1.8} width={5} height={3.6} rx={1.5} ry={1.5} fill="#A08050" />
+                <rect x={-4.5} y={-1.2} width={4} height={2.4} rx={1} ry={1} fill="#B89060" opacity="0.6" />
+                {/* Spiral lines on crutch */}
+                <line x1={-4} y1={-0.8} x2={-4} y2={0.8} stroke="rgba(80,60,30,0.2)" strokeWidth="0.3" />
+                <line x1={-2.5} y1={-1} x2={-2.5} y2={1} stroke="rgba(80,60,30,0.2)" strokeWidth="0.3" />
+                {/* Twisted tip */}
+                <path d="M24,-3 Q28,-1 26,0 Q28,1 24,3" fill="#C4AA80" opacity="0.6" />
+                {/* Cherry/ember */}
+                <ellipse cx={26} cy={0} rx={3 + cherryFlare * 1.5} ry={2.5 + cherryFlare * 1} fill="#D4641A" />
+                <ellipse cx={26} cy={0} rx={2 + cherryFlare * 1} ry={1.5 + cherryFlare * 0.8} fill="#F0A030" opacity={0.8 + cherryFlare * 0.2} />
+                <ellipse cx={26} cy={0} rx={1 + cherryFlare * 0.8} ry={0.8 + cherryFlare * 0.5} fill="#FFD080" opacity={0.5 + cherryFlare * 0.5} />
+                {/* Ember glow */}
+                <ellipse cx={26} cy={0} rx={6 + cherryFlare * 5} ry={4.5 + cherryFlare * 4} fill={`rgba(240,144,48,${0.1 + cherryFlare * 0.2})`} />
+              </g>
+
+              {/* === SMOKE TRAIL === */}
+              {[
+                { cx: segWidth / 2 + 26, cy: -12, r: 1.5, o: 0.08 },
+                { cx: segWidth / 2 + 28, cy: -20, r: 2, o: 0.06 },
+                { cx: segWidth / 2 + 27, cy: -30, r: 2.75, o: 0.05 },
+                { cx: segWidth / 2 + 24, cy: -42, r: 3.5, o: 0.03 },
+                { cx: segWidth / 2 + 21, cy: -55, r: 4, o: 0.02 },
+              ].map((puff, i) => (
+                <circle
+                  key={`smoke-${i}`}
+                  cx={puff.cx}
+                  cy={puff.cy}
+                  r={puff.r}
+                  fill={`rgba(200,200,200,${puff.o})`}
+                >
+                  <animate
+                    attributeName="cy"
+                    values={`${puff.cy};${puff.cy - 8};${puff.cy}`}
+                    dur={`${3 + i * 0.5}s`}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="cx"
+                    values={`${puff.cx};${puff.cx + 4};${puff.cx}`}
+                    dur={`${4 + i * 0.7}s`}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="r"
+                    values={`${puff.r};${puff.r + 2};${puff.r}`}
+                    dur={`${3.5 + i * 0.4}s`}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values={`${puff.o};${puff.o * 0.5};${puff.o}`}
+                    dur={`${3 + i * 0.6}s`}
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              ))}
+            </>
+          )}
         </g>
-      )}
-
-      {/* === FACE (side profile view — looking right) === */}
-      {/* Eye group — flips horizontally during backward glance at ~50% scroll */}
-      <g
-        style={{
-          transformOrigin: `${bodyLen / 2 - 12}px -5px`,
-          transform: isGlancingBack ? 'scaleX(-1)' : 'scaleX(1)',
-          transition: 'transform 0.25s ease-in-out',
-        }}
-      >
-      {/* Single eye — half-lidded, stoned */}
-      <ellipse cx={bodyLen / 2 - 12} cy={-5} rx={5} ry={4} fill="#1a0a05" />
-      {/* Eye white/iris */}
-      <ellipse cx={bodyLen / 2 - 11} cy={-5} rx={3} ry={2.5} fill="#2a1510" />
-      <circle cx={bodyLen / 2 - 10} cy={-4.5} r={1.5} fill="#1a0a05" />
-      {/* Eye shine */}
-      <circle cx={bodyLen / 2 - 9} cy={-6} r={1} fill="rgba(255,255,255,0.6)" />
-      {/* Heavy eyelid — droopy, stoned */}
-      <path
-        d={`M${bodyLen / 2 - 18},${-8} Q${bodyLen / 2 - 12},${-3} ${bodyLen / 2 - 6},${-7}`}
-        fill="rgba(140,35,25,0.7)"
-      />
-      </g>
-      {/* Mouth — slight smirk, side view */}
-      <path
-        d={`M${bodyLen / 2 - 5},${4} Q${bodyLen / 2},${7} ${bodyLen / 2 + 3},${5}`}
-        fill="none"
-        stroke="#1a0a05"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-
-      {/* === RAW JOINT (cone-shaped, tilted upward) === */}
-      <g transform={`translate(${bodyLen / 2}, 3) rotate(-30)`}>
-      {/* Cone body — RAW unbleached tan paper */}
-      <polygon
-        points="-4,-1.8 24,-3.5 24,3.5 -4,1.8"
-        fill="#C8B088"
-        stroke="rgba(140,110,70,0.5)"
-        strokeWidth="0.6"
-      />
-      {/* RAW paper texture — slightly translucent, uneven */}
-      <polygon
-        points="-3,-1.5 23,-3 23,3 -3,1.5"
-        fill="#D4BE95"
-        opacity="0.4"
-      />
-      {/* Paper crinkle/fold lines */}
-      <line x1={3} y1={-1.6} x2={3} y2={1.6} stroke="rgba(120,95,55,0.15)" strokeWidth="0.4" />
-      <line x1={8} y1={-2.2} x2={8} y2={2.2} stroke="rgba(120,95,55,0.15)" strokeWidth="0.4" />
-      <line x1={13} y1={-2.6} x2={13} y2={2.6} stroke="rgba(120,95,55,0.12)" strokeWidth="0.4" />
-      <line x1={18} y1={-3} x2={18} y2={3} stroke="rgba(120,95,55,0.12)" strokeWidth="0.4" />
-      {/* RAW watermark — tiny, barely visible */}
-      <text x="6" y="0.8" fontSize="2.5" fill="rgba(100,80,45,0.12)" fontFamily="sans-serif" fontWeight="bold">RAW</text>
-      {/* Crutch/filter — cardboard brown, rolled */}
-      <rect x={-5} y={-1.8} width={5} height={3.6} rx={1.5} ry={1.5} fill="#A08050" />
-      <rect x={-4.5} y={-1.2} width={4} height={2.4} rx={1} ry={1} fill="#B89060" opacity="0.6" />
-      {/* Spiral lines on crutch */}
-      <line x1={-4} y1={-0.8} x2={-4} y2={0.8} stroke="rgba(80,60,30,0.2)" strokeWidth="0.3" />
-      <line x1={-2.5} y1={-1} x2={-2.5} y2={1} stroke="rgba(80,60,30,0.2)" strokeWidth="0.3" />
-      {/* Twisted tip at lit end */}
-      <path d="M24,-3 Q28,-1 26,0 Q28,1 24,3" fill="#C4AA80" opacity="0.6" />
-      {/* Cherry/ember — glowing orange, flares near content sections */}
-      <ellipse cx={26} cy={0} rx={3 + cherryFlare * 1.5} ry={2.5 + cherryFlare * 1} fill="#D4641A" />
-      <ellipse cx={26} cy={0} rx={2 + cherryFlare * 1} ry={1.5 + cherryFlare * 0.8} fill="#F0A030" opacity={0.8 + cherryFlare * 0.2} />
-      <ellipse cx={26} cy={0} rx={1 + cherryFlare * 0.8} ry={0.8 + cherryFlare * 0.5} fill="#FFD080" opacity={0.5 + cherryFlare * 0.5} />
-      {/* Ember glow — expands and brightens on flare */}
-      <ellipse cx={26} cy={0} rx={6 + cherryFlare * 5} ry={4.5 + cherryFlare * 4} fill={`rgba(240,144,48,${0.1 + cherryFlare * 0.2})`} />
-      </g>
-
-      {/* === SMOKE TRAIL (from tilted joint tip) === */}
-      {[
-        { cx: bodyLen / 2 + 18, cy: -12, r: 1.5, o: 0.08 },
-        { cx: bodyLen / 2 + 20, cy: -20, r: 2, o: 0.06 },
-        { cx: bodyLen / 2 + 19, cy: -30, r: 2.75, o: 0.05 },
-        { cx: bodyLen / 2 + 16, cy: -42, r: 3.5, o: 0.03 },
-        { cx: bodyLen / 2 + 13, cy: -55, r: 4, o: 0.02 },
-      ].map((puff, i) => (
-        <circle
-          key={`smoke-${i}`}
-          cx={puff.cx}
-          cy={puff.cy}
-          r={puff.r}
-          fill={`rgba(200,200,200,${puff.o})`}
-        >
-          <animate
-            attributeName="cy"
-            values={`${puff.cy};${puff.cy - 8};${puff.cy}`}
-            dur={`${3 + i * 0.5}s`}
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="cx"
-            values={`${puff.cx};${puff.cx + 4};${puff.cx}`}
-            dur={`${4 + i * 0.7}s`}
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="r"
-            values={`${puff.r};${puff.r + 2};${puff.r}`}
-            dur={`${3.5 + i * 0.4}s`}
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="opacity"
-            values={`${puff.o};${puff.o * 0.5};${puff.o}`}
-            dur={`${3 + i * 0.6}s`}
-            repeatCount="indefinite"
-          />
-        </circle>
       ))}
-    </g>
+    </>
   );
 }
