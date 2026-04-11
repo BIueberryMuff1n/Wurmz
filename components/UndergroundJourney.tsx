@@ -16,35 +16,35 @@ const COLOR_STOPS: [number, number, number, number][] = [
   [0.03, 12, 17, 28],    // barely shifting
   [0.05, 16, 20, 30],    // sky transitioning
   [0.07, 20, 22, 32],    // transitional — blue-toned, no purple
-  [0.09, 24, 24, 32],    // dusk hint
-  [0.10, 28, 24, 30],    // dusk meets earth
-  // Surface / straw zone
-  [0.12, 32, 24, 24],    // first soil hint
-  [0.13, 36, 26, 22],    // warming
-  [0.14, 40, 28, 20],    // amber entering
-  [0.15, 46, 32, 20],    // straw zone begins
-  [0.16, 50, 36, 22],    // golden warmth
-  [0.17, 54, 38, 22],    // peak straw
-  [0.18, 56, 40, 22],    // peak golden
-  [0.19, 54, 38, 22],    // straw fading
-  [0.20, 50, 36, 20],    // cooling
-  // Topsoil with perlite
-  [0.22, 46, 34, 20],    // transition
-  [0.24, 42, 30, 18],    // topsoil begins
-  [0.26, 40, 28, 18],    // mid topsoil
-  [0.28, 38, 28, 16],    // perlite zone peak
-  [0.30, 36, 26, 16],    // topsoil deepening
-  [0.32, 34, 24, 14],    // getting richer
-  [0.34, 32, 22, 14],    // transition zone
-  // Living soil
-  [0.36, 30, 22, 12],    // living soil begins
-  [0.38, 28, 20, 12],    // rich
-  [0.40, 26, 18, 10],    // deeper
-  [0.42, 24, 18, 10],    // core living soil
-  [0.44, 24, 16, 10],    // dark and rich
-  [0.46, 22, 16, 9],     // deepening
-  [0.48, 22, 15, 9],     // continuous
-  [0.50, 20, 14, 8],     // mid-depth
+  [0.09, 18, 18, 28],    // dusk hint — still dark
+  [0.10, 18, 16, 24],    // dusk meets earth — very subtle
+  // Surface / straw zone — SUBTLE warm browns, stay dark
+  [0.12, 20, 16, 18],    // first soil hint — barely visible
+  [0.13, 22, 16, 16],    // warming slowly
+  [0.14, 24, 18, 14],    // amber hint
+  [0.15, 28, 20, 14],    // straw zone — muted
+  [0.16, 30, 22, 14],    // warm brown — still dark
+  [0.17, 32, 22, 14],    // peak — subtle, not bright
+  [0.18, 30, 22, 14],    // holding
+  [0.19, 28, 20, 12],    // fading
+  [0.20, 26, 18, 12],    // cooling
+  // Topsoil — dark browns, subtle
+  [0.22, 24, 18, 12],    // transition
+  [0.24, 24, 16, 10],    // topsoil begins
+  [0.26, 22, 16, 10],    // mid topsoil
+  [0.28, 22, 14, 10],    // perlite zone
+  [0.30, 20, 14, 10],    // deepening
+  [0.32, 20, 14, 8],     // richer
+  [0.34, 18, 12, 8],     // transition
+  // Living soil — deep rich brown
+  [0.36, 24, 16, 10],    // living soil begins
+  [0.38, 22, 14, 8],     // rich
+  [0.40, 20, 14, 8],     // deeper
+  [0.42, 18, 12, 8],     // core living soil
+  [0.44, 16, 12, 8],     // dark and rich
+  [0.46, 16, 10, 7],     // deepening
+  [0.48, 14, 10, 7],     // continuous
+  [0.50, 14, 10, 6],     // mid-depth
   // Deep soil
   [0.53, 20, 13, 8],     // transition
   [0.56, 18, 12, 7],     // deep zone
