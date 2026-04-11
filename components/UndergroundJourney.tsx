@@ -107,13 +107,30 @@ function rampIn(progress: number, start: number, full: number): number {
 export default function UndergroundJourney() {
   const { progress } = useScroll();
 
-  const bgColor = getEarthColor(progress);
+  // Freeze the earth depth during horizontal Grow section (~0.25-0.45 progress)
+  // The worm is going sideways, not deeper — same soil layer throughout
+  const growStart = 0.25;
+  const growEnd = 0.45;
+  const adjustedEarthProgress = progress <= growStart
+    ? progress
+    : progress >= growEnd
+      ? progress - (growEnd - growStart) + (growEnd - growStart) * 0 // resume after freeze
+      : growStart; // frozen at growStart depth
 
-  // Texture layer opacities — VISIBLE, not subtle
-  const strawOpacity = gaussian(progress, 0.16, 0.05) * 0.7;
-  const perliteOpacity = gaussian(progress, 0.26, 0.07) * 0.65;
-  const rootOpacity = gaussian(progress, 0.42, 0.10) * 0.3;
-  const deepVignette = rampIn(progress, 0.65, 0.85) * 0.5;
+  // Remap post-grow progress so it smoothly continues from the frozen point
+  const earthProgress = progress <= growStart
+    ? progress
+    : progress >= growEnd
+      ? growStart + (progress - growEnd) // skip the grow range
+      : growStart; // frozen
+
+  const bgColor = getEarthColor(earthProgress);
+
+  // Texture layer opacities — use earthProgress (frozen during Grow)
+  const strawOpacity = gaussian(earthProgress, 0.16, 0.05) * 0.7;
+  const perliteOpacity = gaussian(earthProgress, 0.26, 0.07) * 0.65;
+  const rootOpacity = gaussian(earthProgress, 0.42, 0.10) * 0.3;
+  const deepVignette = rampIn(earthProgress, 0.65, 0.85) * 0.5;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[2]">
@@ -183,28 +200,28 @@ export default function UndergroundJourney() {
           }}
         />
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="none">
-          {/* Dense perlite speckles — bright white against dark soil */}
-          {Array.from({ length: 100 }, (_, i) => {
-            const x = (i * 14 + 7) % 1440;
-            const y = (i * 19 + 5) % 900;
-            const r = 1.5 + (i % 5) * 1.2;
+          {/* Perlite speckles — small white dots, not blobs */}
+          {Array.from({ length: 120 }, (_, i) => {
+            const x = (i * 12 + 5) % 1440;
+            const y = (i * 17 + 3) % 900;
+            const r = 0.8 + (i % 4) * 0.6;
             return (
               <circle
                 key={i}
                 cx={x} cy={y} r={r}
-                fill={i % 3 === 0 ? "rgba(250,245,235,0.5)" : "rgba(235,225,210,0.35)"}
+                fill={i % 3 === 0 ? "rgba(250,245,235,0.6)" : "rgba(235,225,210,0.4)"}
               />
             );
           })}
-          {/* Larger perlite chunks — irregular shapes */}
-          {Array.from({ length: 25 }, (_, i) => {
-            const x = (i * 59 + 25) % 1440;
-            const y = (i * 37 + 15) % 900;
+          {/* Larger perlite chunks — still small, just slightly bigger */}
+          {Array.from({ length: 20 }, (_, i) => {
+            const x = (i * 73 + 30) % 1440;
+            const y = (i * 47 + 20) % 900;
             return (
               <ellipse
                 key={`chunk-${i}`}
                 cx={x} cy={y}
-                rx={3 + (i % 4) * 2.5}
+                rx={1.8 + (i % 3) * 1}
                 ry={2 + (i % 3) * 2}
                 fill={i % 2 === 0 ? "rgba(245,240,225,0.4)" : "rgba(230,220,200,0.3)"}
                 transform={`rotate(${(i * 31) % 180} ${x} ${y})`}

@@ -37,10 +37,11 @@ export default function WormTunnel() {
     "C700,800 750,900 720,1000",         // Initial dig down
     "C680,1100 -100,1150 -200,1200",     // EXIT LEFT — Brand section
     "C-300,1250 -100,1300 200,1350",     // Curve back from left
-    "C500,1400 750,1450 720,1550",       // Re-center
-    "C690,1650 1600,1700 1700,1800",     // EXIT RIGHT — Grow section
-    "C1800,1900 1500,2000 1100,2050",    // Curve back from right
-    "C700,2100 750,2200 720,2350",       // Re-center for countdown
+    "C500,1400 720,1450 720,1500",       // Approaching Grow section
+    "C720,1550 -200,1600 -300,1650",     // EXIT LEFT — disappear into horizontal tunnel
+    "C-400,1700 -300,1800 -200,1850",    // Stay hidden off-screen during Grow scroll
+    "C-100,1900 200,1950 720,2000",      // Re-emerge after Grow
+    "C750,2100 720,2200 720,2350",       // Re-center for Process
     "C690,2500 -150,2550 -200,2650",     // EXIT LEFT — signup
     "C-250,2750 300,2800 720,2900",      // Curve back
     "C750,3000 680,3100 720,3200",       // Final descent

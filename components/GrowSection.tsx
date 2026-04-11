@@ -3,22 +3,23 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import GrowCard from "./GrowCard";
+import { WormIcon, HouseIcon, ScissorsIcon } from "./GraffitiIcons";
 
 const cards = [
   {
-    icon: "\u{1FAB1}",
+    icon: <WormIcon />,
     title: "Living Soil",
     description:
       "No hydroponics. No synthetics. Our plants grow in a thriving underground ecosystem \u2014 worms, fungi, and billions of microbes doing what nature does best.",
   },
   {
-    icon: "\u{1F3E0}",
+    icon: <HouseIcon />,
     title: "Single Source",
     description:
       "We grow the flower, wash the hash, and press the rosin \u2014 all under one roof. Seed to sale, no middlemen, no mystery. That\u2019s single source.",
   },
   {
-    icon: "\u2702\uFE0F",
+    icon: <ScissorsIcon />,
     title: "Small Batch",
     description:
       "NYS micro license \u2014 the smallest legal canopy. Every plant gets individual attention. Hand trimmed, natural inputs, zero shortcuts.",

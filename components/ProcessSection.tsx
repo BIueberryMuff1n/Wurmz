@@ -1,26 +1,32 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { SeedlingIcon, LeafIcon, WaterDropIcon, PressIcon } from "./GraffitiIcons";
 
-const steps = [
+const steps: { number: string; title: string; description: string; icon: ReactNode }[] = [
   {
     number: "01",
     title: "Grow",
+    icon: <SeedlingIcon />,
     description: "Seeds go into rich, living soil. No synthetics, no shortcuts. The microbiome does the heavy lifting.",
   },
   {
     number: "02",
     title: "Harvest",
+    icon: <LeafIcon />,
     description: "Hand trimmed at peak ripeness. Every bud gets individual attention — that's the micro license difference.",
   },
   {
     number: "03",
     title: "Wash",
+    icon: <WaterDropIcon />,
     description: "Fresh frozen flower goes through ice water extraction. Pure trichome heads, nothing else.",
   },
   {
     number: "04",
     title: "Press",
+    icon: <PressIcon />,
     description: "Hash gets pressed into solventless rosin. Heat and pressure only — no chemicals, no solvents, ever.",
   },
 ];
@@ -62,9 +68,12 @@ export default function ProcessSection() {
               {step.number}
             </span>
             <div>
-              <h3 className="font-display text-xl md:text-2xl text-mycelium mb-2">
-                {step.title}
-              </h3>
+              <div className="flex items-center gap-3 mb-2">
+                {step.icon}
+                <h3 className="font-display text-xl md:text-2xl text-mycelium">
+                  {step.title}
+                </h3>
+              </div>
               <p className="font-mono text-sm md:text-base text-mycelium/60 leading-relaxed">
                 {step.description}
               </p>
