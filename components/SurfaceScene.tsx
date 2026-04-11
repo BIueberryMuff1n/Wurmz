@@ -20,7 +20,8 @@ export default function SurfaceScene() {
   const [shootingStar, setShootingStar] = useState<{ x: number; y: number; angle: number; key: number } | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  const skyOffset = scrollY * 0.2;
+  // No Y parallax — everything stays locked on Y axis, fades with opacity only
+  const skyOffset = 0;
   const fadeOut = Math.max(0, 1 - scrollY / 1000);
 
   const [moonPhase, setMoonPhase] = useState<number | null>(null);

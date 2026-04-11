@@ -70,7 +70,6 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
       className="pointer-events-none fixed inset-0 z-[15]"
       style={{
         opacity: planeFadeOut,
-        transform: `translateY(${-scrollY * 0.2}px)`,
       }}
     >
       {/* Plane */}
