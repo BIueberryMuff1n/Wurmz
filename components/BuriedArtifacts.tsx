@@ -18,9 +18,12 @@ const artifacts = [
   { type: "lighter", x: 35, peakProgress: 0.62, sigma: 0.05, rotation: -20 },
   { type: "seed", x: 90, peakProgress: 0.58, sigma: 0.04, rotation: 10 },
 
-  // Very deep (0.75-0.90) — ancient artifacts
+  // Very deep (0.75-0.90) — ancient artifacts + skeleton
   { type: "trex-skull", x: 70, peakProgress: 0.82, sigma: 0.06, rotation: 15 },
   { type: "ammonite", x: 25, peakProgress: 0.78, sigma: 0.05, rotation: -25 },
+  { type: "ribcage", x: 15, peakProgress: 0.88, sigma: 0.05, rotation: 8 },
+  { type: "femur", x: 55, peakProgress: 0.85, sigma: 0.04, rotation: -35 },
+  { type: "hand-bones", x: 82, peakProgress: 0.90, sigma: 0.05, rotation: 20 },
 ];
 
 function gaussian(progress: number, peak: number, sigma: number): number {
@@ -190,6 +193,50 @@ function ArtifactSVG({ type }: { type: string }) {
               />
             );
           })}
+        </svg>
+      );
+
+    case "ribcage":
+      return (
+        <svg width="120" height="80" viewBox="0 0 60 40">
+          {/* Spine */}
+          <line x1="30" y1="2" x2="30" y2="38" stroke="#D4C8B0" strokeWidth="2" strokeLinecap="round" />
+          {/* Ribs — curved bones off the spine */}
+          {[6, 12, 18, 24, 30].map((y, i) => (
+            <g key={i}>
+              <path d={`M30,${y} C22,${y - 2} 14,${y + 1} 10,${y + 4}`} fill="none" stroke="#D4C8B0" strokeWidth="1.2" strokeLinecap="round" />
+              <path d={`M30,${y} C38,${y - 2} 46,${y + 1} 50,${y + 4}`} fill="none" stroke="#D4C8B0" strokeWidth="1.2" strokeLinecap="round" />
+            </g>
+          ))}
+        </svg>
+      );
+
+    case "femur":
+      return (
+        <svg width="80" height="30" viewBox="0 0 50 18">
+          {/* Femur bone — classic bone shape */}
+          <path d="M5,9 C5,5 8,4 10,6 L40,6 C42,4 45,5 45,9 C45,13 42,14 40,12 L10,12 C8,14 5,13 5,9Z" fill="#D4C8B0" stroke="#B8A890" strokeWidth="0.8" />
+          {/* Joint knobs */}
+          <circle cx="7" cy="9" r="4" fill="#D4C8B0" stroke="#B8A890" strokeWidth="0.6" />
+          <circle cx="43" cy="9" r="4" fill="#D4C8B0" stroke="#B8A890" strokeWidth="0.6" />
+        </svg>
+      );
+
+    case "hand-bones":
+      return (
+        <svg width="60" height="70" viewBox="0 0 30 35">
+          {/* Metacarpals — 5 finger bones */}
+          {[4, 10, 16, 22, 26].map((x, i) => (
+            <g key={i}>
+              <line x1={x} y1={28} x2={x + (i - 2) * 1.5} y2={8 - i * 0.5} stroke="#D4C8B0" strokeWidth="1.2" strokeLinecap="round" />
+              {/* Knuckle */}
+              <circle cx={x + (i - 2) * 1.5} cy={8 - i * 0.5} r="1.5" fill="#D4C8B0" />
+              {/* Fingertip bone */}
+              <line x1={x + (i - 2) * 1.5} y1={8 - i * 0.5} x2={x + (i - 2) * 2.5} y2={2 - i * 0.3} stroke="#D4C8B0" strokeWidth="1" strokeLinecap="round" />
+            </g>
+          ))}
+          {/* Palm */}
+          <rect x="2" y="25" width="26" height="8" rx="3" fill="#D4C8B0" stroke="#B8A890" strokeWidth="0.5" />
         </svg>
       );
 

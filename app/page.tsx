@@ -17,6 +17,7 @@ import AnimeGrass from "@/components/AnimeGrass";
 import PlaneIntroWrapper from "@/components/PlaneIntroWrapper";
 import EasterEggs from "@/components/EasterEggs";
 import CinematicMode from "@/components/CinematicMode";
+import DropClock from "@/components/DropClock";
 
 export default function Home() {
   return (
@@ -40,6 +41,7 @@ export default function Home() {
         <SignupSection />
       </main>
       <Footer />
+      <DropClock />
       <CinematicMode />
     </>
   );
