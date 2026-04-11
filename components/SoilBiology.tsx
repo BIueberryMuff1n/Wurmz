@@ -18,11 +18,20 @@ function rampIn(progress: number, start: number, full: number): number {
 export default function SoilBiology() {
   const { progress } = useScroll();
 
-  // Each biological element peaks at a specific soil depth
-  const myceliumOpacity = gaussian(progress, 0.40, 0.10) * 0.2;
-  const nematodeOpacity = gaussian(progress, 0.38, 0.08) * 0.12;
+  // Mirror UndergroundJourney's freeze: soil depth stays frozen during horizontal Grow scroll
+  const GROW_START = 0.25;
+  const GROW_END = 0.45;
+  const earthProgress = progress <= GROW_START
+    ? progress
+    : progress >= GROW_END
+      ? GROW_START + (progress - GROW_END)
+      : GROW_START;
+
+  // Grow-zone biology (peaks 0.38-0.45) must use earthProgress so they don't animate during horizontal scroll
+  const myceliumOpacity = gaussian(earthProgress, 0.40, 0.10) * 0.2;
+  const nematodeOpacity = gaussian(earthProgress, 0.38, 0.08) * 0.12;
   const castingsOpacity = rampIn(progress, 0.55, 0.75) * 0.15;
-  const mushroomOpacity = gaussian(progress, 0.45, 0.06) * 0.18;
+  const mushroomOpacity = gaussian(earthProgress, 0.45, 0.06) * 0.18;
   const horizonOpacity = gaussian(progress, 0.20, 0.15) * 0.08;
   const waterTableOpacity = rampIn(progress, 0.85, 0.95) * 0.08;
 

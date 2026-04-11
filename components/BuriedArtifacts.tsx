@@ -35,12 +35,25 @@ function gaussian(progress: number, peak: number, sigma: number): number {
 export default function BuriedArtifacts() {
   const { progress } = useScroll();
 
+  // Freeze soil depth during horizontal Grow scroll (same logic as UndergroundJourney)
+  const GROW_START = 0.25;
+  const GROW_END = 0.45;
+  const earthProgress = progress <= GROW_START
+    ? progress
+    : progress >= GROW_END
+      ? GROW_START + (progress - GROW_END)
+      : GROW_START;
+
   return (
     <div className="pointer-events-none fixed inset-0 z-[5]">
       {artifacts.map((artifact, i) => {
-        // Subtle — discoveries, not decorations
+        // Use earthProgress for grow-zone artifacts so they don't animate during horizontal scroll
+        const opacityProgress =
+          artifact.peakProgress >= GROW_START && artifact.peakProgress <= GROW_END
+            ? earthProgress
+            : progress;
         const baseOpacity = artifact.type === "trex-skull" ? 0.12 : 0.07;
-        const opacity = gaussian(progress, artifact.peakProgress, artifact.sigma) * baseOpacity;
+        const opacity = gaussian(opacityProgress, artifact.peakProgress, artifact.sigma) * baseOpacity;
         if (opacity < 0.005) return null;
 
         // Y offset — artifact moves upward as you scroll past it
