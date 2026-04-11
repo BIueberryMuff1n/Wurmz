@@ -24,10 +24,12 @@ export default function AnimeGrass() {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  // Natural wind — wave propagation across the field
-  // Wind moves as a wave from left to right, with varying intensity
-  const windStrength = 0.3 + Math.sin(time * 0.4) * 0.2; // overall intensity cycles slowly
-  const gustIntensity = Math.max(0, Math.sin(time * 0.15) * Math.sin(time * 0.7)); // gusts come and go
+  // Natural wind — mostly still, occasional gusts
+  // Grass is calm most of the time, then a gust rolls through
+  const gustCycle = Math.sin(time * 0.08); // very slow cycle — ~40 second period
+  const isGusting = gustCycle > 0.7; // only gusting ~15% of the time
+  const windStrength = isGusting ? 0.3 + (gustCycle - 0.7) * 1.5 : 0.03; // calm baseline, strong during gust
+  const gustIntensity = isGusting ? Math.sin(time * 0.5) * 0.4 : 0;
 
   const bladeCount = 120;
 
