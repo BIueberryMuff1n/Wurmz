@@ -2,6 +2,7 @@
 
 import { useScroll } from "./ScrollContext";
 import { useEffect, useState } from "react";
+import AnimeGrass from "./AnimeGrass";
 
 // Calculate current moon phase (0-1, 0=new, 0.5=full)
 function getMoonPhase(): number {
@@ -351,6 +352,9 @@ export default function SurfaceScene() {
           )`,
         }}
       />
+
+      {/* Anime grass at the ground line — part of surface, scrolls with it */}
+      <AnimeGrass />
 
     </div>
   );

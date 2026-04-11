@@ -24,7 +24,6 @@ export default function Home() {
       <EasterEggs />
       <UndergroundJourney />
       <SurfaceScene />
-      <AnimeGrass />
       <PlaneIntroWrapper />
       <ParachuteWorm />
       <WormTunnel />

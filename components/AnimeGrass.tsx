@@ -1,6 +1,5 @@
 "use client";
 
-import { useScroll } from "./ScrollContext";
 import { useEffect, useState } from "react";
 
 // Generate grass blades with deterministic randomness
@@ -10,7 +9,6 @@ function blade(seed: number) {
 }
 
 export default function AnimeGrass() {
-  const { scrollY } = useScroll();
   const [time, setTime] = useState(0);
 
   // Animate wind gusts
@@ -26,25 +24,17 @@ export default function AnimeGrass() {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  // Fade out as you scroll past the surface
-  const fadeOut = Math.max(0, 1 - scrollY / 600);
-  if (fadeOut <= 0) return null;
-
   // Wind simulation — gusts come and go
-  const windBase = Math.sin(time * 0.8) * 0.3; // slow sway
-  const windGust = Math.sin(time * 2.5) * Math.sin(time * 0.3) * 0.6; // occasional gusts
+  const windBase = Math.sin(time * 0.8) * 0.3;
+  const windGust = Math.sin(time * 2.5) * Math.sin(time * 0.3) * 0.6;
   const wind = windBase + windGust;
 
   const bladeCount = 80;
 
   return (
     <div
-      className="pointer-events-none absolute bottom-[8%] left-0 right-0 z-[8]"
-      style={{
-        height: "120px",
-        opacity: fadeOut,
-        transform: `translateY(${scrollY * 0.5}px)`,
-      }}
+      className="pointer-events-none absolute bottom-[10%] left-0 right-0"
+      style={{ height: "120px" }}
     >
       <svg
         viewBox="0 0 1440 120"
