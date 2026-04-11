@@ -27,10 +27,10 @@ export default function SoilBiology() {
   const waterTableOpacity = rampIn(progress, 0.85, 0.95) * 0.08;
 
   // Deep zone geological features
-  const ironOxideOpacity = gaussian(progress, 0.70, 0.12) * 0.15;
-  const clayLensOpacity = gaussian(progress, 0.75, 0.08) * 0.12;
-  const calciteOpacity = gaussian(progress, 0.85, 0.10) * 0.10;
-  const rockFragOpacity = rampIn(progress, 0.80, 0.95) * 0.12;
+  const ironOxideOpacity = gaussian(progress, 0.70, 0.12) * 0.35;
+  const clayLensOpacity = gaussian(progress, 0.75, 0.08) * 0.25;
+  const calciteOpacity = gaussian(progress, 0.85, 0.10) * 0.20;
+  const rockFragOpacity = rampIn(progress, 0.80, 0.95) * 0.25;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[2]">
@@ -192,7 +192,7 @@ export default function SoilBiology() {
             key={`iron-${i}`}
             d={`M${50 + i * 80},${y} Q${400 + i * 50},${y - 5 + i * 3} ${800 + i * 40},${y + 3} Q${1100 + i * 30},${y - 2} ${1400},${y + 5}`}
             fill="none"
-            stroke="rgba(120,50,20,0.4)"
+            stroke="rgba(120,50,20,0.6)"
             strokeWidth={1 + i * 0.3}
             strokeLinecap="round"
           />
@@ -255,7 +255,7 @@ export default function SoilBiology() {
           <g key={`rock-${i}`} transform={`translate(${rock.x},${rock.y})`}>
             <polygon
               points={rock.points}
-              fill="rgba(60,52,44,0.25)"
+              fill="rgba(60,52,44,0.4)"
               stroke="rgba(80,70,58,0.15)"
               strokeWidth={0.6}
             />

@@ -91,8 +91,8 @@ export default function SurfaceScene() {
             #0a0f1a 0%,
             #111827 15%,
             #1a1f3a 30%,
-            #2d1f3d 45%,
-            #241a30 55%,
+            #221820 45%,
+            #1a1418 55%,
             #161622 70%,
             #10131e 85%,
             #0c0a08 100%
@@ -342,13 +342,13 @@ export default function SurfaceScene() {
           opacity: Math.min(1, groundFade * 1.5), // ground stays visible longer
           background: `linear-gradient(180deg,
             transparent 0%,
-            rgba(14,10,8,0.2) 15%,
-            rgba(14,10,8,0.4) 30%,
-            rgba(14,10,8,0.6) 45%,
-            rgba(14,10,8,0.8) 60%,
-            rgba(12,10,6,0.9) 75%,
-            rgba(12,10,6,0.95) 90%,
-            rgba(12,10,6,1) 100%
+            rgba(12,10,8,0.2) 15%,
+            rgba(12,10,8,0.4) 30%,
+            rgba(12,10,8,0.6) 45%,
+            rgba(12,10,8,0.8) 60%,
+            rgba(12,10,8,0.9) 75%,
+            rgba(12,10,8,0.95) 90%,
+            rgba(12,10,8,1) 100%
           )`,
         }}
       />

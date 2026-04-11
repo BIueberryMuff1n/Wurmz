@@ -23,12 +23,14 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   background: var(--soil-black);
   color: var(--mycelium);
   font-family: var(--font-mono);
+  overflow-x: hidden;
 }
 
 /* Grunge concrete/wall texture — like a tagged wall */

@@ -23,7 +23,7 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
     function animate() {
       x += speed;
       // Loop — when it goes off right, come back from left
-      if (x > 110) x = -25;
+      if (x > 95) x = -20;
       setPlaneX(x);
       setShowPrompt(true); // always show prompt while looping
       frame = requestAnimationFrame(animate);

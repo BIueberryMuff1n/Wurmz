@@ -71,6 +71,9 @@ export default function WormTunnel() {
     ? Math.max(0, 1 - (adjustedProgress - 0.75) / 0.15)
     : 1;
 
+  // Reduce worm opacity in Grow section (0.25-0.45) so it feels like a background element
+  const growDimming = (adjustedProgress >= 0.25 && adjustedProgress <= 0.45) ? 0.5 : 1;
+
   // Cherry flare: gaussian proximity to content section zones (0.25, 0.45, 0.65)
   const sectionZones = [0.25, 0.45, 0.65];
   const cherryFlare = sectionZones.reduce((max, zone) => {
@@ -133,7 +136,7 @@ export default function WormTunnel() {
           d={tunnelPath}
           fill="none"
           stroke="rgba(61,43,31,0.25)"
-          strokeWidth="40"
+          strokeWidth="30"
           strokeLinecap="round"
           strokeDasharray={totalLength}
           strokeDashoffset={totalLength - tunnelReveal}
@@ -144,7 +147,7 @@ export default function WormTunnel() {
           d={tunnelPath}
           fill="none"
           stroke="rgba(30,20,10,0.5)"
-          strokeWidth="36"
+          strokeWidth="26"
           strokeLinecap="round"
           strokeDasharray={totalLength}
           strokeDashoffset={totalLength - tunnelReveal}
@@ -155,7 +158,7 @@ export default function WormTunnel() {
           d={tunnelPath}
           fill="none"
           stroke="url(#tunnel-soil)"
-          strokeWidth="32"
+          strokeWidth="22"
           strokeLinecap="round"
           strokeDasharray={totalLength}
           strokeDashoffset={totalLength - tunnelReveal}
@@ -166,7 +169,7 @@ export default function WormTunnel() {
           d={tunnelPath}
           fill="none"
           stroke="rgba(10,6,3,0.4)"
-          strokeWidth="14"
+          strokeWidth="10"
           strokeLinecap="round"
           strokeDasharray={totalLength}
           strokeDashoffset={totalLength - tunnelReveal}
@@ -177,7 +180,7 @@ export default function WormTunnel() {
           d={tunnelPath}
           fill="none"
           stroke="rgba(230,52,98,0.02)"
-          strokeWidth="50"
+          strokeWidth="35"
           strokeLinecap="round"
           filter="url(#tunnel-glow)"
           strokeDasharray={totalLength}
@@ -368,7 +371,7 @@ export default function WormTunnel() {
 
         {/* === THE WORM (at the digging front) — hidden until after parachute lands === */}
         {adjustedProgress > 0.01 && (
-          <g opacity={fadeOpacity}>
+          <g opacity={fadeOpacity * growDimming}>
             <WormBody tunnelPath={tunnelPath} progress={wormProgress} cherryFlare={cherryFlare} isGlancingBack={isGlancingBack} isScrollingDown={isScrollingDown} />
           </g>
         )}
