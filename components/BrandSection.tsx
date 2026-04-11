@@ -11,7 +11,7 @@ export default function BrandSection() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         viewport={{ once: true, margin: "-100px" }}
         className="relative max-w-3xl bg-deep-earth/95 backdrop-blur-sm p-5 md:p-12"
-        style={{ border: "3px solid rgba(80,65,50,0.6)", borderLeft: "4px solid #E63462", boxShadow: "inset 0 0 20px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.35)" }}
+        style={{ border: "3px solid rgba(80,65,50,0.6)", boxShadow: "inset 4px 0 12px rgba(230,52,98,0.08), inset 0 0 20px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.35)" }}
       >
         {/* Corner bolts */}
         <div className="absolute top-2 left-2 w-2.5 h-2.5 rounded-full bg-root-brown/50 border border-root-brown/30" />

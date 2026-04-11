@@ -74,6 +74,10 @@ export default function WormTunnel() {
   // Reduce worm opacity in Grow section (0.25-0.45) so it feels like a background element
   const growDimming = (adjustedProgress >= 0.25 && adjustedProgress <= 0.45) ? 0.5 : 1;
 
+  // Smooth easter egg reveal: fades in over 5% of path after tunnel reaches that point
+  const eggO = (pos: number) =>
+    Math.min(1, Math.max(0, (tunnelReveal / totalLength - pos) / 0.05));
+
   // Cherry flare: gaussian proximity to content section zones (0.25, 0.45, 0.65)
   const sectionZones = [0.25, 0.45, 0.65];
   const cherryFlare = sectionZones.reduce((max, zone) => {
@@ -190,7 +194,7 @@ export default function WormTunnel() {
         {/* === HIDDEN EASTER EGG GRAFFITI scratched into tunnel walls === */}
 
         {/* ~15%: "dig deeper" */}
-        {tunnelReveal >= totalLength * 0.15 && (
+        {eggO(0.15) > 0 && (
           <text
             style={{
               offsetPath: `path("${tunnelPath}")`,
@@ -201,7 +205,7 @@ export default function WormTunnel() {
             fontFamily="'Courier New', monospace"
             fontWeight="bold"
             fill="#3D2B1F"
-            opacity="0.07"
+            opacity={0.07 * eggO(0.15)}
             dy={-28}
             letterSpacing="1.5"
             paintOrder="stroke"
@@ -213,8 +217,9 @@ export default function WormTunnel() {
         )}
 
         {/* ~25%: tiny scratched leaf doodle */}
-        {tunnelReveal >= totalLength * 0.25 && (
+        {eggO(0.25) > 0 && (
           <g
+            opacity={eggO(0.25)}
             style={{
               offsetPath: `path("${tunnelPath}")`,
               offsetDistance: "25%",
@@ -233,7 +238,7 @@ export default function WormTunnel() {
         )}
 
         {/* ~35%: "wuz here" with worm emoji */}
-        {tunnelReveal >= totalLength * 0.35 && (
+        {eggO(0.35) > 0 && (
           <text
             style={{
               offsetPath: `path("${tunnelPath}")`,
@@ -244,7 +249,7 @@ export default function WormTunnel() {
             fontFamily="'Courier New', monospace"
             fontWeight="bold"
             fill="#F5F0E8"
-            opacity="0.06"
+            opacity={0.06 * eggO(0.35)}
             dy={30}
             letterSpacing="1"
             paintOrder="stroke"
@@ -256,7 +261,7 @@ export default function WormTunnel() {
         )}
 
         {/* ~45%: "feed the soil" */}
-        {tunnelReveal >= totalLength * 0.45 && (
+        {eggO(0.45) > 0 && (
           <text
             style={{
               offsetPath: `path("${tunnelPath}")`,
@@ -267,7 +272,7 @@ export default function WormTunnel() {
             fontFamily="'Courier New', monospace"
             fontWeight="bold"
             fill="#3D2B1F"
-            opacity="0.08"
+            opacity={0.08 * eggO(0.45)}
             dy={-26}
             letterSpacing="2"
             paintOrder="stroke"
@@ -279,8 +284,9 @@ export default function WormTunnel() {
         )}
 
         {/* ~55%: small scratched mushroom doodle */}
-        {tunnelReveal >= totalLength * 0.55 && (
+        {eggO(0.55) > 0 && (
           <g
+            opacity={eggO(0.55)}
             style={{
               offsetPath: `path("${tunnelPath}")`,
               offsetDistance: "55%",
@@ -299,7 +305,7 @@ export default function WormTunnel() {
         )}
 
         {/* ~65%: "no shortcuts" */}
-        {tunnelReveal >= totalLength * 0.65 && (
+        {eggO(0.65) > 0 && (
           <text
             style={{
               offsetPath: `path("${tunnelPath}")`,
@@ -310,7 +316,7 @@ export default function WormTunnel() {
             fontFamily="'Courier New', monospace"
             fontWeight="bold"
             fill="#F5F0E8"
-            opacity="0.07"
+            opacity={0.07 * eggO(0.65)}
             dy={28}
             letterSpacing="1.5"
             paintOrder="stroke"
@@ -322,7 +328,7 @@ export default function WormTunnel() {
         )}
 
         {/* ~72%: "420" */}
-        {tunnelReveal >= totalLength * 0.72 && (
+        {eggO(0.72) > 0 && (
           <text
             style={{
               offsetPath: `path("${tunnelPath}")`,
@@ -333,7 +339,7 @@ export default function WormTunnel() {
             fontFamily="'Courier New', monospace"
             fontWeight="bold"
             fill="#3D2B1F"
-            opacity="0.09"
+            opacity={0.09 * eggO(0.72)}
             dy={-27}
             letterSpacing="3"
             paintOrder="stroke"
@@ -345,7 +351,7 @@ export default function WormTunnel() {
         )}
 
         {/* ~78%: "if you can read this, you're underground" */}
-        {tunnelReveal >= totalLength * 0.78 && (
+        {eggO(0.78) > 0 && (
           <text
             style={{
               offsetPath: `path("${tunnelPath}")`,
@@ -356,7 +362,7 @@ export default function WormTunnel() {
             fontFamily="'Courier New', monospace"
             fontWeight="bold"
             fill="#F5F0E8"
-            opacity="0.05"
+            opacity={0.05 * eggO(0.78)}
             dy={30}
             letterSpacing="0.8"
             paintOrder="stroke"

@@ -180,39 +180,6 @@ export default function SurfaceScene() {
         </svg>
       )}
 
-      {/* Airplane contrail — slow diagonal drift */}
-      <div
-        className="absolute"
-        style={{
-          top: "12%",
-          left: "-10%",
-          transform: `translateY(${skyOffset * 0.3}px)`,
-        }}
-      >
-        {/* Plane dot */}
-        <div
-          className="absolute"
-          style={{
-            width: 2,
-            height: 2,
-            background: "rgba(255,255,255,0.4)",
-            borderRadius: "50%",
-            animation: "contrail-move 60s linear infinite",
-          }}
-        />
-        {/* Contrail line */}
-        <div
-          style={{
-            width: 180,
-            height: 1,
-            background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 30%, rgba(255,255,255,0.12) 70%, rgba(255,255,255,0.04) 100%)",
-            transform: "rotate(-8deg)",
-            borderRadius: 1,
-            animation: "contrail-fade 60s linear infinite",
-          }}
-        />
-      </div>
-
       {/* Moon — real phase, smaller on mobile */}
       <div
         className="absolute"
