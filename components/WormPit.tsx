@@ -30,9 +30,11 @@ export default function WormPit() {
   const [visible, setVisible] = useState(false);
 
   const { progress } = useScroll();
+  const progressRef = useRef(progress);
+  progressRef.current = progress;
 
   useEffect(() => {
-    setVisible(progress > 0.6);
+    setVisible(progress > 0.45); // start showing worms earlier
   }, [progress]);
 
   useEffect(() => {
@@ -116,10 +118,17 @@ export default function WormPit() {
         }
       }
 
-      // Draw in depth order (already sorted)
-      for (const worm of worms) {
-        updateWorm(worm, canvas.width, canvas.height, time);
-        drawWorm(ctx, worm, time);
+      // Draw worms — count increases with scroll depth
+      // At progress 0.45: ~5% of worms. At 0.65: ~40%. At 0.85+: 100%
+      const p = progressRef.current;
+      const densityFraction = Math.min(1, Math.max(0.03, ((p - 0.45) / 0.4) ** 1.5));
+      const drawCount = Math.max(3, Math.floor(worms.length * densityFraction));
+
+      for (let i = 0; i < worms.length; i++) {
+        updateWorm(worms[i], canvas.width, canvas.height, time);
+        if (i < drawCount) {
+          drawWorm(ctx, worms[i], time);
+        }
       }
 
       animRef.current = requestAnimationFrame(animate);
@@ -137,11 +146,14 @@ export default function WormPit() {
 
   if (!visible) return null;
 
+  // Opacity ramps up: faint at 0.45, moderate at 0.65, full at 0.85+
+  const pitOpacity = Math.min(0.6, Math.max(0, (progress - 0.45) / 0.4) * 0.6);
+
   return (
     <canvas
       ref={canvasRef}
       className="pointer-events-auto fixed inset-0 z-[4]"
-      style={{ opacity: 0.5 }}
+      style={{ opacity: pitOpacity }}
     />
   );
 }
