@@ -229,12 +229,13 @@ export default function SurfaceScene() {
         />
       </svg>
 
-      {/* Very faint NYC skyline — sitting at the horizon/ground line */}
+      {/* Very faint NYC skyline — rendered above ground fade */}
       <svg
-        className="absolute bottom-[8%] left-0 w-full"
+        className="absolute bottom-[12%] left-0 w-full"
         style={{
           transform: `translateY(${skyOffset * 0.6}px)`,
-          opacity: 0.035,
+          opacity: 0.06,
+          zIndex: 2,
         }}
         viewBox="0 0 1440 80"
         preserveAspectRatio="none"
@@ -289,6 +290,7 @@ export default function SurfaceScene() {
           )`,
         }}
       />
+
     </div>
   );
 }
