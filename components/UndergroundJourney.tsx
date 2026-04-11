@@ -149,38 +149,23 @@ export default function UndergroundJourney() {
             background: "radial-gradient(ellipse at 50% 50%, rgba(140,110,50,0.4) 0%, rgba(100,75,30,0.2) 50%, transparent 80%)",
           }}
         />
-        {/* Dense straw/mulch fibers — thick, visible, scattered */}
+        {/* Straw/mulch fibers — short, subtle, scattered */}
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="none">
-          {Array.from({ length: 80 }, (_, i) => {
-            const x = (i * 18 + 7) % 1440;
-            const y = 80 + (i * 23 + 11) % 740;
-            const angle = -30 + (i % 12) * 6;
-            const len = 20 + (i % 6) * 18;
+          {Array.from({ length: 50 }, (_, i) => {
+            const x = (i * 29 + 10) % 1440;
+            const y = 150 + (i * 31 + 15) % 600;
+            const angle = -20 + (i % 10) * 4;
+            const len = 8 + (i % 5) * 6; // shorter fibers
             const rad = (angle * Math.PI) / 180;
             return (
               <line
                 key={i}
                 x1={x} y1={y}
                 x2={x + len * Math.cos(rad)} y2={y + len * Math.sin(rad)}
-                stroke={i % 4 === 0 ? "#D4B060" : i % 3 === 0 ? "#C4A55A" : "#A89040"}
-                strokeWidth={1.5 + (i % 3) * 0.8}
-                opacity={0.4 + (i % 5) * 0.1}
+                stroke={i % 3 === 0 ? "#B89848" : "#9A8038"}
+                strokeWidth={0.8 + (i % 3) * 0.4}
+                opacity={0.2 + (i % 4) * 0.05}
                 strokeLinecap="round"
-              />
-            );
-          })}
-          {/* Chunky mulch pieces */}
-          {Array.from({ length: 20 }, (_, i) => {
-            const x = (i * 73 + 30) % 1440;
-            const y = 100 + (i * 47 + 20) % 700;
-            return (
-              <ellipse
-                key={`mulch-${i}`}
-                cx={x} cy={y}
-                rx={4 + (i % 4) * 3}
-                ry={2 + (i % 3) * 1.5}
-                fill={i % 2 === 0 ? "rgba(160,120,50,0.35)" : "rgba(130,95,35,0.3)"}
-                transform={`rotate(${(i * 37) % 180} ${x} ${y})`}
               />
             );
           })}

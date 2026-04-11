@@ -339,17 +339,29 @@ export default function SurfaceScene() {
         ))}
       </svg>
 
-      {/* Ground fade — blends seamlessly into the earth system */}
+      {/* Topsoil layer — dark earth beneath the grass */}
       <div
         className="absolute bottom-0 left-0 right-0"
         style={{
-          height: "40%",
+          height: "15%",
           background: `linear-gradient(180deg,
             transparent 0%,
-            rgba(10,15,26,0.2) 20%,
-            rgba(10,15,26,0.5) 45%,
-            rgba(10,15,26,0.8) 70%,
-            rgba(10,15,26,1) 100%
+            rgba(28,20,14,0.6) 30%,
+            rgba(22,16,10,0.9) 70%,
+            rgba(18,14,8,1) 100%
+          )`,
+        }}
+      />
+      {/* Sky-to-earth fade — gradual darkening above the topsoil */}
+      <div
+        className="absolute bottom-[12%] left-0 right-0"
+        style={{
+          height: "30%",
+          background: `linear-gradient(180deg,
+            transparent 0%,
+            rgba(10,15,26,0.3) 40%,
+            rgba(14,12,10,0.6) 80%,
+            rgba(22,16,10,0.8) 100%
           )`,
         }}
       />
