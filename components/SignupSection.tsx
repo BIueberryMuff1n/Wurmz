@@ -52,7 +52,18 @@ export default function SignupSection() {
         viewport={{ once: true, margin: "-100px" }}
         className="flex flex-col items-center text-center max-w-xl mx-auto"
       >
-        <div className="bg-deep-earth/90 backdrop-blur-sm rounded-sm p-6 md:p-10">
+        <div className="relative bg-deep-earth/92 backdrop-blur-sm p-6 md:p-10" style={{ border: "3px solid rgba(80,65,50,0.6)", boxShadow: "inset 0 0 20px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.4)" }}>
+        {/* Corner bolts */}
+        <div className="absolute top-2 left-2 w-2.5 h-2.5 rounded-full bg-root-brown/50 border border-root-brown/30" />
+        <div className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-root-brown/50 border border-root-brown/30" />
+        <div className="absolute bottom-2 left-2 w-2.5 h-2.5 rounded-full bg-root-brown/50 border border-root-brown/30" />
+        <div className="absolute bottom-2 right-2 w-2.5 h-2.5 rounded-full bg-root-brown/50 border border-root-brown/30" />
+        {/* Brick pattern */}
+        <div className="absolute inset-0 pointer-events-none" style={{ opacity: 0.035, backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(80,55,35,0.8) 24px, rgba(80,55,35,0.8) 25px), repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(80,55,35,0.5) 48px, rgba(80,55,35,0.5) 49px)" }} />
+        {/* Graffiti scratch */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.04 }}>
+          <text x="85%" y="92%" fontSize="5" fill="#E63462" fontFamily="sans-serif" fontWeight="bold" transform="rotate(-5 85 92)">🪱</text>
+        </svg>
         <h2 className="font-display text-3xl md:text-5xl text-mycelium mb-4">
           Stay Underground
         </h2>
