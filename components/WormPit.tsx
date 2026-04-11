@@ -134,6 +134,30 @@ export default function WormPit() {
             : Math.min(1, 0.50 + ((p - 0.85) / 0.15) * 0.50); // packed: 50-100%
       const drawCount = Math.max(3, Math.floor(worms.length * densityFraction));
 
+      // Draw subtle soil texture on the canvas — makes it feel like real earth
+      if (p > 0.6) {
+        const soilAlpha = Math.min(0.15, (p - 0.6) / 0.3 * 0.15);
+        // Scattered soil particles
+        for (let s = 0; s < 30; s++) {
+          const sx = pseudoRandom(s * 13 + time * 0.001) * canvas.width;
+          const sy = pseudoRandom(s * 17 + 500) * canvas.height;
+          const sr = 1 + pseudoRandom(s * 23) * 3;
+          ctx.beginPath();
+          ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(30,22,14,${soilAlpha})`;
+          ctx.fill();
+        }
+        // A few larger dirt clumps
+        for (let s = 0; s < 8; s++) {
+          const cx = pseudoRandom(s * 31 + 200) * canvas.width;
+          const cy = pseudoRandom(s * 37 + 200) * canvas.height;
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, 4 + pseudoRandom(s * 41) * 6, 2 + pseudoRandom(s * 43) * 4, pseudoRandom(s * 47) * Math.PI, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(25,18,10,${soilAlpha * 0.7})`;
+          ctx.fill();
+        }
+      }
+
       // DEPTH COMPOSITING: back worms → embedded objects → front worms
       // This creates real depth — objects have things behind AND in front
 
@@ -354,7 +378,38 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
   ctx.lineJoin = "round";
   ctx.stroke();
 
-  // (Highlight stripe and segment rings removed for performance)
+  // Highlight — thin lighter stroke along center for 3D roundness
+  ctx.beginPath();
+  ctx.moveTo(segs[0][0], segs[0][1]);
+  for (let i = 1; i < segs.length; i++) {
+    const prev = segs[i - 1];
+    const curr = segs[i];
+    const mx = (prev[0] + curr[0]) / 2;
+    const my = (prev[1] + curr[1]) / 2;
+    ctx.quadraticCurveTo(prev[0], prev[1], mx, my);
+  }
+  ctx.strokeStyle = `rgba(${Math.min(255, r + 50)}, ${Math.min(255, g + 30)}, ${Math.min(255, b + 25)}, ${0.2 * alphaMultiplier})`;
+  ctx.lineWidth = worm.thickness * 0.35;
+  ctx.lineCap = "round";
+  ctx.stroke();
+
+  // Segment rings — only for thicker worms (performance: skip thin ones)
+  if (worm.thickness > 6) {
+    for (let i = 2; i < segs.length - 1; i += 3) {
+      const seg = segs[i];
+      const prev = segs[i - 1];
+      const angle = Math.atan2(seg[1] - prev[1], seg[0] - prev[0]);
+      const perpX = Math.cos(angle + Math.PI / 2);
+      const perpY = Math.sin(angle + Math.PI / 2);
+      const halfW = worm.thickness * 0.35;
+      ctx.beginPath();
+      ctx.moveTo(seg[0] + perpX * halfW, seg[1] + perpY * halfW);
+      ctx.lineTo(seg[0] - perpX * halfW, seg[1] - perpY * halfW);
+      ctx.strokeStyle = `rgba(${Math.max(0, r - 30)}, ${Math.max(0, g - 10)}, ${Math.max(0, b - 8)}, ${0.2 * alphaMultiplier})`;
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+    }
+  }
 
   // Queen crown: 3 small golden triangles above the head
   if (worm.isQueen) {
