@@ -48,7 +48,7 @@ export default function WormTunnel() {
   ].join(" ");
 
   const totalLength = 8800;
-  const wormBodyLen = 180; // must match bodyLen in WormBody
+  const wormBodyLen = 140; // must match bodyLen in WormBody
 
   // Tunnel only starts after parachute landing (~12% scroll)
   const tunnelStart = 0.12;
@@ -82,7 +82,7 @@ export default function WormTunnel() {
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[6]"
+      className="pointer-events-none absolute inset-0 z-[3]"
       style={{ height: pageHeight }}
     >
       <svg
@@ -129,8 +129,8 @@ export default function WormTunnel() {
         <path
           d={tunnelPath}
           fill="none"
-          stroke="rgba(61,43,31,0.4)"
-          strokeWidth="56"
+          stroke="rgba(61,43,31,0.25)"
+          strokeWidth="40"
           strokeLinecap="round"
           strokeDasharray={totalLength}
           strokeDashoffset={totalLength - tunnelReveal}
@@ -140,8 +140,8 @@ export default function WormTunnel() {
         <path
           d={tunnelPath}
           fill="none"
-          stroke="rgba(30,20,10,0.7)"
-          strokeWidth="50"
+          stroke="rgba(30,20,10,0.5)"
+          strokeWidth="36"
           strokeLinecap="round"
           strokeDasharray={totalLength}
           strokeDashoffset={totalLength - tunnelReveal}
@@ -152,7 +152,7 @@ export default function WormTunnel() {
           d={tunnelPath}
           fill="none"
           stroke="url(#tunnel-soil)"
-          strokeWidth="46"
+          strokeWidth="32"
           strokeLinecap="round"
           strokeDasharray={totalLength}
           strokeDashoffset={totalLength - tunnelReveal}
@@ -163,7 +163,7 @@ export default function WormTunnel() {
           d={tunnelPath}
           fill="none"
           stroke="rgba(10,6,3,0.4)"
-          strokeWidth="20"
+          strokeWidth="14"
           strokeLinecap="round"
           strokeDasharray={totalLength}
           strokeDashoffset={totalLength - tunnelReveal}
@@ -173,8 +173,8 @@ export default function WormTunnel() {
         <path
           d={tunnelPath}
           fill="none"
-          stroke="rgba(230,52,98,0.04)"
-          strokeWidth="70"
+          stroke="rgba(230,52,98,0.02)"
+          strokeWidth="50"
           strokeLinecap="round"
           filter="url(#tunnel-glow)"
           strokeDasharray={totalLength}
@@ -387,8 +387,8 @@ function WormBody({
   isGlancingBack: boolean;
   isScrollingDown: boolean;
 }) {
-  const bodyLen = 180; // longer worm
-  const bodyR = 22; // fills the tunnel width
+  const bodyLen = 140; // longer worm
+  const bodyR = 16; // fills the tunnel width
 
   return (
     <g
@@ -550,11 +550,11 @@ function WormBody({
 
       {/* === SMOKE TRAIL (from tilted joint tip) === */}
       {[
-        { cx: bodyLen / 2 + 18, cy: -12, r: 3, o: 0.15 },
-        { cx: bodyLen / 2 + 20, cy: -20, r: 4, o: 0.12 },
-        { cx: bodyLen / 2 + 19, cy: -30, r: 5.5, o: 0.09 },
-        { cx: bodyLen / 2 + 16, cy: -42, r: 7, o: 0.06 },
-        { cx: bodyLen / 2 + 13, cy: -55, r: 8, o: 0.04 },
+        { cx: bodyLen / 2 + 18, cy: -12, r: 1.5, o: 0.08 },
+        { cx: bodyLen / 2 + 20, cy: -20, r: 2, o: 0.06 },
+        { cx: bodyLen / 2 + 19, cy: -30, r: 2.75, o: 0.05 },
+        { cx: bodyLen / 2 + 16, cy: -42, r: 3.5, o: 0.03 },
+        { cx: bodyLen / 2 + 13, cy: -55, r: 4, o: 0.02 },
       ].map((puff, i) => (
         <circle
           key={`smoke-${i}`}

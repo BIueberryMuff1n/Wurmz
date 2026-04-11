@@ -141,7 +141,7 @@ export default function WormPit() {
     <canvas
       ref={canvasRef}
       className="pointer-events-auto fixed inset-0 z-[4]"
-      style={{ opacity: 0.85 }}
+      style={{ opacity: 0.5 }}
     />
   );
 }
@@ -269,7 +269,8 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
 
   // Depth-based alpha: deeper worms (lower depth) are dimmer
   // depth 0 -> alphaMultiplier 0.5, depth 1 -> alphaMultiplier 1.0
-  const alphaMultiplier = 0.5 + worm.depth * 0.5;
+  // Multiplied by 0.6 to reduce overall worm intensity so content stays readable
+  const alphaMultiplier = (0.5 + worm.depth * 0.5) * 0.6;
 
   // Draw body as a thick smooth path
   // Outer dark outline

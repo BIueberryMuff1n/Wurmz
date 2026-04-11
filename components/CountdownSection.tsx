@@ -13,6 +13,7 @@ export default function CountdownSection() {
         viewport={{ once: true, margin: "-100px" }}
         className="flex flex-col items-center text-center"
       >
+        <div className="bg-deep-earth/85 backdrop-blur-sm rounded-sm p-6 md:p-10">
         <h2 className="font-display text-3xl md:text-5xl text-mycelium mb-3">
           First Drop
         </h2>
@@ -20,6 +21,7 @@ export default function CountdownSection() {
           4 &middot; 20 &middot; 2026
         </p>
         <CountdownTimer />
+        </div>
       </motion.div>
     </section>
   );

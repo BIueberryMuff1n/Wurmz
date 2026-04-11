@@ -10,7 +10,7 @@ export default function PhilosophySection() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true, margin: "-100px" }}
-        className="max-w-2xl mx-auto text-center"
+        className="bg-deep-earth/90 backdrop-blur-sm rounded-sm p-6 md:p-10 max-w-2xl mx-auto text-center"
       >
         <h2 className="font-display text-3xl md:text-5xl text-crimson-neon mb-8">
           Why Living Soil?

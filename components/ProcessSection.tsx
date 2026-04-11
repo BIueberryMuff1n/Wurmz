@@ -28,6 +28,7 @@ const steps = [
 export default function ProcessSection() {
   return (
     <section className="px-6 py-24 md:py-32">
+      <div className="bg-deep-earth/90 backdrop-blur-sm rounded-sm p-6 md:p-10">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -70,6 +71,7 @@ export default function ProcessSection() {
             </div>
           </motion.div>
         ))}
+      </div>
       </div>
     </section>
   );

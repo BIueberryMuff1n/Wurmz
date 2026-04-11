@@ -10,12 +10,13 @@ import { useScroll } from "./ScrollContext";
 // Color control points: [progress, r, g, b]
 // Tuned by hand for imperceptible transitions
 const COLOR_STOPS: [number, number, number, number][] = [
-  // Sky zone
-  [0.00, 10, 15, 26],    // deep night sky
-  [0.02, 12, 18, 30],    // sky, hint of warmth
-  [0.04, 16, 22, 34],    // sky brightening slightly
-  [0.06, 20, 24, 36],    // transitional
-  [0.08, 24, 24, 34],    // purple-brown begins
+  // Sky zone — must exactly match SurfaceScene gradient bottom (#0a0f1a = rgb(10,15,26))
+  [0.00, 10, 15, 26],    // deep night sky — exact match to SurfaceScene bottom
+  [0.01, 10, 15, 26],    // hold sky color through crossfade zone
+  [0.03, 12, 17, 28],    // barely shifting
+  [0.05, 16, 20, 30],    // sky transitioning
+  [0.07, 20, 22, 32],    // transitional — blue-toned, no purple
+  [0.09, 24, 24, 32],    // dusk hint
   [0.10, 28, 24, 30],    // dusk meets earth
   // Surface / straw zone
   [0.12, 32, 24, 24],    // first soil hint

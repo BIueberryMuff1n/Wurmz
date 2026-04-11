@@ -52,6 +52,7 @@ export default function SignupSection() {
         viewport={{ once: true, margin: "-100px" }}
         className="flex flex-col items-center text-center max-w-xl mx-auto"
       >
+        <div className="bg-deep-earth/90 backdrop-blur-sm rounded-sm p-6 md:p-10">
         <h2 className="font-display text-3xl md:text-5xl text-mycelium mb-4">
           Stay Underground
         </h2>
@@ -96,6 +97,7 @@ export default function SignupSection() {
             {errorMsg}
           </motion.p>
         )}
+        </div>
       </motion.div>
     </section>
   );
