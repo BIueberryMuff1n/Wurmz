@@ -29,7 +29,7 @@ export default function AnimeGrass() {
   const windGust = Math.sin(time * 2.5) * Math.sin(time * 0.3) * 0.6;
   const wind = windBase + windGust;
 
-  const bladeCount = 80;
+  const bladeCount = 120;
 
   return (
     <div
@@ -44,8 +44,8 @@ export default function AnimeGrass() {
       >
         {Array.from({ length: bladeCount }, (_, i) => {
           const x = blade(i * 7) * 1440;
-          const height = 25 + blade(i * 13) * 50; // 25-75px tall
-          const width = 2 + blade(i * 19) * 3; // 2-5px wide
+          const height = 30 + blade(i * 13) * 55; // 30-85px tall
+          const width = 4 + blade(i * 19) * 5; // 4-9px wide — lush, thick blades
           const baseY = 100 + blade(i * 23) * 15; // slight Y variation
 
           // Each blade sways with wind, but with phase offset for natural look
@@ -53,11 +53,11 @@ export default function AnimeGrass() {
           const bladeWind = wind * (0.5 + blade(i * 37) * 0.5); // each blade responds differently
           const sway = Math.sin(time * 1.2 + phaseOffset) * 3 + bladeWind * 15;
 
-          // Color variation — dark greens with some lighter highlights
-          const greenBase = 25 + Math.floor(blade(i * 41) * 35); // 25-60
-          const greenR = 15 + Math.floor(blade(i * 43) * 25);
-          const greenB = 5 + Math.floor(blade(i * 47) * 15);
-          const alpha = 0.5 + blade(i * 53) * 0.4;
+          // Color variation — vivid greens, anime-style
+          const greenBase = 50 + Math.floor(blade(i * 41) * 60); // 50-110 — much greener
+          const greenR = 20 + Math.floor(blade(i * 43) * 30);
+          const greenB = 5 + Math.floor(blade(i * 47) * 10);
+          const alpha = 0.6 + blade(i * 53) * 0.35;
 
           // Control points for the curved blade
           const tipX = x + sway;

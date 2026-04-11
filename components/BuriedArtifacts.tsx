@@ -4,34 +4,28 @@ import { useScroll } from "./ScrollContext";
 
 // Artifacts buried at various depths in the soil
 // Each appears at a specific scroll range with very low opacity
+// Curated artifacts — fewer, more spread out, each one special
 const artifacts = [
-  // Straw/topsoil zone (0.15-0.30)
-  { type: "bottle-cap", x: 15, peakProgress: 0.20, sigma: 0.04, rotation: 25 },
-  { type: "coin", x: 78, peakProgress: 0.25, sigma: 0.05, rotation: -15 },
+  // Topsoil (0.20) — one small find
+  { type: "bottle-cap", x: 18, peakProgress: 0.20, sigma: 0.04, rotation: 25 },
 
-  // Living soil zone (0.35-0.55)
-  { type: "raw-pack", x: 85, peakProgress: 0.42, sigma: 0.06, rotation: 12 },
-  { type: "key", x: 22, peakProgress: 0.48, sigma: 0.05, rotation: -30 },
-  { type: "bone", x: 65, peakProgress: 0.38, sigma: 0.04, rotation: 45 },
+  // Living soil (0.40) — the RAW pack easter egg
+  { type: "raw-pack", x: 82, peakProgress: 0.42, sigma: 0.05, rotation: 12 },
 
-  // Deep zone (0.55-0.75)
-  { type: "lighter", x: 35, peakProgress: 0.62, sigma: 0.05, rotation: -20 },
-  { type: "seed", x: 90, peakProgress: 0.58, sigma: 0.04, rotation: 10 },
+  // Mid-depth (0.55) — a single bone
+  { type: "bone", x: 30, peakProgress: 0.55, sigma: 0.04, rotation: 45 },
 
-  // Very deep (0.75-0.90) — ancient artifacts + skeleton
-  { type: "trex-skull", x: 70, peakProgress: 0.82, sigma: 0.06, rotation: 15 },
-  { type: "ammonite", x: 25, peakProgress: 0.78, sigma: 0.05, rotation: -25 },
-  { type: "ribcage", x: 15, peakProgress: 0.88, sigma: 0.05, rotation: 8 },
-  { type: "femur", x: 55, peakProgress: 0.85, sigma: 0.04, rotation: -35 },
-  { type: "hand-bones", x: 82, peakProgress: 0.90, sigma: 0.05, rotation: 20 },
+  // Deep (0.70) — the lighter
+  { type: "lighter", x: 65, peakProgress: 0.70, sigma: 0.05, rotation: -20 },
 
-  // Geological artifacts — scientifically accurate deep soil
-  { type: "quartz-cluster", x: 40, peakProgress: 0.92, sigma: 0.05, rotation: 0 },
-  { type: "clay-layer", x: 50, peakProgress: 0.88, sigma: 0.08, rotation: 0 },
-  { type: "bedrock", x: 10, peakProgress: 0.94, sigma: 0.04, rotation: 5 },
-  { type: "bedrock", x: 75, peakProgress: 0.93, sigma: 0.04, rotation: -10 },
-  { type: "humus-pocket", x: 60, peakProgress: 0.80, sigma: 0.06, rotation: 12 },
-  { type: "groundwater", x: 30, peakProgress: 0.95, sigma: 0.05, rotation: 0 },
+  // Very deep (0.82) — the T-Rex graffiti skull on concrete (showpiece)
+  { type: "trex-skull", x: 72, peakProgress: 0.82, sigma: 0.05, rotation: 15 },
+
+  // Ancient (0.90) — quartz crystal cluster
+  { type: "quartz-cluster", x: 20, peakProgress: 0.90, sigma: 0.04, rotation: 0 },
+
+  // Deepest (0.95) — bedrock + groundwater hint
+  { type: "bedrock", x: 50, peakProgress: 0.95, sigma: 0.04, rotation: 5 },
 ];
 
 function gaussian(progress: number, peak: number, sigma: number): number {
@@ -45,8 +39,8 @@ export default function BuriedArtifacts() {
   return (
     <div className="pointer-events-none fixed inset-0 z-[5]">
       {artifacts.map((artifact, i) => {
-        // Deep artifacts (fossils) get higher opacity since they're special
-        const baseOpacity = artifact.peakProgress > 0.7 ? 0.18 : 0.1;
+        // Subtle — discoveries, not decorations
+        const baseOpacity = artifact.type === "trex-skull" ? 0.12 : 0.07;
         const opacity = gaussian(progress, artifact.peakProgress, artifact.sigma) * baseOpacity;
         if (opacity < 0.005) return null;
 
