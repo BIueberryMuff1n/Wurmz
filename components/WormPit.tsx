@@ -70,7 +70,7 @@ export default function WormPit() {
     // Initialize worms if empty
     if (wormsRef.current.length === 0) {
       const isMobile = window.innerWidth < 768;
-      const count = Math.floor(isMobile ? window.innerWidth / 3 : window.innerWidth / 1.2); // ~250 on mobile, ~1200 on desktop — PACKED
+      const count = Math.floor(isMobile ? window.innerWidth / 1.5 : window.innerWidth / 0.55); // ~500 on mobile, ~2600 on desktop
       for (let i = 0; i < count; i++) {
         wormsRef.current.push(createWorm(canvas.width, canvas.height, i));
       }
@@ -191,7 +191,7 @@ function createWorm(w: number, h: number, seed: number): Worm {
 
   // Worms near the bottom are bigger (macro view feel)
   const depthFactor = y / h; // 0 at top, 1 at bottom
-  let sizeMultiplier = 0.5 + depthFactor * 2.5; // 0.5x at top, 3x at bottom — FAT worms near bottom
+  let sizeMultiplier = 0.4 + depthFactor * 3.6; // 0.4x at top, 4x at bottom — VERY fat worms at bottom
 
   // Queen is slightly larger
   if (isQueen) {

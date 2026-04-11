@@ -34,7 +34,9 @@ export default function BuriedArtifacts() {
   return (
     <div className="pointer-events-none fixed inset-0 z-[3]">
       {artifacts.map((artifact, i) => {
-        const opacity = gaussian(progress, artifact.peakProgress, artifact.sigma) * 0.08;
+        // Deep artifacts (fossils) get higher opacity since they're special
+        const baseOpacity = artifact.peakProgress > 0.7 ? 0.18 : 0.1;
+        const opacity = gaussian(progress, artifact.peakProgress, artifact.sigma) * baseOpacity;
         if (opacity < 0.005) return null;
 
         return (
