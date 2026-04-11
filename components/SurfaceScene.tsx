@@ -22,7 +22,11 @@ export default function SurfaceScene() {
 
   // No Y parallax — everything stays locked on Y axis, fades with opacity only
   const skyOffset = 0;
-  const fadeOut = Math.max(0, 1 - scrollY / 1000);
+  // The sky fades but the GROUND stays opaque longer
+  // This prevents the line where two different browns meet at partial opacity
+  const skyFade = Math.max(0, 1 - scrollY / 600); // sky elements fade faster
+  const groundFade = Math.max(0, 1 - scrollY / 1400); // ground stays much longer
+  const fadeOut = skyFade; // used by the main container
 
   const [moonPhase, setMoonPhase] = useState<number | null>(null);
 
@@ -324,21 +328,21 @@ export default function SurfaceScene() {
         ))}
       </svg>
 
-      {/* Ground transition — ONE continuous warm brown fade from sky to earth */}
-      {/* NO blue/teal — all warm browns matching the earth system */}
+      {/* Ground transition — stays opaque longer than the sky to prevent line */}
       <div
         className="absolute bottom-0 left-0 right-0"
         style={{
-          height: "45%",
+          height: "50%",
+          opacity: Math.min(1, groundFade * 1.5), // ground stays visible longer
           background: `linear-gradient(180deg,
             transparent 0%,
-            rgba(16,12,10,0.15) 15%,
-            rgba(18,14,10,0.3) 30%,
-            rgba(20,15,10,0.5) 45%,
-            rgba(20,15,10,0.7) 60%,
-            rgba(18,14,8,0.85) 75%,
-            rgba(16,12,6,0.95) 90%,
-            rgba(14,10,6,1) 100%
+            rgba(14,10,8,0.2) 15%,
+            rgba(14,10,8,0.4) 30%,
+            rgba(14,10,8,0.6) 45%,
+            rgba(14,10,8,0.8) 60%,
+            rgba(12,10,6,0.9) 75%,
+            rgba(12,10,6,0.95) 90%,
+            rgba(12,10,6,1) 100%
           )`,
         }}
       />
