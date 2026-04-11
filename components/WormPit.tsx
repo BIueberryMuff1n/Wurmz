@@ -172,10 +172,10 @@ function createWorm(w: number, h: number, seed: number): Worm {
 
   const segCount = 14 + Math.floor(pseudoRandom(seed * 7) * 10);
   const x = pseudoRandom(seed * 13) * w;
-  // Bias Y HEAVILY toward the bottom — cube the random
-  // 80% of worms should be in the bottom 30% of the screen
+  // Bottom-heavy Y distribution — worms concentrated in lower portion
+  // Uses inverted distribution: most worms near bottom, few scattered above
   const yRandom = pseudoRandom(seed * 17);
-  const y = h * (yRandom * yRandom * yRandom * yRandom); // y⁴ = extremely bottom-heavy
+  const y = h * (1 - Math.pow(1 - yRandom, 3)); // cubic bias toward bottom, smooth falloff upward
   const angle = pseudoRandom(seed * 23) * Math.PI * 2;
 
   const segments: [number, number][] = [];
@@ -250,18 +250,23 @@ function updateWorm(worm: Worm, w: number, h: number, time: number) {
   const newX = head[0] + Math.cos(worm.angle) * worm.speed;
   const newY = head[1] + Math.sin(worm.angle) * worm.speed;
 
-  // X wraps around, but Y stays in the bottom portion
+  // X wraps around, Y has gentle downward gravity
   const margin = 50;
   let finalX = ((newX + margin) % (w + margin * 2)) - margin;
   let finalY = newY;
-  // If worm drifts above 40% of viewport, push it back down
-  if (finalY < h * 0.4) {
-    finalY = h * 0.4 + Math.random() * h * 0.1;
-    worm.angle = Math.PI * 0.5 + (Math.random() - 0.5) * 0.5; // point downward
+
+  // Gentle downward gravity — worms naturally drift back down
+  // Stronger pull the higher they are (proportional to distance from bottom)
+  const heightRatio = 1 - (finalY / h); // 1 at top, 0 at bottom
+  worm.angle += heightRatio * 0.01; // subtle angular push downward
+
+  // Soft Y boundaries — no hard snapping
+  if (finalY < h * 0.15) {
+    finalY = h * 0.15;
+    worm.angle = Math.abs(worm.angle); // point downward-ish
   }
-  // If worm goes below viewport, wrap to bottom zone
   if (finalY > h + margin) {
-    finalY = h * 0.6;
+    finalY = h * 0.7;
   }
   worm.segments[0] = [finalX, finalY];
 
