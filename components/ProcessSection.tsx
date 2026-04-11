@@ -9,25 +9,25 @@ const steps: { number: string; title: string; description: string; icon: ReactNo
     number: "01",
     title: "Grow",
     icon: <SeedlingIcon />,
-    description: "Seeds go into rich, living soil. No synthetics, no shortcuts. The microbiome does the heavy lifting.",
+    description: "Living soil. The microbiome does the work.",
   },
   {
     number: "02",
     title: "Harvest",
     icon: <LeafIcon />,
-    description: "Hand trimmed at peak ripeness. Every bud gets individual attention — that's the micro license difference.",
+    description: "Hand trimmed at peak ripeness.",
   },
   {
     number: "03",
     title: "Wash",
     icon: <WaterDropIcon />,
-    description: "Fresh frozen flower goes through ice water extraction. Pure trichome heads, nothing else.",
+    description: "Ice water. Pure trichome heads.",
   },
   {
     number: "04",
     title: "Press",
     icon: <PressIcon />,
-    description: "Hash gets pressed into solventless rosin. Heat and pressure only — no chemicals, no solvents, ever.",
+    description: "Heat and pressure. No solvents, ever.",
   },
 ];
 
@@ -51,7 +51,7 @@ export default function ProcessSection() {
         viewport={{ once: true }}
         className="font-mono text-base text-center text-mycelium/50 mb-16 max-w-lg mx-auto"
       >
-        Seed to sale, all under one roof. Single source means full control.
+        One roof. Four steps. No middlemen.
       </motion.p>
 
       <div className="max-w-3xl mx-auto space-y-12">

@@ -10,19 +10,19 @@ const cards = [
     icon: <WormIcon />,
     title: "Living Soil",
     description:
-      "No hydroponics. No synthetics. Our plants grow in a thriving underground ecosystem \u2014 worms, fungi, and billions of microbes doing what nature does best.",
+      "Worms, fungi, billions of microbes. No synthetics, no bottles.",
   },
   {
     icon: <HouseIcon />,
     title: "Single Source",
     description:
-      "We grow the flower, wash the hash, and press the rosin \u2014 all under one roof. Seed to sale, no middlemen, no mystery. That\u2019s single source.",
+      "Grow, wash, press — all in-house. Seed to sale, no middlemen.",
   },
   {
     icon: <ScissorsIcon />,
     title: "Small Batch",
     description:
-      "NYS micro license \u2014 the smallest legal canopy. Every plant gets individual attention. Hand trimmed, natural inputs, zero shortcuts.",
+      "Smallest legal canopy in NYS. Hand trimmed, zero shortcuts.",
   },
 ];
 
