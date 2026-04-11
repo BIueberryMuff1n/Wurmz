@@ -53,15 +53,15 @@ const COLOR_STOPS: [number, number, number, number][] = [
   [0.62, 16, 10, 6],     // approaching colony
   [0.65, 14, 10, 6],     // deep
   [0.68, 14, 9, 5],      // very deep
-  // Colony zone
-  [0.72, 12, 8, 5],      // colony begins
-  [0.76, 11, 8, 4],      // dense dark
-  [0.80, 10, 7, 4],      // deeper
-  [0.84, 9, 6, 4],       // near bottom
-  [0.88, 8, 6, 3],       // almost black
-  [0.92, 7, 5, 3],       // deepest
-  [0.96, 6, 4, 3],       // near absolute
-  [1.00, 5, 3, 2],       // the bottom
+  // Colony zone — stay VISIBLE dark brown, not black
+  [0.72, 18, 12, 8],     // colony begins — rich dark earth
+  [0.76, 16, 11, 7],     // darker but still brown
+  [0.80, 14, 10, 6],     // deep earth brown
+  [0.84, 13, 9, 6],      // getting darker
+  [0.88, 12, 8, 5],      // very deep — still visibly brown
+  [0.92, 11, 8, 5],      // deepest visible brown
+  [0.96, 10, 7, 4],      // near bottom
+  [1.00, 9, 6, 4],       // the bottom — dark but NOT black
 ];
 
 // Cubic Hermite interpolation for ultra-smooth transitions

@@ -24,7 +24,13 @@ export default function SoilBiology() {
   const castingsOpacity = rampIn(progress, 0.55, 0.75) * 0.15;
   const mushroomOpacity = gaussian(progress, 0.45, 0.06) * 0.18;
   const horizonOpacity = gaussian(progress, 0.20, 0.15) * 0.08;
-  const waterTableOpacity = rampIn(progress, 0.85, 0.95) * 0.06;
+  const waterTableOpacity = rampIn(progress, 0.85, 0.95) * 0.08;
+
+  // Deep zone geological features
+  const ironOxideOpacity = gaussian(progress, 0.70, 0.12) * 0.15;
+  const clayLensOpacity = gaussian(progress, 0.75, 0.08) * 0.12;
+  const calciteOpacity = gaussian(progress, 0.85, 0.10) * 0.10;
+  const rockFragOpacity = rampIn(progress, 0.80, 0.95) * 0.12;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[2]">
@@ -170,6 +176,92 @@ export default function SoilBiology() {
             <line x1={0} y1={0} x2={0} y2={-6} stroke="rgba(220,200,170,0.5)" strokeWidth="1" />
             <ellipse cx={0} cy={-7} rx={3} ry={2} fill="rgba(180,150,100,0.4)" />
             <ellipse cx={0} cy={-7.5} rx={2.5} ry={1.5} fill="rgba(200,170,120,0.3)" />
+          </g>
+        ))}
+      </svg>
+
+      {/* === IRON OXIDE STREAKS — reddish horizontal bands === */}
+      <svg
+        className="absolute inset-0 w-full h-full"
+        style={{ opacity: ironOxideOpacity }}
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+      >
+        {[280, 420, 580, 720].map((y, i) => (
+          <path
+            key={`iron-${i}`}
+            d={`M${50 + i * 80},${y} Q${400 + i * 50},${y - 5 + i * 3} ${800 + i * 40},${y + 3} Q${1100 + i * 30},${y - 2} ${1400},${y + 5}`}
+            fill="none"
+            stroke="rgba(120,50,20,0.4)"
+            strokeWidth={1 + i * 0.3}
+            strokeLinecap="round"
+          />
+        ))}
+      </svg>
+
+      {/* === CLAY LENSES — thin compacted horizontal bands === */}
+      <svg
+        className="absolute inset-0 w-full h-full"
+        style={{ opacity: clayLensOpacity }}
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+      >
+        {[350, 550, 700].map((y, i) => (
+          <g key={`clay-${i}`}>
+            <rect x={100 + i * 150} y={y} width={300 + i * 100} height={3} rx={1.5}
+              fill="rgba(80,60,40,0.3)" />
+            <rect x={100 + i * 150} y={y + 1} width={300 + i * 100} height={1.5} rx={0.75}
+              fill="rgba(60,45,30,0.2)" />
+          </g>
+        ))}
+      </svg>
+
+      {/* === CALCIUM CARBONATE NODULES — small white chalky spots === */}
+      <svg
+        className="absolute inset-0 w-full h-full"
+        style={{ opacity: calciteOpacity }}
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+      >
+        {Array.from({ length: 12 }, (_, i) => {
+          const x = 100 + (i * 120) % 1240;
+          const y = 300 + (i * 80) % 500;
+          return (
+            <ellipse key={`cal-${i}`}
+              cx={x} cy={y}
+              rx={2 + (i % 3) * 1.5} ry={1.5 + (i % 2)}
+              fill="rgba(220,210,195,0.3)"
+              stroke="rgba(200,190,170,0.15)"
+              strokeWidth={0.3}
+            />
+          );
+        })}
+      </svg>
+
+      {/* === ROCK FRAGMENTS — angular stone pieces at deep depth === */}
+      <svg
+        className="absolute inset-0 w-full h-full"
+        style={{ opacity: rockFragOpacity }}
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+      >
+        {[
+          { x: 200, y: 600, points: "0,12 5,0 18,2 22,14 15,18 3,16" },
+          { x: 600, y: 700, points: "0,8 8,0 20,3 24,12 18,16 4,14" },
+          { x: 1000, y: 650, points: "0,10 6,0 16,2 20,14 12,18 2,15" },
+          { x: 400, y: 800, points: "0,6 4,0 14,1 18,10 12,14 2,12" },
+          { x: 1200, y: 750, points: "0,8 7,0 15,3 18,12 10,16 1,13" },
+        ].map((rock, i) => (
+          <g key={`rock-${i}`} transform={`translate(${rock.x},${rock.y})`}>
+            <polygon
+              points={rock.points}
+              fill="rgba(60,52,44,0.25)"
+              stroke="rgba(80,70,58,0.15)"
+              strokeWidth={0.6}
+            />
+            {/* Mineral vein through rock */}
+            <line x1="4" y1="5" x2="16" y2="10"
+              stroke="rgba(160,145,120,0.1)" strokeWidth={0.4} />
           </g>
         ))}
       </svg>
