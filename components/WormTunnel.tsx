@@ -49,7 +49,7 @@ export default function WormTunnel() {
 
   const totalLength = 8800;
   // Segmented worm: 6 segments spaced 0.008 apart = 0.04 total span + segment half-width
-  const wormBodyLen = 0.04 * totalLength + 15; // ~367px effective body length
+  const wormBodyLen = 0.01 * totalLength + 15; // ~103px effective body length with tight spacing
 
   // Tunnel only starts after parachute landing (~12% scroll)
   const tunnelStart = 0.12;
@@ -391,8 +391,8 @@ function WormBody({
   const bodyLen = 140; // total worm length (logical)
   const bodyR = 16; // fills the tunnel width
   const segCount = 6; // number of body segments
-  const segWidth = 30; // each segment width — overlaps slightly
-  const segSpacing = 0.008; // 0.8% of path between each segment center
+  const segWidth = 30; // each segment width
+  const segSpacing = 0.002; // 0.2% of path (~18px) — tight overlap, reads as one body
   const pathStyle = `path("${tunnelPath}")`;
 
   // Segment 0 = head (highest offset-distance), segment N-1 = tail (lowest)
