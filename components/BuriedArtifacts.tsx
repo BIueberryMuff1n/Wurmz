@@ -50,13 +50,17 @@ export default function BuriedArtifacts() {
         const opacity = gaussian(progress, artifact.peakProgress, artifact.sigma) * baseOpacity;
         if (opacity < 0.005) return null;
 
+        // Y offset — artifact moves upward as you scroll past it
+        // Creates the feeling of passing by, not frozen in place
+        const scrollDelta = (progress - artifact.peakProgress) * 300;
+
         return (
           <div
             key={i}
             className="absolute"
             style={{
               left: `${artifact.x}%`,
-              top: "45%",
+              top: `calc(45% - ${scrollDelta}px)`,
               opacity,
               transform: `rotate(${artifact.rotation}deg)`,
             }}
