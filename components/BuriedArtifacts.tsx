@@ -24,6 +24,14 @@ const artifacts = [
   { type: "ribcage", x: 15, peakProgress: 0.88, sigma: 0.05, rotation: 8 },
   { type: "femur", x: 55, peakProgress: 0.85, sigma: 0.04, rotation: -35 },
   { type: "hand-bones", x: 82, peakProgress: 0.90, sigma: 0.05, rotation: 20 },
+
+  // Geological artifacts — scientifically accurate deep soil
+  { type: "quartz-cluster", x: 40, peakProgress: 0.92, sigma: 0.05, rotation: 0 },
+  { type: "clay-layer", x: 50, peakProgress: 0.88, sigma: 0.08, rotation: 0 },
+  { type: "bedrock", x: 10, peakProgress: 0.94, sigma: 0.04, rotation: 5 },
+  { type: "bedrock", x: 75, peakProgress: 0.93, sigma: 0.04, rotation: -10 },
+  { type: "humus-pocket", x: 60, peakProgress: 0.80, sigma: 0.06, rotation: 12 },
+  { type: "groundwater", x: 30, peakProgress: 0.95, sigma: 0.05, rotation: 0 },
 ];
 
 function gaussian(progress: number, peak: number, sigma: number): number {
@@ -237,6 +245,79 @@ function ArtifactSVG({ type }: { type: string }) {
           ))}
           {/* Palm */}
           <rect x="2" y="25" width="26" height="8" rx="3" fill="#D4C8B0" stroke="#B8A890" strokeWidth="0.5" />
+        </svg>
+      );
+
+    case "quartz-cluster":
+      return (
+        <svg width="70" height="60" viewBox="0 0 35 30">
+          {/* Quartz crystal cluster — hexagonal prisms */}
+          {/* Tall center crystal */}
+          <polygon points="17,2 20,4 20,18 17,20 14,18 14,4" fill="rgba(220,225,240,0.4)" stroke="rgba(200,210,230,0.6)" strokeWidth="0.6" />
+          {/* Left crystal — shorter, angled */}
+          <polygon points="10,8 13,6 13,18 10,20 7,18 7,10" fill="rgba(210,220,235,0.35)" stroke="rgba(190,200,220,0.5)" strokeWidth="0.5" />
+          {/* Right crystal */}
+          <polygon points="24,6 27,8 27,20 24,22 21,20 21,8" fill="rgba(215,222,238,0.3)" stroke="rgba(195,205,225,0.5)" strokeWidth="0.5" />
+          {/* Small crystal */}
+          <polygon points="5,14 7,13 7,20 5,21 3,20 3,15" fill="rgba(205,215,230,0.25)" stroke="rgba(185,195,215,0.4)" strokeWidth="0.4" />
+          {/* Internal facet highlights */}
+          <line x1="17" y1="4" x2="17" y2="18" stroke="rgba(240,245,255,0.15)" strokeWidth="0.3" />
+          <line x1="24" y1="9" x2="24" y2="19" stroke="rgba(240,245,255,0.12)" strokeWidth="0.3" />
+        </svg>
+      );
+
+    case "clay-layer":
+      return (
+        <svg width="200" height="20" viewBox="0 0 100 10">
+          {/* Sedimentary clay band — horizontal stripe */}
+          <rect x="0" y="2" width="100" height="6" rx="1" fill="rgba(120,85,55,0.25)" />
+          <rect x="0" y="3" width="100" height="4" rx="0.5" fill="rgba(100,70,45,0.2)" />
+          {/* Undulating top edge */}
+          <path d="M0,2 Q10,1 20,2.5 Q30,3.5 40,2 Q50,0.5 60,2 Q70,3 80,1.5 Q90,0 100,2" fill="none" stroke="rgba(110,78,48,0.2)" strokeWidth="0.5" />
+        </svg>
+      );
+
+    case "bedrock":
+      return (
+        <svg width="80" height="50" viewBox="0 0 40 25">
+          {/* Angular bedrock fragment */}
+          <polygon points="5,20 8,5 15,2 25,4 35,8 38,18 30,23 12,22" fill="rgba(80,75,70,0.3)" stroke="rgba(100,95,88,0.25)" strokeWidth="0.8" />
+          {/* Crack lines */}
+          <line x1="15" y1="3" x2="22" y2="15" stroke="rgba(60,55,50,0.15)" strokeWidth="0.4" />
+          <line x1="25" y1="5" x2="28" y2="18" stroke="rgba(60,55,50,0.12)" strokeWidth="0.3" />
+          {/* Mineral vein */}
+          <path d="M10,10 Q18,8 26,12 Q32,14 36,16" fill="none" stroke="rgba(180,170,150,0.15)" strokeWidth="0.5" />
+        </svg>
+      );
+
+    case "humus-pocket":
+      return (
+        <svg width="60" height="40" viewBox="0 0 30 20">
+          {/* Decomposed organic matter — dark rich pocket */}
+          <ellipse cx="15" cy="10" rx="14" ry="9" fill="rgba(25,18,10,0.35)" />
+          <ellipse cx="15" cy="10" rx="11" ry="7" fill="rgba(35,25,15,0.25)" />
+          {/* Organic fibers */}
+          {[0, 1, 2, 3, 4].map((i) => (
+            <line key={i}
+              x1={5 + i * 5} y1={7 + (i % 2) * 3}
+              x2={8 + i * 5} y2={12 - (i % 2) * 2}
+              stroke="rgba(50,35,20,0.2)" strokeWidth="0.4" strokeLinecap="round"
+            />
+          ))}
+        </svg>
+      );
+
+    case "groundwater":
+      return (
+        <svg width="140" height="30" viewBox="0 0 70 15">
+          {/* Groundwater seepage — wet horizontal band with blue tint */}
+          <rect x="0" y="4" width="70" height="7" rx="2" fill="rgba(40,60,90,0.12)" />
+          {/* Water droplets / moisture */}
+          {[8, 22, 35, 48, 60].map((x, i) => (
+            <ellipse key={i} cx={x} cy={7 + (i % 2)} rx={2 + i % 3} ry={1.5} fill="rgba(60,90,130,0.1)" />
+          ))}
+          {/* Wet sheen */}
+          <path d="M5,6 Q20,5 35,7 Q50,8 65,6" fill="none" stroke="rgba(80,120,170,0.08)" strokeWidth="0.5" />
         </svg>
       );
 
