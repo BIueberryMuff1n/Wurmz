@@ -190,7 +190,7 @@ export default function UndergroundJourney() {
           {Array.from({ length: 120 }, (_, i) => {
             const x = (i * 12 + 5) % 1440;
             const y = (i * 17 + 3) % 900;
-            const r = 0.8 + (i % 4) * 0.6;
+            const r = 0.6 + (i % 3) * 0.5; // max 2.1px — tiny speckles, not blobs
             return (
               <circle
                 key={i}
@@ -207,7 +207,7 @@ export default function UndergroundJourney() {
               <ellipse
                 key={`chunk-${i}`}
                 cx={x} cy={y}
-                rx={1.8 + (i % 3) * 1}
+                rx={1.2 + (i % 3) * 0.6} // max 3px — still small
                 ry={2 + (i % 3) * 2}
                 fill={i % 2 === 0 ? "rgba(245,240,225,0.4)" : "rgba(230,220,200,0.3)"}
                 transform={`rotate(${(i * 31) % 180} ${x} ${y})`}
