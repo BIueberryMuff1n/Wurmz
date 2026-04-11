@@ -24,10 +24,10 @@ export default function AnimeGrass() {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  // Wind simulation — gusts come and go
-  const windBase = Math.sin(time * 0.8) * 0.3;
-  const windGust = Math.sin(time * 2.5) * Math.sin(time * 0.3) * 0.6;
-  const wind = windBase + windGust;
+  // Natural wind — wave propagation across the field
+  // Wind moves as a wave from left to right, with varying intensity
+  const windStrength = 0.3 + Math.sin(time * 0.4) * 0.2; // overall intensity cycles slowly
+  const gustIntensity = Math.max(0, Math.sin(time * 0.15) * Math.sin(time * 0.7)); // gusts come and go
 
   const bladeCount = 120;
 
@@ -48,10 +48,11 @@ export default function AnimeGrass() {
           const width = 4 + blade(i * 19) * 5; // 4-9px wide — lush, thick blades
           const baseY = 100 + blade(i * 23) * 15; // slight Y variation
 
-          // Each blade sways with wind, but with phase offset for natural look
-          const phaseOffset = blade(i * 31) * Math.PI * 2;
-          const bladeWind = wind * (0.5 + blade(i * 37) * 0.5); // each blade responds differently
-          const sway = Math.sin(time * 1.2 + phaseOffset) * 3 + bladeWind * 15;
+          // Wind wave propagates left to right — blades respond based on X position
+          const wavePhase = x / 300 - time * 1.5; // wave moves right at speed 1.5
+          const localWind = windStrength * Math.sin(wavePhase) + gustIntensity * Math.sin(wavePhase * 0.5 + time);
+          const naturalVariation = blade(i * 31) * 0.4; // each blade slightly different
+          const sway = localWind * (12 + naturalVariation * 8);
 
           // Color variation — vivid greens, anime-style
           const greenBase = 50 + Math.floor(blade(i * 41) * 60); // 50-110 — much greener
@@ -86,8 +87,9 @@ export default function AnimeGrass() {
           const baseY = 108 + blade(i * 29 + 500) * 8;
 
           const phaseOffset = blade(i * 37 + 500) * Math.PI * 2;
-          const bladeWind = wind * (0.6 + blade(i * 41 + 500) * 0.4);
-          const sway = Math.sin(time * 1.5 + phaseOffset) * 2 + bladeWind * 10;
+          const fgWavePhase = x / 250 - time * 1.8;
+          const fgWind = windStrength * Math.sin(fgWavePhase) + gustIntensity * Math.sin(fgWavePhase * 0.7 + time * 1.2);
+          const sway = fgWind * (8 + blade(i * 41 + 500) * 6);
 
           const greenBase = 30 + Math.floor(blade(i * 43 + 500) * 30);
           const greenR = 20 + Math.floor(blade(i * 47 + 500) * 20);

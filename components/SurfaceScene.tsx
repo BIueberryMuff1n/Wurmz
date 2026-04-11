@@ -245,17 +245,16 @@ export default function SurfaceScene() {
         />
       </svg>
 
-      {/* Very faint NYC skyline — rendered above ground fade */}
+      {/* NYC skyline — major scene element, concentrated and tall */}
       <svg
-        className="absolute bottom-[12%] left-0 w-full"
+        className="absolute bottom-[14%] left-[10%] right-[10%]"
         style={{
-          transform: `translateY(${skyOffset * 0.6}px)`,
-          opacity: 0.06,
+          opacity: 0.07,
           zIndex: 2,
         }}
         viewBox="0 0 1440 80"
-        preserveAspectRatio="xMidYMid slice"
-        height="50"
+        preserveAspectRatio="xMidYMid meet"
+        height="140"
       >
         {/* NYC skyline — accurate profile from NJ/Hoboken looking east */}
         {/* Heights proportional: WTC=80, ESB=65, 432Park=63, Chrysler=47 (out of 80) */}
