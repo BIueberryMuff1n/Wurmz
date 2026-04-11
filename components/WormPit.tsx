@@ -220,7 +220,7 @@ function createWorm(w: number, h: number, seed: number): Worm {
   const isQueen = seed === 42;
   const isGolden = seed === 137;
 
-  const segCount = 8 + Math.floor(pseudoRandom(seed * 7) * 6); // 8-14 segments (was 14-24)
+  const segCount = 12 + Math.floor(pseudoRandom(seed * 7) * 8); // 12-20 segments — longer worms
   const x = pseudoRandom(seed * 13) * w;
   // Full viewport, bottom-heavy — like looking into a worm bin cross-section
   // Uniform random across full height, but with quadratic bottom bias
@@ -268,7 +268,7 @@ function createWorm(w: number, h: number, seed: number): Worm {
     angle,
     turnRate: 0.005 + pseudoRandom(seed * 43) * 0.01, // gentle turns
     turnTimer: Math.floor(80 + pseudoRandom(seed * 47) * 200), // long between turns
-    thickness: (5 + pseudoRandom(seed * 53) * 6) * sizeMultiplier, // thick worms, fewer needed
+    thickness: (3 + pseudoRandom(seed * 53) * 4) * sizeMultiplier, // natural worm width
     color,
     waveOffset: pseudoRandom(seed * 59) * Math.PI * 2,
     waveSpeed: 0.012 + pseudoRandom(seed * 61) * 0.015, // slow undulation

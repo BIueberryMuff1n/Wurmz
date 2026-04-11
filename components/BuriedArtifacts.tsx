@@ -18,8 +18,7 @@ const artifacts = [
   // Deep (0.70) — the lighter
   { type: "lighter", x: 65, peakProgress: 0.70, sigma: 0.05, rotation: -20 },
 
-  // Very deep (0.82) — the T-Rex graffiti skull on concrete (showpiece)
-  { type: "trex-skull", x: 72, peakProgress: 0.82, sigma: 0.05, rotation: 15 },
+  // T-Rex skull is rendered in WormPit canvas with depth compositing — not here
 
   // Ancient (0.90) — quartz crystal cluster
   { type: "quartz-cluster", x: 20, peakProgress: 0.90, sigma: 0.04, rotation: 0 },
