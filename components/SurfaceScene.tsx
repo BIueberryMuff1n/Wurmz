@@ -44,8 +44,11 @@ export default function SurfaceScene() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Periodic shooting stars
+  // Periodic shooting stars — only after mount to avoid hydration mismatch
   useEffect(() => {
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    let clearTimerId: ReturnType<typeof setTimeout> | null = null;
+
     function triggerStar() {
       setShootingStar({
         x: 10 + Math.random() * 60,
@@ -54,20 +57,23 @@ export default function SurfaceScene() {
         key: Date.now(),
       });
       // Clear after animation
-      setTimeout(() => setShootingStar(null), 1500);
+      clearTimerId = setTimeout(() => setShootingStar(null), 1500);
     }
 
     // First one after 5-15 seconds, then every 15-40 seconds
     const firstDelay = 5000 + Math.random() * 10000;
     const firstTimer = setTimeout(() => {
       triggerStar();
-      const interval = setInterval(() => {
+      intervalId = setInterval(() => {
         triggerStar();
       }, 15000 + Math.random() * 25000);
-      return () => clearInterval(interval);
     }, firstDelay);
 
-    return () => clearTimeout(firstTimer);
+    return () => {
+      clearTimeout(firstTimer);
+      if (intervalId) clearInterval(intervalId);
+      if (clearTimerId) clearTimeout(clearTimerId);
+    };
   }, []);
 
   return (
