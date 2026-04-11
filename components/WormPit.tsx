@@ -125,13 +125,9 @@ export default function WormPit() {
       // Draw worms — count increases with scroll depth
       const p = progressRef.current;
       // Very sparse until 70%, then ramps steeply to packed at 90%+
-      const densityFraction = p < 0.55
-        ? 0.02 // just 1-2 worms visible
-        : p < 0.70
-          ? 0.02 + ((p - 0.55) / 0.15) * 0.08 // slowly building: 2-10%
-          : p < 0.85
-            ? 0.10 + ((p - 0.70) / 0.15) * 0.40 // accelerating: 10-50%
-            : Math.min(1, 0.50 + ((p - 0.85) / 0.15) * 0.50); // packed: 50-100%
+      const densityFraction = p <= 0.5
+        ? 0
+        : Math.min(1, Math.max(0, Math.pow((p - 0.5) / 0.5, 2.5))); // smooth continuous ramp: 0 at 0.5, 1 at 1.0
       const drawCount = Math.max(3, Math.floor(worms.length * densityFraction));
 
       // Draw subtle soil texture on the canvas — makes it feel like real earth
@@ -220,7 +216,7 @@ function createWorm(w: number, h: number, seed: number): Worm {
   const isQueen = seed === 42;
   const isGolden = seed === 137;
 
-  const segCount = 12 + Math.floor(pseudoRandom(seed * 7) * 8); // 12-20 segments — longer worms
+  const segCount = 10 + Math.floor(pseudoRandom(seed * 7) * 4); // 10-14 segments — within performance budget
   const x = pseudoRandom(seed * 13) * w;
   // Full viewport, bottom-heavy — like looking into a worm bin cross-section
   // Uniform random across full height, but with quadratic bottom bias
@@ -241,9 +237,9 @@ function createWorm(w: number, h: number, seed: number): Worm {
   if (isGolden) {
     color = { r: 218, g: 165, b: 32 };
   } else {
-    const rBase = 120 + Math.floor(pseudoRandom(seed * 29) * 80);
-    const gBase = 35 + Math.floor(pseudoRandom(seed * 31) * 30);
-    const bBase = 30 + Math.floor(pseudoRandom(seed * 37) * 25);
+    const rBase = 140 + Math.floor(pseudoRandom(seed * 29) * 60); // 140-200
+    const gBase = 30 + Math.floor(pseudoRandom(seed * 31) * 25);  // 30-55
+    const bBase = 20 + Math.floor(pseudoRandom(seed * 37) * 20);  // 20-40
     color = { r: rBase, g: gBase, b: bBase };
   }
 

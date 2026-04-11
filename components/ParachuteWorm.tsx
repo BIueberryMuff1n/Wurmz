@@ -24,7 +24,7 @@ export default function ParachuteWorm() {
       {/* === DESCENDING WORM WITH PARACHUTE + SKATEBOARD + BACKPACK === */}
       {progress < 1 && (
         <div
-          className="pointer-events-none fixed z-[14]"
+          className="pointer-events-none fixed z-[8]"
           style={{
             left: `calc(50% + ${sway}vw)`,
             top: `${yPos}vh`,
@@ -70,9 +70,9 @@ export default function ParachuteWorm() {
 
             {/* Backpack — behind worm */}
             <rect x="6" y="2" width="18" height="20" rx="4" ry="4"
-              fill="#4A5A30" stroke="rgba(30,40,15,0.7)" strokeWidth="1.5" />
+              fill="#4A3520" stroke="rgba(40,25,12,0.7)" strokeWidth="1.5" />
             <rect x="8" y="2" width="14" height="7" rx="3" ry="3"
-              fill="#556B35" stroke="rgba(30,40,15,0.5)" strokeWidth="0.8" />
+              fill="#5A4530" stroke="rgba(40,25,12,0.5)" strokeWidth="0.8" />
             <rect x="13" y="8" width="4" height="2.5" rx="1" fill="#8B7355" />
 
             {/* Worm body */}
@@ -160,9 +160,9 @@ export default function ParachuteWorm() {
 
             {/* Backpack */}
             <rect x="8" y="18" width="18" height="22" rx="4" ry="4"
-              fill="#4A5A30" opacity="0.4" stroke="rgba(30,40,15,0.3)" strokeWidth="1" />
+              fill="#4A3520" opacity="0.4" stroke="rgba(40,25,12,0.3)" strokeWidth="1" />
             <rect x="10" y="18" width="14" height="7" rx="3" ry="3"
-              fill="#556B35" opacity="0.35" />
+              fill="#5A4530" opacity="0.35" />
 
             {/* Skateboard — tipped on its side */}
             <g transform="translate(40, 35) rotate(-15)">

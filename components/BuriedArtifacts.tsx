@@ -250,16 +250,16 @@ function ArtifactSVG({ type }: { type: string }) {
         <svg width="70" height="60" viewBox="0 0 35 30">
           {/* Quartz crystal cluster — hexagonal prisms */}
           {/* Tall center crystal */}
-          <polygon points="17,2 20,4 20,18 17,20 14,18 14,4" fill="rgba(220,225,240,0.4)" stroke="rgba(200,210,230,0.6)" strokeWidth="0.6" />
+          <polygon points="17,2 20,4 20,18 17,20 14,18 14,4" fill="rgba(220,210,190,0.4)" stroke="rgba(200,185,165,0.6)" strokeWidth="0.6" />
           {/* Left crystal — shorter, angled */}
-          <polygon points="10,8 13,6 13,18 10,20 7,18 7,10" fill="rgba(210,220,235,0.35)" stroke="rgba(190,200,220,0.5)" strokeWidth="0.5" />
+          <polygon points="10,8 13,6 13,18 10,20 7,18 7,10" fill="rgba(200,190,170,0.35)" stroke="rgba(185,170,150,0.5)" strokeWidth="0.5" />
           {/* Right crystal */}
-          <polygon points="24,6 27,8 27,20 24,22 21,20 21,8" fill="rgba(215,222,238,0.3)" stroke="rgba(195,205,225,0.5)" strokeWidth="0.5" />
+          <polygon points="24,6 27,8 27,20 24,22 21,20 21,8" fill="rgba(210,198,178,0.3)" stroke="rgba(195,180,160,0.5)" strokeWidth="0.5" />
           {/* Small crystal */}
-          <polygon points="5,14 7,13 7,20 5,21 3,20 3,15" fill="rgba(205,215,230,0.25)" stroke="rgba(185,195,215,0.4)" strokeWidth="0.4" />
+          <polygon points="5,14 7,13 7,20 5,21 3,20 3,15" fill="rgba(195,185,168,0.25)" stroke="rgba(180,168,150,0.4)" strokeWidth="0.4" />
           {/* Internal facet highlights */}
-          <line x1="17" y1="4" x2="17" y2="18" stroke="rgba(240,245,255,0.15)" strokeWidth="0.3" />
-          <line x1="24" y1="9" x2="24" y2="19" stroke="rgba(240,245,255,0.12)" strokeWidth="0.3" />
+          <line x1="17" y1="4" x2="17" y2="18" stroke="rgba(240,230,215,0.15)" strokeWidth="0.3" />
+          <line x1="24" y1="9" x2="24" y2="19" stroke="rgba(240,230,215,0.12)" strokeWidth="0.3" />
         </svg>
       );
 
