@@ -70,7 +70,7 @@ export default function WormPit() {
     // Initialize worms if empty
     if (wormsRef.current.length === 0) {
       const isMobile = window.innerWidth < 768;
-      const count = Math.floor(isMobile ? window.innerWidth / 1.5 : window.innerWidth / 0.55); // ~500 on mobile, ~2600 on desktop
+      const count = Math.floor(isMobile ? window.innerWidth / 4 : window.innerWidth / 1.8); // ~190 on mobile, ~800 on desktop
       for (let i = 0; i < count; i++) {
         wormsRef.current.push(createWorm(canvas.width, canvas.height, i));
       }
@@ -120,61 +120,20 @@ export default function WormPit() {
 
       // Draw worms — count increases with scroll depth
       const p = progressRef.current;
-      const densityFraction = Math.min(1, Math.max(0.03, ((p - 0.45) / 0.4) ** 1.5));
+      // Very sparse until 70%, then ramps steeply to packed at 90%+
+      const densityFraction = p < 0.55
+        ? 0.02 // just 1-2 worms visible
+        : p < 0.70
+          ? 0.02 + ((p - 0.55) / 0.15) * 0.08 // slowly building: 2-10%
+          : p < 0.85
+            ? 0.10 + ((p - 0.70) / 0.15) * 0.40 // accelerating: 10-50%
+            : Math.min(1, 0.50 + ((p - 0.85) / 0.15) * 0.50); // packed: 50-100%
       const drawCount = Math.max(3, Math.floor(worms.length * densityFraction));
-
-      // Exclusion zones — don't render worms behind content cards or dirt islands
-      // These are viewport-relative rectangles (percentage-based)
-      const w = canvas.width;
-      const h = canvas.height;
-      const exclusionZones = [
-        // Content cards (approximate positions when visible)
-        { x: w * 0.15, y: h * 0.15, w: w * 0.7, h: h * 0.45 }, // main content area center
-        // Dirt islands — natural clearings in the colony
-        { x: w * 0.02, y: h * 0.7, w: w * 0.12, h: h * 0.15 },  // bottom-left island
-        { x: w * 0.85, y: h * 0.55, w: w * 0.13, h: h * 0.12 }, // right island
-        { x: w * 0.4, y: h * 0.82, w: w * 0.15, h: h * 0.1 },   // bottom-center island
-      ];
-
-      // Draw dirt islands (dark soil patches)
-      for (let iz = 1; iz < exclusionZones.length; iz++) {
-        const zone = exclusionZones[iz];
-        ctx.beginPath();
-        // Organic blob shape instead of rectangle
-        const cx = zone.x + zone.w / 2;
-        const cy = zone.y + zone.h / 2;
-        const rx = zone.w / 2;
-        const ry = zone.h / 2;
-        ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(14,10,6,${0.6 + p * 0.3})`;
-        ctx.fill();
-        // Subtle dirt texture dots
-        for (let d = 0; d < 8; d++) {
-          const dx = cx + (Math.sin(d * 3.7) * rx * 0.7);
-          const dy = cy + (Math.cos(d * 2.3) * ry * 0.6);
-          ctx.beginPath();
-          ctx.arc(dx, dy, 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(40,28,16,0.3)";
-          ctx.fill();
-        }
-      }
 
       for (let i = 0; i < worms.length; i++) {
         updateWorm(worms[i], canvas.width, canvas.height, time);
         if (i < drawCount) {
-          // Skip worms whose head is inside an exclusion zone
-          const head = worms[i].segments[0];
-          let excluded = false;
-          for (const zone of exclusionZones) {
-            if (head[0] > zone.x && head[0] < zone.x + zone.w &&
-                head[1] > zone.y && head[1] < zone.y + zone.h) {
-              excluded = true;
-              break;
-            }
-          }
-          if (!excluded) {
-            drawWorm(ctx, worms[i], time);
-          }
+          drawWorm(ctx, worms[i], time);
         }
       }
 
@@ -193,8 +152,10 @@ export default function WormPit() {
 
   if (!visible) return null;
 
-  // Opacity ramps up: faint at 0.45, solid at 0.85+
-  const pitOpacity = Math.min(0.9, Math.max(0, (progress - 0.45) / 0.35) * 0.9);
+  // Opacity: very faint early, solid only at footer
+  const pitOpacity = progress < 0.70
+    ? Math.max(0, (progress - 0.45) / 0.25) * 0.15 // barely visible: 0-15%
+    : Math.min(0.85, 0.15 + ((progress - 0.70) / 0.30) * 0.70); // ramp: 15-85%
 
   return (
     <canvas
