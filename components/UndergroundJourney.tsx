@@ -109,10 +109,10 @@ export default function UndergroundJourney() {
 
   const bgColor = getEarthColor(progress);
 
-  // Texture layer opacities — gaussian curves centered at their zone
-  const strawOpacity = gaussian(progress, 0.17, 0.04) * 0.35;
-  const perliteOpacity = gaussian(progress, 0.28, 0.06) * 0.4;
-  const rootOpacity = gaussian(progress, 0.44, 0.08) * 0.12;
+  // Texture layer opacities — VISIBLE, not subtle
+  const strawOpacity = gaussian(progress, 0.16, 0.05) * 0.7;
+  const perliteOpacity = gaussian(progress, 0.26, 0.07) * 0.65;
+  const rootOpacity = gaussian(progress, 0.42, 0.10) * 0.3;
   const deepVignette = rampIn(progress, 0.65, 0.85) * 0.5;
 
   return (
@@ -120,94 +120,149 @@ export default function UndergroundJourney() {
       {/* Continuous color field */}
       <div className="absolute inset-0" style={{ backgroundColor: bgColor }} />
 
-      {/* === STRAW / MULCH TEXTURE === */}
+      {/* === TOPSOIL / MULCH LAYER — visible straw-like texture === */}
       <div
         className="absolute inset-0"
         style={{ opacity: strawOpacity }}
       >
-        {/* Warm amber wash */}
+        {/* Warm amber base wash */}
         <div
           className="absolute inset-0"
           style={{
-            background: "radial-gradient(ellipse at 50% 50%, rgba(160,135,80,0.25) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse at 50% 50%, rgba(140,110,50,0.4) 0%, rgba(100,75,30,0.2) 50%, transparent 80%)",
           }}
         />
-        {/* Straw fibers */}
+        {/* Dense straw/mulch fibers — thick, visible, scattered */}
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="none">
-          {Array.from({ length: 35 }, (_, i) => {
-            const x = (i * 41 + 15) % 1440;
-            const y = 150 + (i * 29 + 7) % 600;
-            const angle = -20 + (i % 9) * 5;
-            const len = 25 + (i % 5) * 12;
+          {Array.from({ length: 80 }, (_, i) => {
+            const x = (i * 18 + 7) % 1440;
+            const y = 80 + (i * 23 + 11) % 740;
+            const angle = -30 + (i % 12) * 6;
+            const len = 20 + (i % 6) * 18;
             const rad = (angle * Math.PI) / 180;
             return (
               <line
                 key={i}
                 x1={x} y1={y}
                 x2={x + len * Math.cos(rad)} y2={y + len * Math.sin(rad)}
-                stroke={i % 3 === 0 ? "#C4A55A" : "#A8903C"}
-                strokeWidth={1 + (i % 3) * 0.4}
-                opacity={0.25 + (i % 4) * 0.08}
+                stroke={i % 4 === 0 ? "#D4B060" : i % 3 === 0 ? "#C4A55A" : "#A89040"}
+                strokeWidth={1.5 + (i % 3) * 0.8}
+                opacity={0.4 + (i % 5) * 0.1}
                 strokeLinecap="round"
               />
             );
           })}
+          {/* Chunky mulch pieces */}
+          {Array.from({ length: 20 }, (_, i) => {
+            const x = (i * 73 + 30) % 1440;
+            const y = 100 + (i * 47 + 20) % 700;
+            return (
+              <ellipse
+                key={`mulch-${i}`}
+                cx={x} cy={y}
+                rx={4 + (i % 4) * 3}
+                ry={2 + (i % 3) * 1.5}
+                fill={i % 2 === 0 ? "rgba(160,120,50,0.35)" : "rgba(130,95,35,0.3)"}
+                transform={`rotate(${(i * 37) % 180} ${x} ${y})`}
+              />
+            );
+          })}
         </svg>
       </div>
 
-      {/* === PERLITE / TOPSOIL TEXTURE === */}
+      {/* === PERLITE LAYER — white chunks mixed into brown soil === */}
       <div
         className="absolute inset-0"
         style={{ opacity: perliteOpacity }}
       >
+        {/* Soil darkening wash for this layer */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "radial-gradient(ellipse at 50% 50%, rgba(80,55,30,0.25) 0%, transparent 70%)",
+          }}
+        />
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="none">
-          {/* Perlite speckles — white dots */}
-          {Array.from({ length: 50 }, (_, i) => {
-            const x = (i * 47 + 23) % 1440;
-            const y = (i * 31 + 11) % 900;
-            const r = 1.2 + (i % 4) * 1;
+          {/* Dense perlite speckles — bright white against dark soil */}
+          {Array.from({ length: 100 }, (_, i) => {
+            const x = (i * 14 + 7) % 1440;
+            const y = (i * 19 + 5) % 900;
+            const r = 1.5 + (i % 5) * 1.2;
             return (
               <circle
                 key={i}
                 cx={x} cy={y} r={r}
-                fill={i % 5 === 0 ? "rgba(240,235,220,0.3)" : "rgba(220,210,190,0.2)"}
+                fill={i % 3 === 0 ? "rgba(250,245,235,0.5)" : "rgba(235,225,210,0.35)"}
               />
             );
           })}
-          {/* Larger perlite chunks */}
-          {Array.from({ length: 12 }, (_, i) => {
-            const x = (i * 97 + 50) % 1440;
-            const y = (i * 67 + 30) % 900;
+          {/* Larger perlite chunks — irregular shapes */}
+          {Array.from({ length: 25 }, (_, i) => {
+            const x = (i * 59 + 25) % 1440;
+            const y = (i * 37 + 15) % 900;
             return (
               <ellipse
                 key={`chunk-${i}`}
                 cx={x} cy={y}
-                rx={2.5 + (i % 3) * 1.5}
-                ry={2 + (i % 2) * 1}
-                fill="rgba(235,225,205,0.18)"
-                transform={`rotate(${(i * 30) % 180} ${x} ${y})`}
+                rx={3 + (i % 4) * 2.5}
+                ry={2 + (i % 3) * 2}
+                fill={i % 2 === 0 ? "rgba(245,240,225,0.4)" : "rgba(230,220,200,0.3)"}
+                transform={`rotate(${(i * 31) % 180} ${x} ${y})`}
+              />
+            );
+          })}
+          {/* Small dark soil particles between perlite */}
+          {Array.from({ length: 40 }, (_, i) => {
+            const x = (i * 37 + 18) % 1440;
+            const y = (i * 23 + 9) % 900;
+            return (
+              <circle
+                key={`soil-${i}`}
+                cx={x} cy={y}
+                r={1 + (i % 3) * 0.8}
+                fill={`rgba(60,40,20,${0.2 + (i % 4) * 0.08})`}
               />
             );
           })}
         </svg>
       </div>
 
-      {/* === ROOT NETWORK === */}
+      {/* === ROOT NETWORK — visible in living soil zone === */}
       <svg
         className="absolute inset-0 w-full h-full"
         style={{ opacity: rootOpacity }}
         viewBox="0 0 1440 900"
         preserveAspectRatio="none"
       >
-        <g stroke="#654321" fill="none" strokeLinecap="round">
-          <path d="M720,0 C710,150 730,300 715,450 C700,600 725,750 720,900" strokeWidth="3.5" opacity="0.5" />
-          <path d="M720,150 C650,200 550,180 450,220" strokeWidth="2" opacity="0.35" />
-          <path d="M720,150 C790,200 890,180 990,220" strokeWidth="2" opacity="0.35" />
-          <path d="M715,350 C630,380 520,360 400,400" strokeWidth="1.5" opacity="0.25" />
-          <path d="M715,350 C800,380 920,360 1040,400" strokeWidth="1.5" opacity="0.25" />
-          <path d="M450,220 C400,250 350,240 300,270" strokeWidth="1" opacity="0.2" />
-          <path d="M990,220 C1040,250 1090,240 1140,270" strokeWidth="1" opacity="0.2" />
+        <g stroke="#7A5A30" fill="none" strokeLinecap="round">
+          {/* Main taproot */}
+          <path d="M720,0 C710,150 730,300 715,450 C700,600 725,750 720,900" strokeWidth="5" opacity="0.6" />
+          {/* Primary branches */}
+          <path d="M720,120 C620,180 500,170 380,210" strokeWidth="3.5" opacity="0.5" />
+          <path d="M720,120 C820,180 940,170 1060,210" strokeWidth="3.5" opacity="0.5" />
+          <path d="M715,300 C600,340 460,320 320,370" strokeWidth="3" opacity="0.45" />
+          <path d="M715,300 C830,340 980,320 1120,370" strokeWidth="3" opacity="0.45" />
+          <path d="M718,500 C640,540 520,530 400,570" strokeWidth="2.5" opacity="0.35" />
+          <path d="M718,500 C800,540 920,530 1040,570" strokeWidth="2.5" opacity="0.35" />
+          {/* Secondary branches */}
+          <path d="M380,210 C320,240 260,230 180,260" strokeWidth="2" opacity="0.3" />
+          <path d="M1060,210 C1120,240 1180,230 1260,260" strokeWidth="2" opacity="0.3" />
+          <path d="M320,370 C260,400 180,390 100,420" strokeWidth="1.5" opacity="0.25" />
+          <path d="M1120,370 C1180,400 1260,390 1340,420" strokeWidth="1.5" opacity="0.25" />
+          {/* Fine root hairs */}
+          <path d="M180,260 C150,280 120,275 80,300" strokeWidth="1" opacity="0.2" />
+          <path d="M1260,260 C1290,280 1320,275 1360,300" strokeWidth="1" opacity="0.2" />
+          <path d="M400,570 C340,600 280,590 200,620" strokeWidth="1" opacity="0.2" />
+          <path d="M1040,570 C1100,600 1160,590 1240,620" strokeWidth="1" opacity="0.2" />
         </g>
+        {/* Mycorrhizal network dots — fungal connections */}
+        {Array.from({ length: 15 }, (_, i) => {
+          const x = 200 + (i * 97) % 1040;
+          const y = 200 + (i * 67) % 500;
+          return (
+            <circle key={`myc-${i}`} cx={x} cy={y} r={2 + (i % 3)} fill="rgba(120,90,50,0.15)" />
+          );
+        })}
       </svg>
 
       {/* === DEEP VIGNETTE === */}
