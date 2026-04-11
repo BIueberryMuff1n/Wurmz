@@ -85,15 +85,13 @@ export default function WormPit() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       time++;
 
-      // CRITICAL: Offset drawing by scroll so worms scroll with the page
-      // Worms live in page coordinates — we translate the canvas to match
+      // Offset drawing by scroll — subtle parallax so worms feel embedded
       const scrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - canvas.height;
-      // Only offset in the worm zone (bottom portion of page)
       const wormZoneStart = maxScroll * 0.5;
       const scrollOffset = Math.max(0, scrollY - wormZoneStart);
       ctx.save();
-      ctx.translate(0, -scrollOffset * 0.3); // parallax — worms move slower than content
+      ctx.translate(0, -scrollOffset * 0.1); // very subtle parallax — almost scrolls with page
 
       const worms = wormsRef.current;
 
@@ -182,10 +180,13 @@ function createWorm(w: number, h: number, seed: number): Worm {
 
   const segCount = 8 + Math.floor(pseudoRandom(seed * 7) * 6); // 8-14 segments (was 14-24)
   const x = pseudoRandom(seed * 13) * w;
-  // Bottom-heavy Y distribution — worms concentrated in lower portion
-  // Uses inverted distribution: most worms near bottom, few scattered above
+  // Full-viewport distribution but bottom-heavy
+  // Spread across entire height, just MORE at the bottom
   const yRandom = pseudoRandom(seed * 17);
-  const y = h * (1 - Math.pow(1 - yRandom, 3)); // cubic bias toward bottom, smooth falloff upward
+  // Linear distribution with bottom bias: 30% even spread + 70% bottom-weighted
+  const evenSpread = yRandom * h;
+  const bottomBias = h * (1 - Math.pow(1 - yRandom, 2)); // quadratic bottom-heavy
+  const y = evenSpread * 0.3 + bottomBias * 0.7;
   const angle = pseudoRandom(seed * 23) * Math.PI * 2;
 
   const segments: [number, number][] = [];
@@ -265,19 +266,13 @@ function updateWorm(worm: Worm, w: number, h: number, time: number) {
   let finalX = ((newX + margin) % (w + margin * 2)) - margin;
   let finalY = newY;
 
-  // Gentle downward gravity — worms naturally drift back down
-  // Stronger pull the higher they are (proportional to distance from bottom)
-  const heightRatio = 1 - (finalY / h); // 1 at top, 0 at bottom
-  worm.angle += heightRatio * 0.01; // subtle angular push downward
+  // Very gentle downward tendency — worms prefer lower depths
+  const heightRatio = finalY / h; // 0 at top, 1 at bottom
+  worm.angle += (1 - heightRatio) * 0.003; // barely perceptible downward drift
 
-  // Soft Y boundaries — no hard snapping
-  if (finalY < h * 0.15) {
-    finalY = h * 0.15;
-    worm.angle = Math.abs(worm.angle); // point downward-ish
-  }
-  if (finalY > h + margin) {
-    finalY = h * 0.7;
-  }
+  // Soft wrap — keep within viewport with gentle nudge
+  if (finalY < -margin) finalY = h * 0.3;
+  if (finalY > h + margin) finalY = h * 0.5;
   worm.segments[0] = [finalX, finalY];
 
   // Each segment follows the one ahead — creates the wave propagation
