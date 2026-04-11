@@ -256,84 +256,49 @@ export default function SurfaceScene() {
         preserveAspectRatio="xMidYMid meet"
         height="140"
       >
-        {/* NYC skyline — accurate profile from NJ/Hoboken looking east */}
-        {/* Heights proportional: WTC=80, ESB=65, 432Park=63, Chrysler=47 (out of 80) */}
+        {/* NYC skyline — concentrated lower Manhattan cluster from NJ/Hoboken */}
+        {/* Based on actual photos: tight cluster in center, WTC dominant spike */}
         <path
           d={[
             "M0,80",
-            // === JERSEY CITY (left, across Hudson) ===
-            // Goldman Sachs Tower + 30 Hudson St
-            "L120,80 L120,70 L124,70 L124,58 L127,58 L127,52 L130,52 L130,58 L134,58 L134,55 L137,55 L137,50 L140,50 L140,55 L144,55 L144,62 L148,62 L148,58 L152,58 L152,65 L158,65 L158,70 L168,70 L168,80",
 
-            // === HUDSON RIVER ===
-            "L250,80",
+            // Empty water on far left
+            "L350,80",
 
-            // === LOWER MANHATTAN ===
-            // Brookfield Place / Battery Park
-            "L300,80 L300,65 L304,65 L304,58 L308,58 L308,62 L314,62 L314,55 L318,55 L318,60 L324,60 L324,80",
-            // WFC + nearby
-            "L330,80 L330,55 L334,55 L334,48 L338,48 L338,52 L342,52 L342,46 L346,46 L346,52 L350,52 L350,58 L356,58 L356,80",
+            // === LEFT EDGE — shorter buildings stepping up ===
+            "L380,80 L380,68 L384,68 L384,62 L388,62 L388,58 L392,58 L392,55 L396,55 L396,52 L400,52",
+            // Dense cluster stepping up toward WTC
+            "L400,48 L404,48 L404,44 L408,44 L408,48 L412,48 L412,40 L416,40 L416,44 L420,44 L420,38 L424,38 L424,42 L428,42 L428,36 L432,36 L432,40 L436,40 L436,34 L440,34",
 
-            // === ONE WORLD TRADE CENTER (the spike) ===
-            "L370,80 L370,52 L372,52 L372,35 L373,35 L373,20 L374,14 L374.5,6 L375,2 L375.5,6 L376,14 L376,20 L377,35 L378,52 L380,52 L380,80",
+            // === DENSE DOWNTOWN CLUSTER — many towers close together ===
+            "L440,32 L444,32 L444,28 L448,28 L448,32 L452,32 L452,26 L456,26 L456,30 L460,30 L460,24 L464,24 L464,28 L468,28 L468,22 L472,22 L472,26",
 
-            // 3WTC + 4WTC cluster
-            "L386,80 L386,50 L389,50 L389,44 L392,44 L392,50 L396,50 L396,55 L400,55 L400,48 L403,48 L403,42 L406,42 L406,48 L410,48 L410,55 L416,55 L416,62 L422,62 L422,80",
+            // === ONE WTC — the SPIKE, dramatically taller ===
+            "L480,26 L480,18 L482,18 L482,10 L483,8 L483.5,4 L484,1 L484.5,4 L485,8 L486,10 L486,18 L488,18 L488,26",
 
-            // === BRIDGES (Brooklyn + Manhattan) ===
-            "L445,80 L448,76 L452,73 L458,70 L464,68 L470,67 L476,68 L482,70 L488,73 L492,76 L496,80",
-            // Manhattan Bridge hint
-            "L510,80 L513,77 L518,75 L524,74 L530,75 L535,77 L538,80",
+            // === RIGHT OF WTC — more towers stepping back down ===
+            "L492,26 L492,22 L496,22 L496,26 L500,26 L500,20 L504,20 L504,24 L508,24 L508,28 L512,28 L512,24 L516,24 L516,30 L520,30 L520,26 L524,26 L524,32",
+            "L528,32 L528,36 L532,36 L532,32 L536,32 L536,38 L540,38 L540,34 L544,34 L544,40 L548,40 L548,36 L552,36 L552,42",
 
-            // === GAP ===
-            "L600,80",
+            // === STEPPING DOWN — right side of cluster ===
+            "L556,42 L556,46 L560,46 L560,50 L564,50 L564,48 L568,48 L568,54 L572,54 L572,50 L576,50 L576,56 L580,56 L580,52 L584,52 L584,58 L588,58 L588,62 L592,62 L592,58 L596,58 L596,64 L600,64 L600,68 L604,68 L604,72",
 
-            // === MIDTOWN ===
-            // Tudor City / UN area low
-            "L680,80 L680,68 L684,68 L684,62 L688,62 L688,65 L694,65 L694,80",
+            // Trailing off to right
+            "L610,72 L610,74 L618,74 L618,76 L626,76 L626,78 L640,78 L640,80",
 
-            // Chrysler Building (art deco terraced crown)
-            "L710,80 L710,60 L712,60 L712,52 L713,48 L714,44 L714.5,40 L715,36 L715.5,40 L716,44 L717,48 L718,52 L720,60 L722,60 L722,80",
-
-            // One Vanderbilt (tall, tapered)
-            "L730,80 L730,55 L732,55 L732,38 L733,34 L734,30 L735,28 L736,30 L737,34 L738,38 L740,55 L742,55 L742,80",
-
-            // === EMPIRE STATE BUILDING (stepped setbacks + antenna) ===
-            "L760,80 L760,60 L763,60 L763,52 L765,52 L765,44 L767,44 L767,36 L768,32 L769,26 L769.5,20 L770,14 L770.5,20 L771,26 L772,32 L773,36 L775,44 L777,52 L779,52 L779,60 L782,60 L782,80",
-
-            // Penn / MSG area fill
-            "L798,80 L798,65 L802,65 L802,58 L806,58 L806,62 L812,62 L812,68 L818,68 L818,80",
-
-            // Hudson Yards (Edge / 30HY / 35HY)
-            "L830,80 L830,62 L833,62 L833,52 L836,52 L836,48 L839,48 L839,52 L842,52 L842,56 L846,56 L846,50 L849,50 L849,56 L854,56 L854,62 L860,62 L860,80",
-
-            // === 432 PARK (thin stick — unmistakable) ===
-            "L880,80 L880,58 L881,58 L881,22 L882.5,22 L882.5,58 L884,58 L884,80",
-
-            // Central Park South / Columbus Circle low
-            "L900,80 L900,72 L906,72 L906,68 L912,68 L912,72 L920,72 L920,80",
-
-            // === UPPER WEST SIDE fading ===
-            "L950,80 L950,74 L958,74 L958,72 L968,72 L968,76 L978,76 L978,80",
-
-            // === GEORGE WASHINGTON BRIDGE ===
-            "L1060,80 L1062,78 L1066,76 L1074,74 L1082,73 L1090,74 L1098,76 L1102,78 L1104,80",
-
-            // Bronx fade
-            "L1150,80 L1150,78 L1160,78 L1160,76 L1175,76 L1175,78 L1190,78 L1190,80",
-
+            // Empty right
             "L1440,80"
           ].join(" ")}
-          fill="rgba(150,155,175,0.85)"
+          fill="rgba(140,145,165,0.85)"
         />
-        {/* Window lights */}
+        {/* Window lights — concentrated in the cluster */}
         {[
-          [130,54], [140,52], [304,60], [334,50], [374,10], [389,46],
-          [403,44], [714,38], [734,32], [770,18], [769,24], [836,50],
-          [849,52], [881,30], [881,40]
+          [420,36], [436,32], [452,24], [468,20], [484,6], [500,22],
+          [516,26], [532,34], [448,30], [472,24], [504,22], [540,36],
+          [560,44], [580,54], [412,42], [428,38]
         ].map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r={0.7} fill="rgba(255,240,180,0.4)">
-            <animate attributeName="opacity" values="0.2;0.6;0.2" dur={`${2 + (i % 3)}s`} repeatCount="indefinite" />
+          <circle key={i} cx={x} cy={y} r={0.6} fill="rgba(255,240,180,0.5)">
+            <animate attributeName="opacity" values="0.2;0.7;0.2" dur={`${2 + (i % 3)}s`} repeatCount="indefinite" />
           </circle>
         ))}
       </svg>
