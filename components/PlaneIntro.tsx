@@ -82,11 +82,11 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
           transition: flyOff ? "none" : undefined,
         }}
       >
-        <svg className="w-[120px] h-[66px] md:w-[200px] md:h-[110px]" viewBox="0 0 200 110">
+        <svg className="w-[180px] h-[100px] md:w-[300px] md:h-[165px]" viewBox="0 0 200 110">
           {/* === VINTAGE BIPLANE — Wurmz colors, graffiti-covered === */}
 
           {/* === LOWER WING (behind fuselage) === */}
-          <path d="M35,72 L25,78 L155,78 L145,72" fill="#E63462" stroke="rgba(30,18,10,0.7)" strokeWidth="1.5" />
+          <path d="M35,72 L25,78 L155,78 L145,72" fill="#E63462" stroke="rgba(30,18,10,0.7)" strokeWidth="2.5" />
           {/* Wing wear/rust */}
           <ellipse cx="80" cy="75" rx="15" ry="2.5" fill="#3D2B1F" opacity="0.3" />
           <ellipse cx="120" cy="76" rx="10" ry="2" fill="#8B5CF6" opacity="0.2" />
@@ -139,20 +139,20 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
           </g>
 
           {/* === UPPER WING (in front) === */}
-          <path d="M35,28 L25,22 L155,22 L145,28" fill="#E63462" stroke="rgba(30,18,10,0.7)" strokeWidth="1.5" />
+          <path d="M35,28 L25,22 L155,22 L145,28" fill="#E63462" stroke="rgba(30,18,10,0.7)" strokeWidth="2.5" />
           {/* Wing graffiti */}
           <ellipse cx="90" cy="25" rx="20" ry="2.5" fill="#3D2B1F" opacity="0.3" />
           <text x="75" y="26" fontSize="3.5" fill="#F5F0E8" opacity="0.12" fontFamily="sans-serif" fontWeight="bold">SOIL GANG</text>
 
           {/* Wing struts connecting upper and lower */}
-          <line x1="50" y1="28" x2="50" y2="72" stroke="#4A3520" strokeWidth="1.5" />
-          <line x1="130" y1="28" x2="130" y2="72" stroke="#4A3520" strokeWidth="1.5" />
+          <line x1="50" y1="28" x2="50" y2="72" stroke="#4A3520" strokeWidth="2.5" />
+          <line x1="130" y1="28" x2="130" y2="72" stroke="#4A3520" strokeWidth="2.5" />
           {/* Cross wires */}
           <line x1="50" y1="28" x2="130" y2="72" stroke="#4A3520" strokeWidth="0.5" opacity="0.4" />
           <line x1="130" y1="28" x2="50" y2="72" stroke="#4A3520" strokeWidth="0.5" opacity="0.4" />
 
           {/* === TAIL === */}
-          <path d="M28,45 L10,22 L30,35" fill="#E63462" stroke="rgba(30,18,10,0.6)" strokeWidth="1.5" />
+          <path d="M28,45 L10,22 L30,35" fill="#E63462" stroke="rgba(30,18,10,0.6)" strokeWidth="2.5" />
           <path d="M28,52 L10,70 L30,60" fill="#E63462" stroke="rgba(30,18,10,0.5)" strokeWidth="1" />
           {/* Tail tag */}
           <circle cx="18" cy="30" r="4" fill="#8B5CF6" opacity="0.25" />
@@ -183,7 +183,7 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
           {/* Segment lines */}
           {[126, 132, 138].map((x, i) => (
             <line key={`seg-${i}`} x1={x} y1={28} x2={x} y2={35}
-              stroke="rgba(60,15,10,0.2)" strokeWidth="1.5" strokeLinecap="round" />
+              stroke="rgba(60,15,10,0.2)" strokeWidth="2.5" strokeLinecap="round" />
           ))}
 
           {/* Face — side profile, same as tunnel worm */}
@@ -227,22 +227,22 @@ export default function PlaneIntro({ onJump, hasJumped }: PlaneIntroProps) {
           </g>
 
           {/* === LANDING GEAR — dangling, wobbly === */}
-          <line x1="70" y1="78" x2="65" y2="92" stroke="#4A3520" strokeWidth="1.5" />
-          <line x1="110" y1="78" x2="115" y2="92" stroke="#4A3520" strokeWidth="1.5" />
-          <circle cx="65" cy="95" r="5" fill="#1E1710" stroke="rgba(20,12,6,0.6)" strokeWidth="1.5" />
-          <circle cx="115" cy="95" r="5" fill="#1E1710" stroke="rgba(20,12,6,0.6)" strokeWidth="1.5" />
+          <line x1="70" y1="78" x2="65" y2="92" stroke="#4A3520" strokeWidth="2.5" />
+          <line x1="110" y1="78" x2="115" y2="92" stroke="#4A3520" strokeWidth="2.5" />
+          <circle cx="65" cy="95" r="5" fill="#1E1710" stroke="rgba(20,12,6,0.6)" strokeWidth="2.5" />
+          <circle cx="115" cy="95" r="5" fill="#1E1710" stroke="rgba(20,12,6,0.6)" strokeWidth="2.5" />
           {/* Wheel detail */}
           <circle cx="65" cy="95" r="2" fill="#2a1c10" />
           <circle cx="115" cy="95" r="2" fill="#2a1c10" />
 
-          {/* === ENGINE SMOKE — black, trailing behind === */}
-          {[0, 1, 2, 3, 4, 5].map((i) => (
+          {/* === ENGINE SMOKE — big dramatic black puffs === */}
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
             <circle
               key={`smoke-${i}`}
-              cx={30 - i * 12}
-              cy={48 + i * 3}
-              r={3 + i * 3.5}
-              fill={`rgba(10,6,3,${0.2 - i * 0.03})`}
+              cx={25 - i * 14}
+              cy={48 + i * 4}
+              r={5 + i * 5}
+              fill={`rgba(10,6,3,${0.25 - i * 0.03})`}
             >
               <animate
                 attributeName="cy"
