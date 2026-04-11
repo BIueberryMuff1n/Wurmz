@@ -32,7 +32,7 @@ export default function BuriedArtifacts() {
   const { progress } = useScroll();
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[3]">
+    <div className="pointer-events-none fixed inset-0 z-[5]">
       {artifacts.map((artifact, i) => {
         // Deep artifacts (fossils) get higher opacity since they're special
         const baseOpacity = artifact.peakProgress > 0.7 ? 0.18 : 0.1;
@@ -136,7 +136,7 @@ function ArtifactSVG({ type }: { type: string }) {
 
     case "trex-skull":
       return (
-        <svg width="60" height="45" viewBox="0 0 60 45">
+        <svg width="140" height="100" viewBox="0 0 60 45">
           {/* T-Rex skull fossil — side profile */}
           {/* Cranium */}
           <path d="M15,20 C15,10 25,5 35,5 C45,5 52,10 55,18 C56,22 55,26 52,28 L48,28" fill="none" stroke="#B8A88A" strokeWidth="1.5" />
