@@ -70,7 +70,7 @@ export default function WormPit() {
     // Initialize worms if empty
     if (wormsRef.current.length === 0) {
       const isMobile = window.innerWidth < 768;
-      const count = Math.floor(isMobile ? window.innerWidth / 4 : window.innerWidth / 1.8); // ~190 on mobile, ~800 on desktop
+      const count = Math.floor(isMobile ? 80 : 350); // optimized: fewer but fatter worms
       for (let i = 0; i < count; i++) {
         wormsRef.current.push(createWorm(canvas.width, canvas.height, i));
       }
@@ -97,9 +97,9 @@ export default function WormPit() {
 
       const worms = wormsRef.current;
 
-      // Hover: find nearest worm to mouse and boost its speed
+      // Hover: throttled to every 5th frame for performance
       const mouse = mouseRef.current;
-      if (mouse) {
+      if (mouse && time % 5 === 0) {
         let nearestDist = Infinity;
         let nearestWorm: Worm | null = null;
         for (const worm of worms) {
@@ -140,11 +140,10 @@ export default function WormPit() {
             : Math.min(1, 0.50 + ((p - 0.85) / 0.15) * 0.50); // packed: 50-100%
       const drawCount = Math.max(3, Math.floor(worms.length * densityFraction));
 
-      for (let i = 0; i < worms.length; i++) {
+      // Only update AND draw worms that are visible (skip the rest entirely)
+      for (let i = 0; i < drawCount; i++) {
         updateWorm(worms[i], canvas.width, canvas.height, time);
-        if (i < drawCount) {
-          drawWorm(ctx, worms[i], time);
-        }
+        drawWorm(ctx, worms[i], time);
       }
 
       ctx.restore(); // undo scroll translate
@@ -181,7 +180,7 @@ function createWorm(w: number, h: number, seed: number): Worm {
   const isQueen = seed === 42;
   const isGolden = seed === 137;
 
-  const segCount = 14 + Math.floor(pseudoRandom(seed * 7) * 10);
+  const segCount = 8 + Math.floor(pseudoRandom(seed * 7) * 6); // 8-14 segments (was 14-24)
   const x = pseudoRandom(seed * 13) * w;
   // Bottom-heavy Y distribution — worms concentrated in lower portion
   // Uses inverted distribution: most worms near bottom, few scattered above
@@ -229,7 +228,7 @@ function createWorm(w: number, h: number, seed: number): Worm {
     angle,
     turnRate: 0.005 + pseudoRandom(seed * 43) * 0.01, // gentle turns
     turnTimer: Math.floor(80 + pseudoRandom(seed * 47) * 200), // long between turns
-    thickness: (3 + pseudoRandom(seed * 53) * 4) * sizeMultiplier,
+    thickness: (4 + pseudoRandom(seed * 53) * 5) * sizeMultiplier, // fatter to compensate fewer count
     color,
     waveOffset: pseudoRandom(seed * 59) * Math.PI * 2,
     waveSpeed: 0.012 + pseudoRandom(seed * 61) * 0.015, // slow undulation
@@ -349,37 +348,7 @@ function drawWorm(ctx: CanvasRenderingContext2D, worm: Worm, time: number) {
   ctx.lineJoin = "round";
   ctx.stroke();
 
-  // Highlight stripe along top
-  ctx.beginPath();
-  ctx.moveTo(segs[0][0], segs[0][1]);
-  for (let i = 1; i < segs.length; i++) {
-    const prev = segs[i - 1];
-    const curr = segs[i];
-    const mx = (prev[0] + curr[0]) / 2;
-    const my = (prev[1] + curr[1]) / 2;
-    ctx.quadraticCurveTo(prev[0], prev[1], mx, my);
-  }
-  ctx.strokeStyle = `rgba(${Math.min(255, r + 40)}, ${Math.min(255, g + 25)}, ${Math.min(255, b + 20)}, ${0.2 * alphaMultiplier})`;
-  ctx.lineWidth = worm.thickness * 0.4;
-  ctx.lineCap = "round";
-  ctx.stroke();
-
-  // Segment rings — subtle darker bands
-  for (let i = 2; i < segs.length - 1; i += 2) {
-    const seg = segs[i];
-    const prev = segs[i - 1];
-    const angle = Math.atan2(seg[1] - prev[1], seg[0] - prev[0]);
-    const perpX = Math.cos(angle + Math.PI / 2);
-    const perpY = Math.sin(angle + Math.PI / 2);
-    const halfW = worm.thickness * 0.4;
-
-    ctx.beginPath();
-    ctx.moveTo(seg[0] + perpX * halfW, seg[1] + perpY * halfW);
-    ctx.lineTo(seg[0] - perpX * halfW, seg[1] - perpY * halfW);
-    ctx.strokeStyle = `rgba(${Math.max(0, r - 30)}, ${Math.max(0, g - 10)}, ${Math.max(0, b - 8)}, ${0.25 * alphaMultiplier})`;
-    ctx.lineWidth = 1;
-    ctx.stroke();
-  }
+  // (Highlight stripe and segment rings removed for performance)
 
   // Queen crown: 3 small golden triangles above the head
   if (worm.isQueen) {
