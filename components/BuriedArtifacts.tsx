@@ -17,6 +17,10 @@ const artifacts = [
   // Deep zone (0.55-0.75)
   { type: "lighter", x: 35, peakProgress: 0.62, sigma: 0.05, rotation: -20 },
   { type: "seed", x: 90, peakProgress: 0.58, sigma: 0.04, rotation: 10 },
+
+  // Very deep (0.75-0.90) — ancient artifacts
+  { type: "trex-skull", x: 70, peakProgress: 0.82, sigma: 0.06, rotation: 15 },
+  { type: "ammonite", x: 25, peakProgress: 0.78, sigma: 0.05, rotation: -25 },
 ];
 
 function gaussian(progress: number, peak: number, sigma: number): number {
@@ -125,6 +129,47 @@ function ArtifactSVG({ type }: { type: string }) {
           <ellipse cx="4" cy="6" rx="3.5" ry="5.5" fill="#4A3520" />
           <ellipse cx="4" cy="5" rx="2" ry="3" fill="#5A4530" opacity="0.5" />
           <line x1="4" y1="1" x2="4" y2="11" stroke="#3A2510" strokeWidth="0.3" />
+        </svg>
+      );
+
+    case "trex-skull":
+      return (
+        <svg width="60" height="45" viewBox="0 0 60 45">
+          {/* T-Rex skull fossil — side profile */}
+          {/* Cranium */}
+          <path d="M15,20 C15,10 25,5 35,5 C45,5 52,10 55,18 C56,22 55,26 52,28 L48,28" fill="none" stroke="#B8A88A" strokeWidth="1.5" />
+          {/* Jaw */}
+          <path d="M15,20 C15,25 18,30 25,32 C32,34 40,33 48,28" fill="none" stroke="#B8A88A" strokeWidth="1.5" />
+          {/* Eye socket */}
+          <ellipse cx="38" cy="14" rx="5" ry="4" fill="none" stroke="#B8A88A" strokeWidth="1" />
+          {/* Teeth */}
+          <path d="M20,22 L21,27 L23,22 L25,28 L27,22 L29,27 L31,22 L33,28 L35,23 L37,27 L39,23" fill="none" stroke="#B8A88A" strokeWidth="0.8" />
+          {/* Nostril */}
+          <circle cx="50" cy="22" r="2" fill="none" stroke="#B8A88A" strokeWidth="0.8" />
+          {/* Crack lines — fossilized */}
+          <line x1="30" y1="8" x2="35" y2="16" stroke="#A09070" strokeWidth="0.4" opacity="0.5" />
+          <line x1="42" y1="6" x2="45" y2="12" stroke="#A09070" strokeWidth="0.4" opacity="0.5" />
+        </svg>
+      );
+
+    case "ammonite":
+      return (
+        <svg width="30" height="30" viewBox="0 0 30 30">
+          {/* Ammonite fossil — spiral shell */}
+          <path d="M15,15 C15,10 20,8 22,12 C24,16 20,20 16,18 C12,16 14,12 17,13 C19,14 18,16 16,16" fill="none" stroke="#B8A88A" strokeWidth="1.2" />
+          {/* Outer spiral */}
+          <circle cx="15" cy="15" r="12" fill="none" stroke="#B8A88A" strokeWidth="1" />
+          {/* Ridge lines */}
+          {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg, i) => {
+            const rad = (deg * Math.PI) / 180;
+            return (
+              <line key={i}
+                x1={15 + Math.cos(rad) * 8} y1={15 + Math.sin(rad) * 8}
+                x2={15 + Math.cos(rad) * 12} y2={15 + Math.sin(rad) * 12}
+                stroke="#A09070" strokeWidth="0.5" opacity="0.4"
+              />
+            );
+          })}
         </svg>
       );
 
