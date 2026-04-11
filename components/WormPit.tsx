@@ -172,10 +172,10 @@ function createWorm(w: number, h: number, seed: number): Worm {
 
   const segCount = 14 + Math.floor(pseudoRandom(seed * 7) * 10);
   const x = pseudoRandom(seed * 13) * w;
-  // Bias Y toward the bottom — square the random to cluster low
-  // Most worms end up in the bottom 40% of the screen
+  // Bias Y HEAVILY toward the bottom — cube the random
+  // 80% of worms should be in the bottom 30% of the screen
   const yRandom = pseudoRandom(seed * 17);
-  const y = h * (yRandom * yRandom); // squared = bottom-heavy
+  const y = h * (yRandom * yRandom * yRandom * yRandom); // y⁴ = extremely bottom-heavy
   const angle = pseudoRandom(seed * 23) * Math.PI * 2;
 
   const segments: [number, number][] = [];
@@ -250,12 +250,20 @@ function updateWorm(worm: Worm, w: number, h: number, time: number) {
   const newX = head[0] + Math.cos(worm.angle) * worm.speed;
   const newY = head[1] + Math.sin(worm.angle) * worm.speed;
 
-  // Wrap around edges (worms reappear on other side)
+  // X wraps around, but Y stays in the bottom portion
   const margin = 50;
-  worm.segments[0] = [
-    ((newX + margin) % (w + margin * 2)) - margin,
-    ((newY + margin) % (h + margin * 2)) - margin,
-  ];
+  let finalX = ((newX + margin) % (w + margin * 2)) - margin;
+  let finalY = newY;
+  // If worm drifts above 40% of viewport, push it back down
+  if (finalY < h * 0.4) {
+    finalY = h * 0.4 + Math.random() * h * 0.1;
+    worm.angle = Math.PI * 0.5 + (Math.random() - 0.5) * 0.5; // point downward
+  }
+  // If worm goes below viewport, wrap to bottom zone
+  if (finalY > h + margin) {
+    finalY = h * 0.6;
+  }
+  worm.segments[0] = [finalX, finalY];
 
   // Each segment follows the one ahead — creates the wave propagation
   for (let i = 1; i < worm.segments.length; i++) {

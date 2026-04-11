@@ -136,21 +136,39 @@ function ArtifactSVG({ type }: { type: string }) {
 
     case "trex-skull":
       return (
-        <svg width="140" height="100" viewBox="0 0 60 45">
-          {/* T-Rex skull fossil — side profile */}
-          {/* Cranium */}
-          <path d="M15,20 C15,10 25,5 35,5 C45,5 52,10 55,18 C56,22 55,26 52,28 L48,28" fill="none" stroke="#B8A88A" strokeWidth="1.5" />
+        <svg width="180" height="140" viewBox="0 0 90 70">
+          {/* Concrete block — buried chunk of foundation */}
+          <rect x="5" y="20" width="80" height="48" rx="3" ry="3"
+            fill="#4A4540" stroke="rgba(60,55,50,0.6)" strokeWidth="2" />
+          {/* Concrete texture — cracks and pitting */}
+          <line x1="10" y1="35" x2="35" y2="38" stroke="rgba(80,75,65,0.3)" strokeWidth="0.5" />
+          <line x1="50" y1="25" x2="70" y2="30" stroke="rgba(80,75,65,0.25)" strokeWidth="0.5" />
+          <line x1="25" y1="55" x2="60" y2="52" stroke="rgba(80,75,65,0.2)" strokeWidth="0.5" />
+          {/* Rebar sticking out */}
+          <line x1="82" y1="30" x2="88" y2="28" stroke="#6B5A45" strokeWidth="1.5" strokeLinecap="round" />
+          <line x1="82" y1="50" x2="87" y2="52" stroke="#6B5A45" strokeWidth="1.5" strokeLinecap="round" />
+
+          {/* === GRAFFITI T-REX SKULL on the concrete === */}
+          {/* Drawn with thick spray-paint style strokes */}
+          {/* Cranium — bold outline */}
+          <path d="M18,42 C18,32 28,26 40,26 C52,26 60,32 62,40 C63,44 62,48 58,50"
+            fill="none" stroke="#E63462" strokeWidth="2.5" strokeLinecap="round" />
           {/* Jaw */}
-          <path d="M15,20 C15,25 18,30 25,32 C32,34 40,33 48,28" fill="none" stroke="#B8A88A" strokeWidth="1.5" />
-          {/* Eye socket */}
-          <ellipse cx="38" cy="14" rx="5" ry="4" fill="none" stroke="#B8A88A" strokeWidth="1" />
-          {/* Teeth */}
-          <path d="M20,22 L21,27 L23,22 L25,28 L27,22 L29,27 L31,22 L33,28 L35,23 L37,27 L39,23" fill="none" stroke="#B8A88A" strokeWidth="0.8" />
+          <path d="M18,42 C18,48 22,54 30,56 C38,58 48,56 58,50"
+            fill="none" stroke="#E63462" strokeWidth="2.5" strokeLinecap="round" />
+          {/* Eye socket — hollow circle */}
+          <circle cx="44" cy="36" r="5" fill="none" stroke="#E63462" strokeWidth="2" />
+          {/* Teeth — jagged */}
+          <path d="M24,44 L26,50 L28,44 L31,51 L34,44 L37,50 L40,44 L43,50 L46,45 L49,50"
+            fill="none" stroke="#8B5CF6" strokeWidth="1.8" strokeLinecap="round" />
           {/* Nostril */}
-          <circle cx="50" cy="22" r="2" fill="none" stroke="#B8A88A" strokeWidth="0.8" />
-          {/* Crack lines — fossilized */}
-          <line x1="30" y1="8" x2="35" y2="16" stroke="#A09070" strokeWidth="0.4" opacity="0.5" />
-          <line x1="42" y1="6" x2="45" y2="12" stroke="#A09070" strokeWidth="0.4" opacity="0.5" />
+          <circle cx="57" cy="44" r="2.5" fill="none" stroke="#E63462" strokeWidth="1.5" />
+          {/* Spray paint drips */}
+          <line x1="25" y1="56" x2="25" y2="62" stroke="#E63462" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
+          <line x1="40" y1="58" x2="40" y2="64" stroke="#8B5CF6" strokeWidth="0.8" strokeLinecap="round" opacity="0.4" />
+          {/* "WURMZ" tag below the skull */}
+          <text x="22" y="66" fontSize="6" fill="#E63462" fontFamily="sans-serif" fontWeight="bold" opacity="0.6"
+            transform="rotate(-3 22 66)">WURMZ</text>
         </svg>
       );
 
