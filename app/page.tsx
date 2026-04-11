@@ -13,6 +13,7 @@ import ParachuteWorm from "@/components/ParachuteWorm";
 import WormPit from "@/components/WormPit";
 import BuriedArtifacts from "@/components/BuriedArtifacts";
 import SoilBiology from "@/components/SoilBiology";
+import AnimeGrass from "@/components/AnimeGrass";
 import PlaneIntroWrapper from "@/components/PlaneIntroWrapper";
 import EasterEggs from "@/components/EasterEggs";
 import CinematicMode from "@/components/CinematicMode";
@@ -23,6 +24,7 @@ export default function Home() {
       <EasterEggs />
       <UndergroundJourney />
       <SurfaceScene />
+      <AnimeGrass />
       <PlaneIntroWrapper />
       <ParachuteWorm />
       <WormTunnel />

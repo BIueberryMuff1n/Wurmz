@@ -3,7 +3,8 @@
     "allow": [
       "mcp__Claude_Preview__preview_start",
       "WebSearch",
-      "WebFetch(domain:freesvg.org)"
+      "WebFetch(domain:freesvg.org)",
+      "mcp__dc03c5a0-4aaa-4d4e-81b4-b126fbb5106c__read_me"
     ]
   }
 }
