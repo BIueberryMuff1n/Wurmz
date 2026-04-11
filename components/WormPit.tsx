@@ -70,7 +70,7 @@ export default function WormPit() {
     // Initialize worms if empty
     if (wormsRef.current.length === 0) {
       const isMobile = window.innerWidth < 768;
-      const count = Math.floor(isMobile ? 80 : 350); // optimized: fewer but fatter worms
+      const count = Math.floor(isMobile ? 40 : 150); // lean: fewer, fatter worms
       for (let i = 0; i < count; i++) {
         wormsRef.current.push(createWorm(canvas.width, canvas.height, i));
       }
@@ -228,7 +228,7 @@ function createWorm(w: number, h: number, seed: number): Worm {
     angle,
     turnRate: 0.005 + pseudoRandom(seed * 43) * 0.01, // gentle turns
     turnTimer: Math.floor(80 + pseudoRandom(seed * 47) * 200), // long between turns
-    thickness: (4 + pseudoRandom(seed * 53) * 5) * sizeMultiplier, // fatter to compensate fewer count
+    thickness: (5 + pseudoRandom(seed * 53) * 6) * sizeMultiplier, // thick worms, fewer needed
     color,
     waveOffset: pseudoRandom(seed * 59) * Math.PI * 2,
     waveSpeed: 0.012 + pseudoRandom(seed * 61) * 0.015, // slow undulation
