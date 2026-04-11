@@ -10,17 +10,18 @@ import { useScroll } from "./ScrollContext";
 // Color control points: [progress, r, g, b]
 // Tuned by hand for imperceptible transitions
 const COLOR_STOPS: [number, number, number, number][] = [
-  // Sky zone — must exactly match SurfaceScene gradient bottom (#0a0f1a = rgb(10,15,26))
-  [0.00, 10, 15, 26],    // deep night sky — exact match to SurfaceScene bottom
-  [0.01, 10, 15, 26],    // hold sky color through crossfade zone
-  [0.03, 12, 17, 28],    // barely shifting
-  [0.05, 16, 20, 30],    // sky transitioning
-  [0.07, 20, 22, 32],    // transitional — blue-toned, no purple
-  [0.09, 18, 18, 28],    // dusk hint — still dark
-  [0.10, 18, 16, 24],    // dusk meets earth — very subtle
-  // Surface / straw zone — SUBTLE warm browns, stay dark
-  [0.12, 20, 16, 18],    // first soil hint — barely visible
-  [0.13, 22, 16, 16],    // warming slowly
+  // Earth starts as near-black warm brown — NO BLUE
+  // The SurfaceScene handles the sky appearance; when it fades, this is what's behind
+  [0.00, 12, 10, 8],     // near-black warm brown
+  [0.01, 12, 10, 8],     // hold through sky crossfade
+  [0.03, 14, 11, 8],     // barely warming
+  [0.05, 14, 12, 9],     // still very dark
+  [0.07, 16, 12, 10],    // hint of warmth
+  [0.09, 16, 14, 10],    // dark earth
+  [0.10, 18, 14, 10],    // earth tone established
+  // Surface / straw zone — warm browns
+  [0.12, 20, 16, 12],    // soil emerging
+  [0.13, 22, 16, 12],    // warming
   [0.14, 24, 18, 14],    // amber hint
   [0.15, 28, 20, 14],    // straw zone — muted
   [0.16, 30, 22, 14],    // warm brown — still dark

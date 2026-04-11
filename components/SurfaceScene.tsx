@@ -85,7 +85,7 @@ export default function SurfaceScene() {
             #241a30 55%,
             #161622 70%,
             #10131e 85%,
-            #0a0f1a 100%
+            #0c0a08 100%
           )`,
         }}
       />
@@ -324,30 +324,21 @@ export default function SurfaceScene() {
         ))}
       </svg>
 
-      {/* Topsoil layer — dark earth beneath the grass */}
+      {/* Ground transition — ONE continuous warm brown fade from sky to earth */}
+      {/* NO blue/teal — all warm browns matching the earth system */}
       <div
         className="absolute bottom-0 left-0 right-0"
         style={{
-          height: "25%",
+          height: "45%",
           background: `linear-gradient(180deg,
             transparent 0%,
-            rgba(24,18,12,0.3) 20%,
-            rgba(22,16,10,0.6) 50%,
-            rgba(18,14,8,0.85) 80%,
+            rgba(16,12,10,0.15) 15%,
+            rgba(18,14,10,0.3) 30%,
+            rgba(20,15,10,0.5) 45%,
+            rgba(20,15,10,0.7) 60%,
+            rgba(18,14,8,0.85) 75%,
+            rgba(16,12,6,0.95) 90%,
             rgba(14,10,6,1) 100%
-          )`,
-        }}
-      />
-      {/* Sky-to-earth fade — gradual darkening above the topsoil */}
-      <div
-        className="absolute bottom-[12%] left-0 right-0"
-        style={{
-          height: "30%",
-          background: `linear-gradient(180deg,
-            transparent 0%,
-            rgba(10,15,26,0.3) 40%,
-            rgba(14,12,10,0.6) 80%,
-            rgba(22,16,10,0.8) 100%
           )`,
         }}
       />
