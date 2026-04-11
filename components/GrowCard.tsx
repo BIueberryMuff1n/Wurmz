@@ -22,8 +22,8 @@ export default function GrowCard({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut", delay }}
       viewport={{ once: true, margin: "-80px" }}
-      className="relative rounded-sm border-t-4 border-crimson-neon bg-deep-earth/95 backdrop-blur-sm p-6 md:p-8 shadow-[3px_3px_0px_rgba(61,43,31,0.5)]"
-      style={{ border: "3px solid rgba(80,65,50,0.6)", boxShadow: "inset 0 0 20px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.35)" }}
+      className="relative rounded-sm bg-deep-earth/95 backdrop-blur-sm p-6 md:p-8"
+      style={{ border: "3px solid rgba(80,65,50,0.6)", borderTop: "4px solid #E63462", boxShadow: "inset 0 0 20px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.35)" }}
     >
       {/* Corner bolts */}
       <div className="absolute top-2 left-2 w-2.5 h-2.5 rounded-full bg-root-brown/50 border border-root-brown/30" />

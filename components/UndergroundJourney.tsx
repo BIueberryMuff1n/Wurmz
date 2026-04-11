@@ -112,12 +112,6 @@ export default function UndergroundJourney() {
   // The worm is going sideways, not deeper — same soil layer throughout
   const growStart = 0.25;
   const growEnd = 0.45;
-  const adjustedEarthProgress = progress <= growStart
-    ? progress
-    : progress >= growEnd
-      ? progress - (growEnd - growStart) + (growEnd - growStart) * 0 // resume after freeze
-      : growStart; // frozen at growStart depth
-
   // Remap post-grow progress so it smoothly continues from the frozen point
   const earthProgress = progress <= growStart
     ? progress
